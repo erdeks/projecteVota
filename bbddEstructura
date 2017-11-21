@@ -1,28 +1,34 @@
-tabla usuarios
-	-idUsuario(pk)
-	-idPermisos(fk)
-	-email
-	-password
-tabla permisos
-	-idPermisos(pk)
-	-nombre
-	-descripcion
-tabla encuestas
-	-idEncuestas(pk)
-	-idUsuario(fk)
-	-nombre
-	-multirespuesta(booleano)
-	-descripcion(opcional)
-tabla opcionesEncuestas
-	-idOpciones(pk)
-	-idEncuestas(fk)
-	-nombre
-tabla votosEncuestas
-	-idVotos(pk)
-	-idOpciones
-	-idUsuario
-tabla accesoEncuestas
-	-idAcceso(pk)
-	-idUsuario
-	-idEncuestas
+tabla usuarios //Contiene los usuarios
+	- idUsuario		(pk, autoIncremental)
+	- idPermiso		(fk)
+	- email 		(String de 100)
+	- password 		(String de 40)
+	- validado 		(bool, default: false)
 
+tabla permisos //Contiene los permisos que puede tener un usuario
+	- idPermiso	(pk, autoIncremental)
+	- nombre		(String de 50)
+	- descripcion	(String de 200)
+
+tabla encuestas //Contiene las encuentras
+	- idEncuesta		(pk, autoIncremental)
+	- idUsuario			(fk)
+	- nombre			(String de 100)
+	- multirespuesta	(bool, default: false)
+	- descripcion		(opcional, String de 200)
+
+tabla opcionesEncuestas //Contiene las opciones de las encuestas
+	- idOpcion	(pk, autoIncremental)
+	- idEncuesta	(fk)
+	- nombre		(String de 100)
+
+tabla votosEncuestas //Contiene los votos de los usuarios
+	- idVoto		(pk, autoIncremental)
+	- idOpcion	(fk)
+	- idUsuario		(fk)
+
+tabla accesoEncuestas //Contiene los usuarios invitados
+	- idAcceso 		(pk, autoIncremental)
+	- idUsuario 	(fk)
+	- idEncuesta 	(fk)
+	- activo 		(bool, default: true)
