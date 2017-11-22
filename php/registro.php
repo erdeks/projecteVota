@@ -1,77 +1,97 @@
 <?php
 	session_start();
 
+	define("USAURIO_NO_REGISTRADO", 1);
+	define("USAURIO_REGISTRADO_VALIDADO", 2);
+	define("USAURIO_REGISTRADO_NO_VALIDADO", 3);
+	define("USAURIO_REGISTRADO_INVITADO", 4);
+
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password']) && existeYnoEstaVacio($_POST['passwordConfirm'])){
 		
 		$email = $_POST['email'];
-		$password = sha1(md5($_POST['password']));
-		$passwordConfirm = sha1(md5($_POST['passwordConfirm']));
+		if(is_valid_email($email)){
+			$password = sha1(md5($_POST['password']));
+			$passwordConfirm = sha1(md5($_POST['passwordConfirm']));
 
-		if($password === $passwordConfirm){
-			require "conexionBBDD.php";
-			$conexion = abrirConexion();
-			/*$query = $conexion->prepare("INSERT INTO usuarios (idPermisos, email, password) VALUES 2, $email, $password");
-			$query->execute();
-			if($row = $query->fetch()){
-				session_start();
-				$_SESSION['usuario'] = new array(
-					"id" => $['idUsuario'], 
-					"email" => $email, 
-					"contraseña" => $password);
-				header("../index.php");
-			}*/
-			$query = $conexion->prepare("SELECT idUsuario, idPermiso, validado FROM usuarios WHERE email = '$email';");
-			$query->execute();
-			$rows = getRows($query);
-			if($rows == 0){ //Si no hay ningun usuario
-				$query = $conexion->prepare("INSERT INTO usuarios (idPermiso, email, password) VALUES (2, '$email', '$password')");
+			if($password === $passwordConfirm){
+				$estado = "";
+				require "conexionBBDD.php";
+				$conexion = abrirConexion();
+
+				$query = $conexion->prepare("SELECT idUsuario, idPermiso, validado FROM usuarios WHERE email = '$email';");
 				$query->execute();
-				$last_id = $conn->lastInsertId();
-				$_SESSION['usuario'] = [
-					"id" => $last_id, 
-					"email" => $email, 
-					"contraseña" => $password,
-					"validado" => 0];
-			}else if($rows == 1){ //Si hay un usuario registrado
-				if($row = $query->fetch()){
-					if($row['idPermiso'] == 1){ //Si era un invitado y se registra
-						//Cambiar el idPermisos a 2 (usuario) y valiando a 1 (true)
-
-					}else{ //Si no es un invitado
-						if($row['validado'] == 0){ //Si la cuenta no esta validada
-						
-						}else{ //Si la cuenta esta validada
-
+				$rows=$query->rowCount();
+				
+				
+				if($rows == 0){ //Si no hay ningun usuario
+					$estado = USAURIO_NO_REGISTRADO;
+				}else if($rows == 1){ //Si hay un usuario registrado
+					if($row = $query->fetch()){
+						if($row['idPermiso'] == 1){ //Si era un invitado y se registra
+							$estado = USAURIO_REGISTRADO_INVITADO;
+						}else{ //Si no es un invitado
+							if($row['validado'] == 0){ //Si la cuenta no esta validada
+								$estado = USAURIO_REGISTRADO_NO_VALIDADO;
+							}else{ //Si la cuenta esta validada
+								$estado = USAURIO_REGISTRADO_VALIDADO;
+							}
 						}
 					}
 				}
-				$_SESSION['error'] += "Error. Ya existe una cuenta.";
+
+				switch ($estado) {
+					case USAURIO_NO_REGISTRADO:
+						registrarUsuario($conexion, $email, $password);
+						break;
+					case USAURIO_REGISTRADO_VALIDADO:
+						header("Location: ../pagina/registro.php?error=1");
+						break;
+					case USAURIO_REGISTRADO_NO_VALIDADO:
+						validarCuenta($row["idUsuario"]);
+						break;
+					case USAURIO_REGISTRADO_INVITADO:
+						actualziarUsuarioInvitado($conexion, $row["idUsuario"], $password);
+						break;
+				}
+				cerrarConexion($conexion);
 			}else{
-				$_SESSION['error'] += "Error. Hay mas de un usuario, contacte con el soporte.";
+				//password no igual
+				header("Location: ../pagina/registro.php?error=2");
 			}
-			/*$rowCount = $query->fetchColumn(0);
-			echo $rowCount;
-			echo "<br>";
-			if($rowCount == 0){
-				echo "as";
-			}else if($rowCount == 1){
-				echo "12";
-			}*/
-			cerrarConexion($conexion);
+		}else{
+			header("Location: ../pagina/registro.php?error=3");
 		}
+	}else{
+		header("Location: ../pagina/registro.php?error=4");
 	}
-	//header("Location: ../index.php");
 
 	function existeYnoEstaVacio($variable){
 		return (isset($variable) && $variable != "");
 	}
 
-	function getRows($query){
-		$array = [];
-		while($row = $query->fetch()){
-			$array[] = $row;
-		}
-		return count($array);
+	function registrarUsuario(&$conexion, $email, $password){
+		$query = $conexion->prepare("INSERT INTO usuarios (idPermiso, email, password) VALUES (2, '$email', '$password')");
+		$query->execute();
+		$last_id = $conexion->lastInsertId();
+		validarCuenta($last_id, true);
+	}
+
+	function actualziarUsuarioInvitado(&$conexion, $idUsuario, $password){
+		//Cambiar el idPermisos a 2 (usuario) y valiando a 1 (true)
+		$query = $conexion->prepare("UPDATE usuarios SET password = '$password', idPermiso = 2, validado = 0 WHERE idUsuario = $idUsuario");
+		$query->execute();
+		validarCuenta($idUsuario, true);
+	}
+
+	function validarCuenta($id, $nuevoRegistro = false){
+		if($nuevoRegistro)
+			header("Location: ../pagina/validacion.php?id=$id&registro=true");
+		else
+			header("Location: ../pagina/validacion.php?id=$id");
+	}
+
+	function is_valid_email($str){
+		return (false !== filter_var($str, FILTER_VALIDATE_EMAIL));
 	}
 
 ?>

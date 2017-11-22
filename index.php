@@ -6,23 +6,19 @@
 	<title>MySQL PDO</title>
 </head>
 <body>
+	<a href="pagina/login.php">login</a>
+	<a href="pagina/registro.php">registro</a>
+
+	
 	<?php
-		if(isset($_SESSION['usuario'])) echo "logeado";
+		if(isset($_GET['remove'])){
+			unset($_SESSION['usuario']);
+			header("Location: index.php");
+		}
+		if(isset($_SESSION['usuario'])){
+			echo '<a href="index.php?remove=true">Cerrar cuenta</a>';
+		}
+
 	?>
-	<h3>Login</h3>
-	<form action="php/login.php" method="POST">
-		<input type="text" name="email" placeholder="Email"><br>
-		<input type="password" name="password" placeholder="Contraseña"><br>
-		<input type="submit" name="login" value="Entrar">
-	</form>
-
-	<h3>Registro</h3>
-	<form action="php/registro.php" method="POST">
-		<input type="text" name="email" placeholder="Email"><br>
-		<input type="password" name="password" placeholder="Contraseña"><br>
-		<input type="password" name="passwordConfirm" placeholder="Confirmar contraseña"><br>
-		<input type="submit" name="registro" value="Registrarse">
-	</form>
-
 </body>
 </html>

@@ -8,24 +8,34 @@
 
 		$query = $conexion->prepare("SELECT idUsuario, validado FROM usuarios WHERE email = '$email' AND password = '$password';");
 		$query->execute();
-		if($row = $query->fetch()){
-			$_SESSION['usuario'] = [
-				"id" => $row['idUsuario'], 
-				"email" => $email, 
-				"contraseña" => $password,
-				"validado" => $row['validado'] == 1 ? true : false];
-
-		}else{
-			if(isset($_SESSION['usuario']))
-				unset($_SESSION['usuario']);
-		}
-		
 		cerrarConexion($conexion);
-		header("Location: ../index.php");
+		if($row = $query->fetch()){
+			if($row['validado'] == 1){
+				$_SESSION['usuario'] = [
+					"id" => $row['idUsuario'], 
+					"email" => $email, 
+					"contraseña" => $password];
+				header("Location: ../index.php");
+			}else{
+				destruirUsuario();
+				header("Location: ../pagina/validacion.php");
+			}
+		}else{
+			destruirUsuario();
+			header("Location: ../pagina/login.php?error=1");
+		}
+	}else{
+		destruirUsuario();
+		header("Location: ../pagina/login.php?error=2");
 	}
 
 	function existeYnoEstaVacio($variable){
 		return (isset($variable) && $variable != "");
+	}
+
+	function destruirUsuario(){
+		if(isset($_SESSION['usuario']))
+			unset($_SESSION['usuario']);
 	}
 //Java script slash menu
 ?>
