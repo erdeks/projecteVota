@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title></title>
+	<script type="text/javascript" src="../js/validacionEncuesta.js"></script>
+	<style>
+		.tooltip {
+		    position: relative;
+		    display: inline-block;
+		}
+
+		.tooltip .tooltiptext {
+		    visibility: hidden;
+		    width: 120px;
+		    background-color: red;
+		    color: #fff;
+		    text-align: center;
+		    border-radius: 6px;
+		    padding: 5px 0;
+		    position: absolute;
+		    z-index: 1;
+		    top: 125%;
+		    left: 50%;
+		    margin-left: -60px;
+		    opacity: 0;
+		    transition: opacity 1s;
+		}
+
+		.tooltip .tooltiptext::after {
+		    content: "";
+		    position: absolute;
+		    bottom: 100%;
+		    left: 50%;
+		    margin-left: -5px;
+		    border-width: 5px;
+		    border-style: solid;
+		    border-color: transparent transparent red transparent;
+		}
+
+		.tooltip .tooltiptext {
+		    visibility: visible;
+		    opacity: 1;
+		}
+	</style>
+</head>
+<body onload="inicializar()">
+	<form>
+		<div id="dataInicio">
+			<div class="tooltip"><input type="number" id="diaInicio" name="diaInicio" placeholder="DD"></div>
+			<div class="tooltip"><input type="number" id="mesInicio" name="mesInicio" placeholder="MM"></div>
+			<div class="tooltip"><input type="number" id="anyInicio" name="anyInicio" placeholder="YYYY"></div>
+		</div>
+		<div id="dataFin">
+			<div class="tooltip"><input type="number" id="diaFin" name="diaFin" placeholder="DD"></div>
+			<div class="tooltip"><input type="number" id="mesFin" name="mesFin" placeholder="MM"></div>
+			<div class="tooltip"><input type="number" id="anyFin" name="anyFin" placeholder="YYYY"></div>
+		</div>
+		<div class="tooltip"><input id="pregunta" type="input" name=""></div>
+		<input id="crearForumario" type="submit">
+		<button id="addRespuesta" type="button">Crear otra respuesta</button>
+		<button id="removeRespuesta" type="button">Eliminar todas las respuestas</button>
+		<div id="respuestas"></div>
+	</form>
+</body>
+</html>
