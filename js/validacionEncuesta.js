@@ -1,4 +1,5 @@
 var error = null;
+var interval_id = -1;
 function inicializar(){
 	error = null;
 	document.getElementById('pregunta').addEventListener("input", checkInputPreguntaTextoCambia);
@@ -11,13 +12,13 @@ function inicializar(){
 	for(var i = 0; i < fechasInicio.length; i++){
 		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaInicio);
 		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaInicio);
-		//fechasInicio[i].getElementsByTagName("input")[0].value = "";
+		fechasInicio[i].getElementsByTagName("input")[0].value = "";
 	}
 	var fechasFin = document.getElementById("dataFin").children;
 	for(var i = 0; i < fechasFin.length; i++){
 		fechasFin[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaFin);
 		fechasFin[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaFin);
-		//fechasFin[i].getElementsByTagName("input")[0].value = "";
+		fechasFin[i].getElementsByTagName("input")[0].value = "";
 	}
 
 	addRespuesta();
@@ -62,6 +63,7 @@ function checkInputsRespuestasTextoCambia(){
 	if(error != null){
 		desactivarMensajeError(error);
 	}
+	
 	if(!isVacio(this)){
 		eliminarError(this);
 	}
@@ -217,7 +219,6 @@ function activarErroresFechaFin(inputActual = null){
 		switch(getPosition(inputActual.parentNode)){
 			case 0: //Dia
 				if(dia == ""){
-					alert("a")
 					crearError(inputDia, "EL dia no puede estar vacio.");
 				}else if(dia <= 0){
 					crearError(inputDia, "El dia no puede ser menor de 1.");
@@ -278,6 +279,8 @@ function isRespuestaVacia(){
 
 function addRespuesta(){
 	var padre = document.getElementById('respuestas');
+	if(padre.children.length == 0)
+		padre.style.height = "0px";
 
 	var elementoDiv = document.createElement("div");
 	var elementoSpan = document.createElement("span");
@@ -298,24 +301,67 @@ function addRespuesta(){
 	agregarHijo(elementoDivError, elementoInput);
 
 	agregarHijo(padre, elementoDiv);
+	animacionAdd(padre);
 
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
 }
-
+function animacionAdd(padre) {
+	var height = padre.offsetHeight;
+	var totalHeight = getHeightContenedorRespuestas(padre);
+	clearInterval(interval_id);
+	interval_id = setInterval(frame, 1);
+	padre.style.overflow = "hidden";
+	function frame() {
+		if (height >= totalHeight) {
+			clearInterval(interval_id);
+			padre.style.overflow = "";
+		} else {
+			height++;
+			padre.style.height = height + 'px';
+		}
+	}
+}
+function getHeightContenedorRespuestas(padre){
+	var totalHeight = 0;
+	for(var i = 0; i < padre.children.length; i++){
+		totalHeight += padre.children[i].offsetHeight;
+	}
+	return totalHeight;
+}
 function eliminarTodasRespuestas(){
 	var padre = document.getElementById('respuestas');
+
+	animacionDel(padre);
+
+	
+}
+function eliminarTodosLosHijos(padre){
 	var hijos = padre.children;
 	for(var i = hijos.length - 1; i >= 0; i--){
 		eliminarHijo(padre, hijos[i]);
 	}
-
-	checkBtnAgregarRespuestas();
-	checkBtnCrearFormulario();
-
-	addRespuesta();
-	addRespuesta();
-
+}
+function animacionDel(padre) {
+	var height = padre.offsetHeight;
+	var totalHeight = 0;
+	clearInterval(interval_id);
+	interval_id = setInterval(frame, 1);
+	padre.style.overflow = "hidden";
+	function frame() {
+		if (height <= totalHeight) {
+			clearInterval(interval_id);
+			padre.style.overflow = "";
+			eliminarTodosLosHijos(padre);
+			addRespuesta();
+			addRespuesta();
+			checkBtnAgregarRespuestas();
+			checkBtnCrearFormulario();
+		} else {
+			height--;
+			padre.style.height = height + 'px';
+		}
+	}
 }
 //Fin manejar respuestas
 //Manejar datas

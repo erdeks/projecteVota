@@ -12,7 +12,7 @@
 		if($row = $query->fetch()){
 			if($row['validado'] == 1){
 				$_SESSION['usuario'] = [
-					"id" => $row['idUsuario'], 
+					"id" => $row['idUsuario'],
 					"email" => $email, 
 					"contraseña" => $password];
 				header("Location: ../index.php");
