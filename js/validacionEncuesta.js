@@ -11,13 +11,13 @@ function inicializar(){
 	for(var i = 0; i < fechasInicio.length; i++){
 		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaInicio);
 		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaInicio);
-		//fechasInicio[i].getElementsByTagName("input")[0].value = "";
+		fechasInicio[i].getElementsByTagName("input")[0].value = "";
 	}
 	var fechasFin = document.getElementById("dataFin").children;
 	for(var i = 0; i < fechasFin.length; i++){
 		fechasFin[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaFin);
 		fechasFin[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaFin);
-		//fechasFin[i].getElementsByTagName("input")[0].value = "";
+		fechasFin[i].getElementsByTagName("input")[0].value = "";
 	}
 
 	addRespuesta();
