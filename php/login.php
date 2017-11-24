@@ -12,13 +12,13 @@
 		if($row = $query->fetch()){
 			if($row['validado'] == 1){
 				$_SESSION['usuario'] = [
-					"id" => $row['idUsuario'], 
+					"id" => $row['idUsuario'],
 					"email" => $email, 
 					"contraseña" => $password];
 				header("Location: ../index.php");
 			}else{
 				destruirUsuario();
-				header("Location: ../pagina/validacion.php");
+				header("Location: ../php/enviarValidacion.php?id=".$row['idUsuario']);
 			}
 		}else{
 			destruirUsuario();
@@ -37,5 +37,4 @@
 		if(isset($_SESSION['usuario']))
 			unset($_SESSION['usuario']);
 	}
-//Java script slash menu
 ?>

@@ -4,6 +4,7 @@ tabla usuarios //Contiene los usuarios
 	- email 		(String de 100)
 	- password 		(String de 40)
 	- validado 		(bool, default: false)
+	- validando		(bool, default: false)
 
 tabla permisos //Contiene los permisos que puede tener un usuario
 	- idPermiso		(pk, autoIncremental)
