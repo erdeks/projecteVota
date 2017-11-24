@@ -10,7 +10,7 @@
 	</style>
 </head>
 <body onload="inicializar()">
-	<form action="../php/encuestas.php">
+	<form method="post" action="../php/encuestas.php">
 		<div id="dataInicio">
 			<div class="tooltip"><input type="number" name="diaInicio" placeholder="DD"></div>
 			<div class="tooltip"><input type="number" name="mesInicio" placeholder="MM"></div>
