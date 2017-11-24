@@ -1,7 +1,6 @@
 <?php
 	function abrirConexion(){
 		define("HOST", "127.0.0.1");
-		//define("HOST", "mcolominas.cf");
 		define("USER", "projecteVota");
 		define("PASSWORD", "projecteVota2017");
 		define("BBDD", "projecteVota");

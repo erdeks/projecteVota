@@ -9,13 +9,15 @@ function inicializar(){
 	//Input fechas
 	var fechasInicio = document.getElementById("dataInicio").children;
 	for(var i = 0; i < fechasInicio.length; i++){
-		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaInicioTextoCambia);
-		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaInicioFocoPerdido);
+		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaInicio);
+		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaInicio);
+		//fechasInicio[i].getElementsByTagName("input")[0].value = "";
 	}
 	var fechasFin = document.getElementById("dataFin").children;
 	for(var i = 0; i < fechasFin.length; i++){
-		fechasFin[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaFinTextoCambia);
-		fechasFin[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaFinFocoPerdido);
+		fechasFin[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaFin);
+		fechasFin[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaFin);
+		//fechasFin[i].getElementsByTagName("input")[0].value = "";
 	}
 
 	addRespuesta();
@@ -26,7 +28,7 @@ function checkBtnCrearFormulario(){
 	var btnCrearFormulario = document.getElementById('crearForumario');
 	var inputPregunta = document.getElementById('pregunta');
 
-	if(isVacio(inputPregunta) || getCantRespuestas() < 2 || isRespuestaVacia() || isDataInicioVacia() || isDataFinVacia()){
+	if(isVacio(inputPregunta) || getCantRespuestas() < 2 || isRespuestaVacia() || !isValidoFechaInicio() || !isValidoFechaFin()){
 		desactivarInput(btnCrearFormulario);
 	}else{
 		activarInput(btnCrearFormulario);
@@ -71,60 +73,191 @@ function checkInputsRespuestasFocoPerdido(){
 		crearError(this, "La respuesta no puede estar vacia.");
 	}
 }
-function checkFechaInicioTextoCambia(){
-	switch(this.getAttribute("id")){
-		case "diaInicio":
-		break;
-		case "mesInicio":
-		break;
-		case "anyInicio":
-		break;
+function checkFechaInicio(){
+	if(error != null){
+		desactivarMensajeError(error);
 	}
+
+	desactivarErroresFechaFin();
+	activarErroresFechaFin();
+
+	desactivarErroresFechaInicio(this);
+	activarErroresFechaInicio(this);
+
 	checkBtnCrearFormulario();
 }
-function checkFechaInicioFocoPerdido(){
-	//alert(daysInMonth(12,2007))
-	switch(this.getAttribute("id")){
-		case "diaInicio":
-			if(isVacio(this)){
-				crearError(this, "EL dia no puede estar vacio");
-			}
-		break;
-		case "mesInicio":
-			if(isVacio(this)){
-				crearError(this, "EL mes no puede estar vacio");
-			}
-		break;
-		case "anyInicio":
-			if(isVacio(this)){
-				crearError(this, "EL año no puede estar vacio");
-			}
-		break;
+function checkFechaFin(){
+	if(error != null){
+		desactivarMensajeError(error);
 	}
-	checkBtnCrearFormulario();
+
+	desactivarErroresFechaInicio();
+	activarErroresFechaInicio();
 	
-}
-function checkFechaFinTextoCambia(){
-	switch(this.getAttribute("id")){
-		case "diaFin":
-		break;
-		case "mesFin":
-		break;
-		case "anyFin":
-		break;
-	}
+	desactivarErroresFechaFin(this);
+	activarErroresFechaFin(this);
+	
 	checkBtnCrearFormulario();
 }
-function checkFechaFinFocoPerdido(){
-	switch(this.getAttribute("id")){
-		case "diaFin":
-		break;
-		case "mesFin":
-		break;
-		case "anyFin":
-		break;
+function desactivarErroresFechaInicio(inputActual = null){
+	var padre = document.getElementById("dataInicio");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+
+	var fechaActual = getFechaReseteada();
+	var fechaInicio = null;
+
+	if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia);
+	
+	if(isFechaCompleta && fechaInicio >= fechaActual){
+		if(dia > 0 && dia <= daysInMonth(any, mes))
+			eliminarError(inputDia);
+		if(mes > 0 && mes < 13)
+			eliminarError(inputMes);
+		eliminarError(inputAny);
+	}else if(inputActual != null && !isVacio(inputActual)){
+		eliminarError(inputActual);
 	}
-	checkBtnCrearFormulario();
+}
+function activarErroresFechaInicio(inputActual = null){
+	var padre = document.getElementById("dataInicio");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+	var error = false;
+	if(inputActual != null){
+		switch(getPosition(inputActual.parentNode)){
+			case 0: //Dia
+				if(dia == ""){
+					crearError(inputDia, "EL dia no puede estar vacio.");
+				}else if(dia <= 0){
+					crearError(inputDia, "El dia no puede ser menor de 1.");
+					error = true;
+				}
+				break;
+			case 1: //Mes
+				if(mes == ""){
+					crearError(inputMes, "EL mes no puede estar vacio.");
+				}else if(mes <= 0 || mes > 12){
+					crearError(inputMes, "No existe el mes.");
+					error = true;
+				}
+				break;
+			case 2: //Año
+				if(any == ""){
+					crearError(inputAny, "EL año no puede estar vacio.");
+				}
+				break;
+		}
+	}
+	if(!error){
+		var isFechaCompleta = (dia != "" && mes != "" && any != "");
+		
+		var fechaActual = getFechaReseteada();
+		var fechaInicio = null;
+
+		if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia);
+
+		if(isFechaCompleta && dia > daysInMonth(mes, any)){
+			crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
+		}else if(isFechaCompleta && fechaInicio < fechaActual){
+			crearError(inputDia, "");
+			crearError(inputAny, "");
+			crearError(inputMes, "La fecha de inicio no puede ser menor a la fecha actual");
+		}
+	}
+}
+
+function desactivarErroresFechaFin(inputActual = null){
+	var padre = document.getElementById("dataFin");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+
+	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+
+	var fechaInicio = getFechaInicio();
+	var fechaFin = null;
+
+	if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia);
+
+	if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+	
+	if(isFechaCompleta && fechaInicio != false && fechaFin >= fechaInicio){
+		if(dia > 0 && dia <= daysInMonth(any, mes))
+			eliminarError(inputDia);
+		if(mes > 0 && mes < 13)
+			eliminarError(inputMes);		eliminarError(inputAny);
+	}else if(inputActual != null && !isVacio(inputActual)){
+		eliminarError(inputActual);
+	}
+}
+function activarErroresFechaFin(inputActual = null){
+	var padre = document.getElementById("dataFin");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+	var error = false;
+
+	if(inputActual != null){
+		switch(getPosition(inputActual.parentNode)){
+			case 0: //Dia
+				if(dia == ""){
+					alert("a")
+					crearError(inputDia, "EL dia no puede estar vacio.");
+				}else if(dia <= 0){
+					crearError(inputDia, "El dia no puede ser menor de 1.");
+					error = true;
+				}
+				break;
+			case 1: //Mes
+				if(mes == ""){
+					crearError(inputMes, "EL mes no puede estar vacio.");
+				}else if(mes <= 0 || mes > 12){
+					crearError(inputMes, "No existe el mes.");
+					error = true;
+				}
+				break;
+			case 2: //Año
+				if(any == ""){
+					crearError(inputAny, "EL año no puede estar vacio.");
+				}
+				break;
+		}
+	}
+	if(!error){
+		var isFechaCompleta = (dia != "" && mes != "" && any != "");
+
+		var fechaInicio = getFechaInicio();
+		var fechaFin = null;
+		if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia);
+
+		if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+
+		
+		
+		if(isFechaCompleta && dia > daysInMonth(mes, any)){
+			crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
+		}else if(isFechaCompleta && fechaInicio != false && fechaFin < fechaInicio){
+			crearError(inputDia, "");
+			crearError(inputAny, "");
+			crearError(inputMes, "La fecha de fin tiene que tener 1 dia de diferencia.");
+		}
+	}
 }
 //Fin chequear
 //Manejar respuestas
@@ -159,7 +292,7 @@ function addRespuesta(){
 
 	var elementoInput = document.createElement("input");
 	elementoInput.setAttribute("type", "text");
-	elementoInput.setAttribute("type", "res" + (getCantRespuestas() + 1));
+	elementoInput.setAttribute("name", "res" + (getCantRespuestas() + 1));
 	elementoInput.addEventListener("input", checkInputsRespuestasTextoCambia);
 	elementoInput.addEventListener("blur", checkInputsRespuestasFocoPerdido);
 	agregarHijo(elementoDivError, elementoInput);
@@ -189,6 +322,46 @@ function eliminarTodasRespuestas(){
 function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
 }
+function addDias(fecha, cant){
+	if(fecha.getDate() + cant > daysInMonth(fecha.getDate(), fecha.getMonth(), fecha.getFullYear())){
+		fecha.setDate(1);
+		if(fecha.getMonth() == 11){ //0-11
+			fecha.setFullYear(fecha.getFullYear() + 1);
+			fecha.setMonth(1);
+		}else{
+			fecha.setMonth(fecha.getMonth() + 1);
+		}
+	}else{
+		fecha.setDate(fecha.getDate() + cant);
+	}
+	return fecha;
+}
+function getFechaReseteada(dia = -1, mes = -1, any = -1){
+	var data;
+	if(any == -1){
+		data = new Date();
+	}else{
+		data = new Date(dia, mes - 1, any);
+	}
+	data.setMilliseconds(0);
+	data.setSeconds(0);
+	data.setMinutes(0);
+	data.setHours(0);
+	return data;
+}
+function getFechaInicio(){
+	var padre = document.getElementById("dataInicio");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+
+	if(!isFechaCompleta) return false;
+	else return getFechaReseteada(any, mes, dia);
+}
 function isDataInicioVacia(){
 	var datasInicio = document.getElementById("dataInicio").children;
 	for (var i = 0; i < datasInicio.length; i++) {
@@ -209,6 +382,43 @@ function isDataFinVacia(){
 	}
 	return false;
 }
+function isValidoFechaInicio(){
+	if(isDataInicioVacia()) return false;
+
+	var padre = document.getElementById("dataInicio");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+
+	var fechaActual = getFechaReseteada();
+	var fechaInicio = getFechaReseteada(any, mes, dia);
+	
+	return (isValidaFecha(dia, mes, any) && fechaInicio >= fechaActual);
+}
+function isValidoFechaFin(){
+	if(isDataFinVacia()) return false;
+
+	var padre = document.getElementById("dataFin");
+	var inputDia = padre.children[0].children[0];
+	var inputMes = padre.children[1].children[0];
+	var inputAny = padre.children[2].children[0];
+	var dia = inputDia.value;
+	var mes = inputMes.value;
+	var any = inputAny.value;
+
+	var fechaInicio = getFechaInicio();
+	var fechaFin = getFechaReseteada(any, mes, dia);
+
+	if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+
+	return (isValidaFecha(dia, mes, any) && fechaFin >= fechaInicio);
+}
+function isValidaFecha(dia, mes, any){
+	return (dia > 0 && dia <= daysInMonth(mes, any) && mes > 0 && mes < 13);
+}
 //Fin manejar datas
 //Errores
 function crearError(input, mensaje = "") {
@@ -217,7 +427,7 @@ function crearError(input, mensaje = "") {
 		mostrarMensajeError(input);
 
 		input.style.boxShadow = "0 0 5px red";
-		input.style.border = "1px solid red";
+		//input.style.border = "1px solid red";
 		input.style.outline = "none";
 		var padre = input.parentNode;
 
@@ -311,5 +521,13 @@ function isVacio(input){
 }
 //Fin funciones inputs
 //General
-
+function getPosition(elemento){
+	var hermanos = elemento.parentNode.children;
+	for(var i = 0; i < hermanos.length; i++){
+		if(hermanos[i] === elemento){
+			return i;
+		}
+	}
+	return false;
+}
 //Fin General
