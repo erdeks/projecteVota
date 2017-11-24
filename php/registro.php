@@ -85,9 +85,9 @@
 
 	function validarCuenta($id, $nuevoRegistro = false){
 		if($nuevoRegistro)
-			header("Location: ../pagina/validacion.php?id=$id&registro=true");
+			header("Location: ../php/enviarValidacion.php?id=$id&registro=true");
 		else
-			header("Location: ../pagina/validacion.php?id=$id");
+			header("Location: ../php/enviarValidacion.php?id=$id");
 	}
 
 	function is_valid_email($str){
