@@ -2,50 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
 	<title></title>
 	<script type="text/javascript" src="../js/validacionEncuesta.js"></script>
 	<style>
-		.tooltip {
-		    position: relative;
-		    display: inline;
-		}
-
-		.tooltip .tooltiptext {
-		    visibility: hidden;
-		    width: 120px;
-		    background-color: red;
-		    color: #fff;
-		    text-align: center;
-		    border-radius: 6px;
-		    padding: 5px 0;
-		    position: absolute;
-		    z-index: 1;
-		    top: 165%;
-		    left: 50%;
-		    margin-left: -60px;
-		    opacity: 0;
-		    transition: opacity 1s;
-		}
-
-		.tooltip .tooltiptext::after {
-		    content: "";
-		    position: absolute;
-		    bottom: 100%;
-		    left: 50%;
-		    margin-left: -5px;
-		    border-width: 5px;
-		    border-style: solid;
-		    border-color: transparent transparent red transparent;
-		}
-
-		.tooltip .tooltiptext {
-		    visibility: visible;
-		    opacity: 1;
-		}
+		
 	</style>
 </head>
 <body onload="inicializar()">
-	<form>
+	<form action="../php/login.php">
 		<div id="dataInicio">
 			<div class="tooltip"><input type="number" name="diaInicio" placeholder="DD"></div>
 			<div class="tooltip"><input type="number" name="mesInicio" placeholder="MM"></div>
