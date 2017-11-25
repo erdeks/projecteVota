@@ -3,7 +3,6 @@
 
 	if(existeYnoEstaVacio($_GET['id'])){
 		$id = $_GET['id'];
-		require "conexionBBDD.php";
 		$conexion = abrirConexion();
 		if(isIdCorrecta($conexion, $id)){
 			activarCuenta($conexion, $id);

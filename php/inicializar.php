@@ -10,5 +10,6 @@ if(!isset($_SESSION['mensaje'])){
 	$_SESSION['mensaje'] = [];
 }
 
+require "conexionBBDD.php";
 require "funcionesGenerales.php";
 ?>

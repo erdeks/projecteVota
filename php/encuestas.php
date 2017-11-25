@@ -5,7 +5,6 @@
   existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['diaFin']) &&
   existeYnoEstaVacio($_POST['mesFin']) && existeYnoEstaVacio($_POST['anyFin']) &&
   existeYnoEstaVacio($_POST['res1']) && existeYnoEstaVacio($_POST['res2'])){
-    require "conexionBBDD.php";
     $conexion = abrirConexion();
 
     $id = 1;

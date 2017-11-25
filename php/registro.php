@@ -1,61 +1,41 @@
 <?php
 	require "inicializar.php";
 
-	define("USAURIO_NO_REGISTRADO", 1);
-	define("USAURIO_REGISTRADO_VALIDADO", 2);
-	define("USAURIO_REGISTRADO_NO_VALIDADO", 3);
-	define("USAURIO_REGISTRADO_INVITADO", 4);
-
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password']) && existeYnoEstaVacio($_POST['passwordConfirm'])){
 		
 		$email = $_POST['email'];
-		if(is_valid_email($email)){
+		if(correoValido($email)){
 			$password = sha1(md5($_POST['password']));
 			$passwordConfirm = sha1(md5($_POST['passwordConfirm']));
 
 			if($password === $passwordConfirm){
 				$estado = "";
-				require "conexionBBDD.php";
 				$conexion = abrirConexion();
-
-				$query = $conexion->prepare("SELECT idUsuario, idPermiso, validado FROM usuarios WHERE email = '$email';");
-				$query->execute();
-				$rows=$query->rowCount();
 				
-				
-				if($rows == 0){ //Si no hay ningun usuario
-					$estado = USAURIO_NO_REGISTRADO;
-				}else if($rows == 1){ //Si hay un usuario registrado
+				$existeUsuario = existeUsuario($conexion, $email);
+				if($existeUsuario === false){ //Si no hay ningun usuario
+					registrarUsuario($conexion, $email, $password);
+				}else if($existeUsuario === true){ //Si hay un usuario registrado
+					$query = $conexion->prepare("SELECT idUsuario, idPermiso, validado FROM usuarios WHERE email = '$email';");
+					$query->execute();
 					if($row = $query->fetch()){
 						if($row['idPermiso'] == 1){ //Si era un invitado y se registra
-							$estado = USAURIO_REGISTRADO_INVITADO;
+							actualizarUsuarioInvitado($conexion, $row["idUsuario"], $password);
 						}else{ //Si no es un invitado
 							if($row['validado'] == 0){ //Si la cuenta no esta validada
-								$estado = USAURIO_REGISTRADO_NO_VALIDADO;
+								validarCuenta($row["idUsuario"]);
 							}else{ //Si la cuenta esta validada
-								$estado = USAURIO_REGISTRADO_VALIDADO;
+								$_SESSION['mensaje'][] = [0, "El usuario ya existe."];
+								irARegistro();
 							}
 						}
 					}else{
 						$_SESSION['mensaje'][] = [0, "Error desconocido, contacte con el administrador."];
 					}
+				}else{
+					$_SESSION['mensaje'][] = [0, "Hay multiples usuarios con el mismo correo, contacte con el administrador."];
 				}
 
-				switch ($estado) {
-					case USAURIO_NO_REGISTRADO:
-						registrarUsuario($conexion, $email, $password);
-						break;
-					case USAURIO_REGISTRADO_VALIDADO:
-						$_SESSION['mensaje'][] = [0, "El usuario ya existe."];
-						irARegistro();
-						break;
-					case USAURIO_REGISTRADO_NO_VALIDADO:
-						validarCuenta($row["idUsuario"]);
-						break;
-					case USAURIO_REGISTRADO_INVITADO:
-						actualziarUsuarioInvitado($conexion, $row["idUsuario"], $password);
-						break;
-				}
 				cerrarConexion($conexion);
 			}else{
 				$_SESSION['mensaje'][] = [0, "Las contraseñas no coinciden."];
@@ -77,7 +57,7 @@
 		validarCuenta($last_id);
 	}
 
-	function actualziarUsuarioInvitado(&$conexion, $idUsuario, $password){
+	function actualizarUsuarioInvitado(&$conexion, $idUsuario, $password){
 		//Cambiar el idPermisos a 2 (usuario) y validado a 0 (false)
 		$query = $conexion->prepare("UPDATE usuarios SET password = '$password', idPermiso = 2, validado = 0 WHERE idUsuario = $idUsuario");
 		$query->execute();
@@ -85,12 +65,9 @@
 	}
 
 	function validarCuenta($id){
-			header("Location: ../php/enviarValidacion.php?id=$id");
+		header("Location: ../php/enviarValidacion.php?id=$id");
 	}
 
-	function is_valid_email($str){
-		return (false !== filter_var($str, FILTER_VALIDATE_EMAIL));
-	}
 	function irARegistro(){
 		header("Location: ../pagina/registro.php");
 	}
