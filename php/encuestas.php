@@ -1,4 +1,5 @@
 <?php
+  require "inicializar.php";
   if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['pregunta']) &&
   existeYnoEstaVacio($_POST['diaInicio']) && existeYnoEstaVacio($_POST['mesInicio']) &&
   existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['diaFin']) &&
@@ -33,7 +34,4 @@
     cerrarConexion($conexion);
     header('Location: ../pagina/encuestas.php?success=true');
   }
-  function existeYnoEstaVacio($variable){
-		return (isset($variable) && $variable != "");
-	}
 ?>

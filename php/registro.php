@@ -1,5 +1,5 @@
 <?php
-	session_start();
+	require "inicializar.php";
 
 	define("USAURIO_NO_REGISTRADO", 1);
 	define("USAURIO_REGISTRADO_VALIDADO", 2);
@@ -36,6 +36,8 @@
 								$estado = USAURIO_REGISTRADO_VALIDADO;
 							}
 						}
+					}else{
+						$_SESSION['mensaje'][] = [0, "Error desconocido, contacte con el administrador."];
 					}
 				}
 
@@ -44,7 +46,8 @@
 						registrarUsuario($conexion, $email, $password);
 						break;
 					case USAURIO_REGISTRADO_VALIDADO:
-						header("Location: ../pagina/registro.php?error=1");
+						$_SESSION['mensaje'][] = [0, "El usuario ya existe."];
+						irARegistro();
 						break;
 					case USAURIO_REGISTRADO_NO_VALIDADO:
 						validarCuenta($row["idUsuario"]);
@@ -55,43 +58,40 @@
 				}
 				cerrarConexion($conexion);
 			}else{
-				//password no igual
-				header("Location: ../pagina/registro.php?error=2");
+				$_SESSION['mensaje'][] = [0, "Las contraseñas no coinciden."];
+				irARegistro();
 			}
 		}else{
-			header("Location: ../pagina/registro.php?error=3");
+			$_SESSION['mensaje'][] = [0, "Formato de email es incorrecto."];
+			irARegistro();
 		}
 	}else{
-		header("Location: ../pagina/registro.php?error=4");
-	}
-
-	function existeYnoEstaVacio($variable){
-		return (isset($variable) && $variable != "");
+		$_SESSION['mensaje'][] = [0, "Los parametros no pueden estar vacio."];
+		irARegistro();
 	}
 
 	function registrarUsuario(&$conexion, $email, $password){
 		$query = $conexion->prepare("INSERT INTO usuarios (idPermiso, email, password) VALUES (2, '$email', '$password')");
 		$query->execute();
 		$last_id = $conexion->lastInsertId();
-		validarCuenta($last_id, true);
+		validarCuenta($last_id);
 	}
 
 	function actualziarUsuarioInvitado(&$conexion, $idUsuario, $password){
-		//Cambiar el idPermisos a 2 (usuario) y valiando a 1 (true)
+		//Cambiar el idPermisos a 2 (usuario) y validado a 0 (false)
 		$query = $conexion->prepare("UPDATE usuarios SET password = '$password', idPermiso = 2, validado = 0 WHERE idUsuario = $idUsuario");
 		$query->execute();
-		validarCuenta($idUsuario, true);
+		validarCuenta($idUsuario);
 	}
 
-	function validarCuenta($id, $nuevoRegistro = false){
-		if($nuevoRegistro)
-			header("Location: ../php/enviarValidacion.php?id=$id&registro=true");
-		else
+	function validarCuenta($id){
 			header("Location: ../php/enviarValidacion.php?id=$id");
 	}
 
 	function is_valid_email($str){
 		return (false !== filter_var($str, FILTER_VALIDATE_EMAIL));
 	}
-
+	function irARegistro(){
+		header("Location: ../pagina/registro.php");
+	}
 ?>

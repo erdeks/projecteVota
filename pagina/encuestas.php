@@ -1,3 +1,4 @@
+<?php require "../php/inicializar.php";?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
 
 	</style>
 </head>
-<body onload="inicializar()">
+<body onload="inicializar()"><?php getMensajes() ?>
 	<form method="post" action="../php/encuestas.php">
 		<div id="dataInicio">
 			<div class="tooltip"><input type="number" name="diaInicio" placeholder="DD"></div>

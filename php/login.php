@@ -1,6 +1,7 @@
 <?php
+	require "inicializar.php";
+
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password'])){
-		session_start();
 		require "conexionBBDD.php";
 		$conexion = abrirConexion();
 		$email = $_POST['email'];
@@ -15,26 +16,33 @@
 					"id" => $row['idUsuario'],
 					"email" => $email, 
 					"contraseña" => $password];
-				header("Location: ../index.php");
+				irAIndex();
 			}else{
 				destruirUsuario();
-				header("Location: ../php/enviarValidacion.php?id=".$row['idUsuario']);
+				enviarValidacion($row['idUsuario']);
 			}
 		}else{
 			destruirUsuario();
-			header("Location: ../pagina/login.php?error=1");
+			$_SESSION['mensaje'][] = [0, "El usuario o contraseña estan mal."];
+			irALogin();
 		}
 	}else{
 		destruirUsuario();
-		header("Location: ../pagina/login.php?error=2");
-	}
-
-	function existeYnoEstaVacio($variable){
-		return (isset($variable) && $variable != "");
+		$_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
+		irALogin();
 	}
 
 	function destruirUsuario(){
 		if(isset($_SESSION['usuario']))
 			unset($_SESSION['usuario']);
+	}
+
+	function irAIndex(){
+		header("Location: ../index.php");
+	}function irALogin(){
+		header("Location: ../pagina/login.php");
+	}
+	function enviarValidacion($id){
+		header("Location: ../php/enviarValidacion.php?id=".$id);
 	}
 ?>
