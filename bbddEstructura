@@ -1,22 +1,22 @@
 tabla usuarios //Contiene los usuarios
 	- idUsuario		(pk, autoIncremental)
 	- idPermiso		(fk)
-	- email 		(String de 100)
-	- password 		(String de 40)
+	- email 		(String de 100, unique)
+	- password 		(String de 40, null)
 	- validado 		(bool, default: false)
 	- validando		(bool, default: false)
 
 tabla permisos //Contiene los permisos que puede tener un usuario
 	- idPermiso		(pk, autoIncremental)
 	- nombre		(String de 50)
-	- descripcion	(String de 200)
+	- descripcion	(String de 200, null)
 
 tabla encuestas //Contiene las encuentras
 	- idEncuesta		(pk, autoIncremental)
 	- idUsuario			(fk)
 	- nombre			(String de 100)
 	- multirespuesta	(bool, default: false)
-	- descripcion		(opcional, String de 200)
+	- descripcion		(String de 200, null)
 	- inicio			(date)
 	- fin				(date)
 

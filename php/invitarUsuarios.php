@@ -24,10 +24,10 @@
 						}else{
 							$_SESSION['mensaje'][] = [0, "Hay multiples usuarios con el mismo correo, contacte con el administrador."];
 						}
-
+						echo $idUsuarioInvitado;
 						if(!is_null($idUsuarioInvitado)){
 							if(yaHaSidoInvitado($conexion, $idEncuesta, $idUsuarioInvitado)){
-								$_SESSION['mensaje'][] = [0, "El usuario $emailInvitado ya estaba invitado y no se ha vuelto a invitar."];
+								$_SESSION['mensaje'][] = [0, "El usuario $emailInvitado ya esta invitado y no se ha vuelto a invitar."];
 							}else{
 								$idAccesoEncuesta = registrarInvitacion($conexion, $idEncuesta, $idUsuarioInvitado);
 								$link = "https://".$_SERVER['SERVER_NAME']."/projecteVota/php/???.php?idAcceso=$idAccesoEncuesta&idUsuarioInvitado=$idUsuarioInvitado";
@@ -74,15 +74,15 @@
 	}
 
 	function registrarInvitado(&$conexion, $email){
-		$query = $conexion->prepare("INSERT INTO accesoEncuestas (idPermiso, email) VALUES (1, '$email');");
-		$query->execute();
-		return $conexion->lastInsertId();
+		$query = $conexion->prepare("INSERT INTO usuarios (idPermiso, email) VALUES (1, '$email');");
+		if($query->execute()) return $conexion->lastInsertId();
+		else return null;
 	}
 
 	function registrarInvitacion(&$conexion, $idEncuesta, $idUsuarioInvitado){
 		$query = $conexion->prepare("INSERT INTO accesoEncuestas (idUsuario, idEncuesta, activo) VALUES ($idUsuarioInvitado, $idEncuesta, 1);");
-		$query->execute();
-		return $conexion->lastInsertId();
+		if($query->execute()) return $conexion->lastInsertId();
+		else return null;
 	}
 
 	function enviarEmailInvitacion($para, $emailUsuario, $link){

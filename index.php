@@ -1,4 +1,5 @@
-<?php session_start();?>
+<?php require "php/inicializar.php";?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +12,7 @@
 
 	
 	<?php
+		getMensajes();
 		if(isset($_GET['remove'])){
 			unset($_SESSION['usuario']);
 			header("Location: index.php");
