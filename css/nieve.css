@@ -1,0 +1,18 @@
+.copo {
+    color: blue;
+    position: fixed;
+    display: inline-block;
+    z-index: 999;
+}
+.copo1 {
+    font-size: 1em;
+}
+.copo2 {
+    font-size: 1.2em;
+}
+.copo3 {
+    font-size: 1.25em;
+}
+.copo4 {
+    font-size: 1.5em;
+}
