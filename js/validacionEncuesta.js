@@ -1,5 +1,6 @@
 var error = null;
 var interval_id = -1;
+
 function inicializar(){
 	error = null;
 	document.getElementById('pregunta').addEventListener("input", checkInputPreguntaTextoCambia);
@@ -7,22 +8,35 @@ function inicializar(){
 	document.getElementById('addRespuesta').addEventListener("click", addRespuesta);
 	document.getElementById('removeRespuesta').addEventListener("click", eliminarTodasRespuestas);
 
-	//Input fechas
-	var fechasInicio = document.getElementById("dataInicio").children;
-	for(var i = 0; i < fechasInicio.length; i++){
-		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaInicio);
-		fechasInicio[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaInicio);
-		fechasInicio[i].getElementsByTagName("input")[0].value = "";
-	}
-	var fechasFin = document.getElementById("dataFin").children;
-	for(var i = 0; i < fechasFin.length; i++){
-		fechasFin[i].getElementsByTagName("input")[0].addEventListener("input", checkFechaFin);
-		fechasFin[i].getElementsByTagName("input")[0].addEventListener("blur", checkFechaFin);
-		fechasFin[i].getElementsByTagName("input")[0].value = "";
-	}
+	var fechasInicio = document.getElementById("dataInicio");
 
-	addRespuesta();
-	addRespuesta();
+	var inputDiaInicio = getInputDia(fechasInicio);
+	var inputMesInicio = getInputMes(fechasInicio);
+	var inputAnyInicio = getInputAny(fechasInicio);
+
+	inputDiaInicio.addEventListener("input", checkFechaInicio);
+	inputDiaInicio.addEventListener("blur", checkFechaInicio);
+	inputMesInicio.addEventListener("input", checkFechaInicio);
+	inputMesInicio.addEventListener("blur", checkFechaInicio);
+	inputAnyInicio.addEventListener("input", checkFechaInicio);
+	inputAnyInicio.addEventListener("blur", checkFechaInicio);
+
+
+	var fechasFin = document.getElementById("dataFin");
+
+	var inputDiaFin = getInputDia(fechasFin);
+	var inputMesFin = getInputMes(fechasFin);
+	var inputAnyFin = getInputAny(fechasFin);
+
+	inputDiaFin.addEventListener("input", checkFechaFin);
+	inputDiaFin.addEventListener("blur", checkFechaFin);
+	inputMesFin.addEventListener("input", checkFechaFin);
+	inputMesFin.addEventListener("blur", checkFechaFin);
+	inputAnyFin.addEventListener("input", checkFechaFin);
+	inputAnyFin.addEventListener("blur", checkFechaFin);
+	
+	checkBtnAgregarRespuestas();
+	checkBtnCrearFormulario();
 }
 //Chequear
 function checkBtnCrearFormulario(){
@@ -52,7 +66,6 @@ function checkInputPreguntaTextoCambia(){
 		eliminarError(this);
 	}
 	checkBtnCrearFormulario();
-	checkBtnAgregarRespuestas();
 }
 function checkInputPreguntaFocoPerdido(){
 	if(isVacio(this)){
@@ -103,9 +116,9 @@ function checkFechaFin(){
 }
 function desactivarErroresFechaInicio(inputActual = null){
 	var padre = document.getElementById("dataInicio");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
@@ -128,16 +141,16 @@ function desactivarErroresFechaInicio(inputActual = null){
 }
 function activarErroresFechaInicio(inputActual = null){
 	var padre = document.getElementById("dataInicio");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
 	var error = false;
 	if(inputActual != null){
 		switch(getPosition(inputActual.parentNode)){
-			case 0: //Dia
+			case getPosition(getInputDia(padre).parentNode): //Dia
 				if(dia == ""){
 					crearError(inputDia, "EL dia no puede estar vacio.");
 				}else if(dia <= 0){
@@ -145,7 +158,7 @@ function activarErroresFechaInicio(inputActual = null){
 					error = true;
 				}
 				break;
-			case 1: //Mes
+			case getPosition(getInputMes(padre).parentNode): //Mes
 				if(mes == ""){
 					crearError(inputMes, "EL mes no puede estar vacio.");
 				}else if(mes <= 0 || mes > 12){
@@ -153,7 +166,7 @@ function activarErroresFechaInicio(inputActual = null){
 					error = true;
 				}
 				break;
-			case 2: //Año
+			case getPosition(getInputAny(padre).parentNode): //Año
 				if(any == ""){
 					crearError(inputAny, "EL año no puede estar vacio.");
 				}
@@ -180,9 +193,9 @@ function activarErroresFechaInicio(inputActual = null){
 
 function desactivarErroresFechaFin(inputActual = null){
 	var padre = document.getElementById("dataFin");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
@@ -207,9 +220,9 @@ function desactivarErroresFechaFin(inputActual = null){
 }
 function activarErroresFechaFin(inputActual = null){
 	var padre = document.getElementById("dataFin");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
@@ -217,7 +230,7 @@ function activarErroresFechaFin(inputActual = null){
 
 	if(inputActual != null){
 		switch(getPosition(inputActual.parentNode)){
-			case 0: //Dia
+			case getPosition(getInputDia(padre).parentNode): //Dia
 				if(dia == ""){
 					crearError(inputDia, "EL dia no puede estar vacio.");
 				}else if(dia <= 0){
@@ -225,7 +238,7 @@ function activarErroresFechaFin(inputActual = null){
 					error = true;
 				}
 				break;
-			case 1: //Mes
+			case getPosition(getInputMes(padre).parentNode): //Mes
 				if(mes == ""){
 					crearError(inputMes, "EL mes no puede estar vacio.");
 				}else if(mes <= 0 || mes > 12){
@@ -233,7 +246,7 @@ function activarErroresFechaFin(inputActual = null){
 					error = true;
 				}
 				break;
-			case 2: //Año
+			case getPosition(getInputAny(padre).parentNode): //Año
 				if(any == ""){
 					crearError(inputAny, "EL año no puede estar vacio.");
 				}
@@ -353,8 +366,6 @@ function animacionDel(padre) {
 			clearInterval(interval_id);
 			padre.style.overflow = "";
 			eliminarTodosLosHijos(padre);
-			addRespuesta();
-			addRespuesta();
 			checkBtnAgregarRespuestas();
 			checkBtnCrearFormulario();
 		} else {
@@ -365,6 +376,15 @@ function animacionDel(padre) {
 }
 //Fin manejar respuestas
 //Manejar datas
+function getInputDia(padre){
+	return padre.children[2].children[0];
+}
+function getInputMes(padre){
+	return padre.children[3].children[0];
+}
+function getInputAny(padre){
+	return padre.children[4].children[0];
+}
 function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
 }
@@ -397,9 +417,9 @@ function getFechaReseteada(dia = -1, mes = -1, any = -1){
 }
 function getFechaInicio(){
 	var padre = document.getElementById("dataInicio");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
@@ -409,32 +429,20 @@ function getFechaInicio(){
 	else return getFechaReseteada(any, mes, dia);
 }
 function isDataInicioVacia(){
-	var datasInicio = document.getElementById("dataInicio").children;
-	for (var i = 0; i < datasInicio.length; i++) {
-		var input = datasInicio[i].getElementsByTagName('input')[0];
-		if(isVacio(input)){
-			return true;
-		}
-	}
-	return false;
+	var datasInicio = document.getElementById("dataInicio");
+	return isVacio(getInputDia(datasInicio)) || isVacio(getInputMes(datasInicio)) || isVacio(getInputAny(datasInicio));
 }
 function isDataFinVacia(){
-	var datasFin = document.getElementById("dataFin").children;
-	for (var i = 0; i < datasFin.length; i++) {
-		var input = datasFin[i].getElementsByTagName('input')[0];
-		if(isVacio(input)){
-			return true;
-		}
-	}
-	return false;
+	var datasFin = document.getElementById("dataFin");
+	return isVacio(getInputDia(datasFin)) || isVacio(getInputMes(datasFin)) || isVacio(getInputAny(datasFin));
 }
 function isValidoFechaInicio(){
 	if(isDataInicioVacia()) return false;
 
 	var padre = document.getElementById("dataInicio");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
@@ -448,9 +456,9 @@ function isValidoFechaFin(){
 	if(isDataFinVacia()) return false;
 
 	var padre = document.getElementById("dataFin");
-	var inputDia = padre.children[0].children[0];
-	var inputMes = padre.children[1].children[0];
-	var inputAny = padre.children[2].children[0];
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;

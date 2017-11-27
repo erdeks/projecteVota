@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
+  <script type="text/javascript" src="../js/animacionPreguntas.js"></script>
 </head>
 <body>
   <?php
