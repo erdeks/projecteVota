@@ -5,6 +5,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>MySQL PDO</title>
+    <link rel="stylesheet" type="text/css" href="css/nieve.css" />
+	<script type="text/javascript" src="js/nieve.js"></script>
 </head>
 <body>
 	<a href="pagina/login.php">login</a>

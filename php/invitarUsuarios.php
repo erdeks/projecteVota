@@ -1,6 +1,8 @@
 <?php
 	//URGENTE!!! MODIFICAR EL $link A UNO CORRECTO
 	//URGENTE!!! MODIFICAR EL LINK DE LA FUNCION irAInvitarUsaurios() A UNO CORRECTO
+	//NOTA: en caso de que los usuarios invitados se tengan que registrar eliminar el activo de la tabla accesoEncuestas y añadir una variable boleana para saber si esta registrado o no par amandarlo al apartado de registro o login y agregar un redirect para que cuando se logee lo redirija a la pagina en cuestion
+
 	require "inicializar.php";
 	if(existeYnoEstaVacio($_GET['idEncuesta']) && existeYnoEstaVacio($_SESSION['usuario']) && existeYnoEstaVacio($_GET['invitados'])){
 		$idEncuesta = $_GET['idEncuesta'];
@@ -24,17 +26,21 @@
 						}else{
 							$_SESSION['mensaje'][] = [0, "Hay multiples usuarios con el mismo correo, contacte con el administrador."];
 						}
-						echo $idUsuarioInvitado;
+
 						if(!is_null($idUsuarioInvitado)){
 							if(yaHaSidoInvitado($conexion, $idEncuesta, $idUsuarioInvitado)){
 								$_SESSION['mensaje'][] = [0, "El usuario $emailInvitado ya esta invitado y no se ha vuelto a invitar."];
 							}else{
 								$idAccesoEncuesta = registrarInvitacion($conexion, $idEncuesta, $idUsuarioInvitado);
-								$link = "https://".$_SERVER['SERVER_NAME']."/projecteVota/php/???.php?idAcceso=$idAccesoEncuesta&idUsuarioInvitado=$idUsuarioInvitado";
+								if(!is_null($idAccesoEncuesta)){
+									$link = "https://".$_SERVER['SERVER_NAME']."/projecteVota/php/???.php?idAcceso=$idAccesoEncuesta&idUsuarioInvitado=$idUsuarioInvitado";
 								if(enviarEmailInvitacion($emailInvitado, $emailUsuario, $link)){
 									$_SESSION['mensaje'][] = [1, "El usuario $emailInvitado a sido invitado."];
 								}else{
 									$_SESSION['mensaje'][] = [0, "No se ha podido enviar el email de invitacion al usuario $emailInvitado."];
+								}
+								}else{
+									$_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta para el usuario $emailInvitado."];
 								}
 							}
 						}else{
