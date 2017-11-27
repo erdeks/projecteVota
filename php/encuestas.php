@@ -5,7 +5,7 @@
   existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['diaFin']) &&
   existeYnoEstaVacio($_POST['mesFin']) && existeYnoEstaVacio($_POST['anyFin']) &&
   existeYnoEstaVacio($_POST['res1']) && existeYnoEstaVacio($_POST['res2'])){
-    $conexion = abrirConexion();
+  $conexion = abrirConexion();
 
     $id = 1;
     $pregunta = $_POST['pregunta'];
