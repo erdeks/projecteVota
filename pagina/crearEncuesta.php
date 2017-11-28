@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="../js/validacionEncuesta.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/error.css" />
 </head>
-<body onload="inicializar()">
+<body>
 	<?php require "../partes/cabecera.php";?>
 	<?php require "../partes/menu.php"; ?>
 	<div id="divCentral">

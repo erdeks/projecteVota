@@ -1,3 +1,9 @@
+window.addEventListener('load', onLoad, true);
+
+function onLoad(){
+    inicializarNieve(100);
+}
+
 function inicializarNieve(velocidad){
     var i, x, y;
     var anchuraMax=window.screen.availWidth;
@@ -57,7 +63,3 @@ function nevar(copos, alturaMax){
         }
     }
 }
-
-window.onload = function() {
-    inicializarNieve(100);
-};

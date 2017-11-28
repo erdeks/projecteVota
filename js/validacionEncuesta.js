@@ -1,9 +1,12 @@
 var error = null;
 var interval_id_validacionEncuesta = -1;
 
-function inicializar(){
-	document.getElementById("generarForm").addEventListener("click", generarForumario);
+window.addEventListener('load', onLoad, true);
+
+function onLoad(){
+    document.getElementById("generarForm").addEventListener("click", generarForumario);
 }
+
 //Inicio crear Formulario
 //Generar Formulario
 function generarForumario(){

@@ -1,11 +1,10 @@
-window.onload = function() {
-  inicializar();
-};
+window.addEventListener('load', onLoad, true);
 
-function inicializar(){
-	var elementForm = document.getElementsByTagName('form')[0];
+function onLoad(){
+    var elementForm = document.getElementsByTagName('form')[0];
 	animacionAdd(elementForm);
 }
+
 function animacionAdd(padre) {
 	padre.style.overflow = "hidden";
 	var height = 0;
