@@ -1,0 +1,207 @@
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+/*General*/
+body{
+	margin: 0px;
+	font-family:Georgia, serif, arial;
+	background-color: #212121;
+}
+
+a{
+	color:#1b7dc5;
+}
+a:hover{
+	color:#63afff;
+}
+
+/*Cabecera*/
+#cabecera{
+	background-color: #2e2e2e;
+	width: 100%;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+#cabecera img{
+	height: 100px;
+}
+#cabecera > div{
+	margin: 5px 20px;
+}
+
+/*Menú*/
+#menu{
+	background-color: #2e2e2e;
+	padding: 5px;
+	border-bottom: 1px solid #141414;
+	border-top: 1px solid #141414;
+}
+ul.topnav, ul.topnav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+ul.topnav li {
+	float: left;
+	margin: 0 3px;
+	padding: 5px 0;
+}
+
+ul.topnav li a, ul.topnav li span{
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+.topnav a:hover:not(.active) {
+	background-color: #2E5894;
+	border-radius: 10px;
+}
+
+.topnav .active {
+	background-color: #0674c5;
+	border-radius: 10px;
+}
+
+.topnav .right {float: right;}
+
+.topnav span{
+	background-color: #444;
+	border-radius: 15px;
+}
+
+#menu input[type=text]{
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('img/searchicon.png');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+}
+
+/*Cuerpo*/
+#divCentral{
+	background-color: #333;
+}
+
+#divCentral > div {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+  
+	-webkit-flex-flow: row wrap;
+	justify-content: space-around;
+}
+
+#divCentral > div {
+	background-color: #d6d6d6;
+	width: 80%;
+	margin: 0 auto;
+	padding: 20px 0;
+}
+
+#contenido{
+	width: 80%
+}
+
+.cardTitle{
+	text-align: center;
+	display: block;
+	padding: 15px;
+	border-radius: 4px 4px 0 0;
+	color: #ffffff;
+	margin: 10px 0 0 0;
+	background-color: #0674c5;
+	border: 1px solid #0674c5;
+
+}
+
+.cardContent{
+	text-align: center;
+	background-color: #f8f8f8;
+	border-radius: 0 0 4px 4px;
+	margin-bottom: 20px;
+	padding: 10px 10px;
+	border: 1px solid rgba(100, 100, 100, 0.40);
+	border-top-width: 0;
+}
+
+
+
+/*pie de paguina*/
+#pieDePaguina {
+	width: 100%;
+	clear:both;
+	text-align:center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background-color: #212121;
+	color: #9d9d9d;
+	border-top: 1px solid #141414;
+}
+
+/* formato movil*/
+@media screen and (max-width: 536px){
+	#menu ul li, #menu ul ul {
+		float: none;
+	}
+	#publicidad{
+		display: none;
+	}
+
+	#divCentral > div{
+		width: 100%;
+	}
+	#derecho{
+		width: 80%;
+		margin-top: 0px;
+	}
+}
+
+/*mensaje de error*/
+ 
+.isa_info, .isa_success, .isa_warning, .isa_error {
+	margin: 10px 0px;
+	padding:12px;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+    border-radius: 5px;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    border: 1px solid #79DD0F;
+    border-radius: 5px;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+    border-radius: 5px;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border: 1px solid #FC6B73;
+    border-radius: 5px;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}

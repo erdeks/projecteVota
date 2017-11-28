@@ -7,24 +7,17 @@ function inicializar(){
 	animacionAdd(elementForm);
 }
 function animacionAdd(padre) {
-	alert("a")
-	var height = padre.offsetHeight;
-	var totalHeight = getHeightContenedorRespuestas(padre);
-	setInterval(frame, 1);
 	padre.style.overflow = "hidden";
+	var height = 0;
+	var totalHeight = padre.offsetHeight;
+	var interval_id = setInterval(frame, 20);
 	function frame() {
 		if (height >= totalHeight) {
-			padre.style.overflow = "";
+			padre.removeAttribute("style");
+			clearInterval(interval_id);
 		} else {
 			height++;
 			padre.style.height = height + 'px';
 		}
 	}
-}
-function getHeightTotalContenedor(padre){
-	var totalHeight = 0;
-	for(var i = 0; i < padre.children.length; i++){
-		totalHeight += padre.children[i].offsetHeight;
-	}
-	return totalHeight;
 }

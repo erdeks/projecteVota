@@ -44,10 +44,13 @@ if(existeYnoEstaVacio($_POST['respuestas']) && existeYnoEstaVacio($_SESSION['usu
   }else{
     $_SESSION['mensaje'][] = [0, "No se ha podido obtener el id de la encuesta."];
   }
+  irVotarEncuesta($idEncuesta);
+  cerrarConexion($conexion);
 }else{
   $_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
+  irAIndex();
 }
-getMensajes();
+
 function insertarVoto(&$conexion, $idOpcion, $idUsuario){
   $query = $conexion->prepare("INSERT INTO votosEncuestas (idOpcion, idUsuario) VALUES ($idOpcion, $idUsuario);");
   if($query->execute()) return $conexion->lastInsertId();
@@ -74,4 +77,10 @@ function getIdEncuestaPorIdOpcion(&$conexion, $idOpcion){
   else return null;
 }
 
+function irAIndex(){
+  header("Location: ../index.php");
+}
+function irVotarEncuesta($idEncuesta){
+  header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
+}
 ?>
