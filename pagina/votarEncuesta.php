@@ -12,9 +12,10 @@
   <div id="divCentral">
     <div>
       <div id="contenido">
-        <?php getMensajes();
+        <?php
         if(existeYnoEstaVacio($_SESSION['usuario'])){
           if(existeYnoEstaVacio($_GET["idEncuesta"])){
+            getMensajes();
             $conexion = abrirConexion();
             $idEncuesta = $_GET["idEncuesta"];
             $idUsuario = $_SESSION['usuario']['id'];
@@ -76,17 +77,13 @@
               </div><?php
             }
             cerrarConexion($conexion);
-          }else{ ?>
-            <h2 class="cardTitle">Error</h2>
-            <div class="cardContent">
-              <p>Faltan parametros.</p>
-            </div><?php
+          }else{ 
+            $_SESSION['mensaje'][] = [0, "No se han obtenido todos los parametros"];
+            header("Location: ../index.php");
           }
-        }else{ ?>
-          <h2 class="cardTitle">Error</h2>
-          <div class="cardContent">
-            <p>Necesitas logearte para poder votar.</p>
-          </div><?php
+        }else{ 
+          $_SESSION['mensaje'][] = [0, "Necesitas logearte para poder votar."];
+          header("Location: ./login.php");
         } ?>
       </div>
     </div>

@@ -13,14 +13,15 @@
 	<div id="divCentral">
 		<div>
 			<div id="contenido">
-				<?php getMensajes(); ?>
-				<h2 class="cardTitle">Crear Encuestas</h2>
-				<div class="cardContent">
-					<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
+				<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
+					<?php getMensajes(); ?>
+					<h2 class="cardTitle">Crear Encuestas</h2>
+					<div class="cardContent">
 						<button id="generarForm" type="button">Generar el formulario</button>
-					<?php }else{ ?>
-						<p>Necesitas logearte para crear una encuesta.</p>
-					<?php } ?>
+				<?php }else{
+					$_SESSION['mensaje'][] = [0, "Necesitas logearte para crear una encuesta."];
+	          		header("Location: ./login.php");
+				} ?>
 				</div>
 			</div>
 		</div>

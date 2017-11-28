@@ -11,8 +11,8 @@
   <div id="divCentral">
     <div>
       <div id="contenido">
-        <?php getMensajes(); ?>
         <?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
+          <?php getMensajes(); ?>
           <h2 class="cardTitle">Mis encuestas</h2>
           <div class="cardContent">
             <?php
@@ -43,12 +43,10 @@
               echo "</ul>";
             ?>
           </div>
-        <?php }else{ ?>
-          <h2 class="cardTitle">Encuestas</h2>
-          <div class="cardContent">
-            <p>Necesitas logearte para ver las encuestas.</p>
-          </div>
-        <?php } ?>
+        <?php }else{
+          $_SESSION['mensaje'][] = [0, "Necesitas logearte para ver las encuestas."];
+          header("Location: ./login.php");
+         } ?>
           
         </div>
       </div>
