@@ -181,6 +181,7 @@ ul.topnav li a, ul.topnav li span{
 .isa_info {
     color: #00529B;
     background-color: #BDE5F8;
+    border: 1px solid #66B7FF;
     border-radius: 5px;
 }
 .isa_success {

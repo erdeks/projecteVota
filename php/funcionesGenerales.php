@@ -36,7 +36,8 @@
 	function getMensajes(){
 		foreach ($_SESSION["mensaje"] as $key => $value) {
 			$mensaje = "<div ";
-			if($value[0] == 1) $mensaje.= 'class="isa_success"><i class="fa fa-check"></i>'.$value[1].'</div>';
+			if($value[0] == 2) $mensaje.= 'class="isa_info"><i class="fa fa-info-circle"></i>'.$value[1].'</div>';
+			else if($value[0] == 1) $mensaje.= 'class="isa_success"><i class="fa fa-check"></i>'.$value[1].'</div>';
 			else $mensaje.= 'class="isa_error"><i class="fa fa-times-circle"></i>'.$value[1].'</div>';
 			echo $mensaje;
 		}

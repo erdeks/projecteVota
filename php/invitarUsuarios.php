@@ -33,12 +33,12 @@
 							}else{
 								$idAccesoEncuesta = registrarInvitacion($conexion, $idEncuesta, $idUsuarioInvitado);
 								if(!is_null($idAccesoEncuesta)){
-									$link = getURLPage()."php/???.php?idAcceso=$idAccesoEncuesta&idUsuarioInvitado=$idUsuarioInvitado";
-								if(enviarEmailInvitacion($emailInvitado, $emailUsuario, $link)){
-									$_SESSION['mensaje'][] = [1, "El usuario $emailInvitado a sido invitado."];
-								}else{
-									$_SESSION['mensaje'][] = [0, "No se ha podido enviar el email de invitacion al usuario $emailInvitado."];
-								}
+									$link = getURLPage()."php/registroInvitarUsuario.php?email=$emailInvitado";
+									if(enviarEmailInvitacion($emailInvitado, $emailUsuario, $link)){
+										$_SESSION['mensaje'][] = [1, "El usuario $emailInvitado a sido invitado."];
+									}else{
+										$_SESSION['mensaje'][] = [0, "No se ha podido enviar el email de invitacion al usuario $emailInvitado."];
+									}
 								}else{
 									$_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta para el usuario $emailInvitado."];
 								}

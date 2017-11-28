@@ -7,7 +7,7 @@
 		if(isIdCorrecta($conexion, $id)){
 			activarCuenta($conexion, $id);
 			$_SESSION['mensaje'][] = [1, "La cuenta a sido activada."];
-			irAIndex();
+			irALogin();
 		}else{
 			$_SESSION['mensaje'][] = [0, "La ID no es valida."];
 			irAIndex();
@@ -31,6 +31,9 @@
 		}
 	}
 	
+	function irALogin(){
+		header("Location: ../pagina/login.php");
+	}
 	function irAIndex(){
 		header("Location: ../index.php");
 	}
