@@ -8,7 +8,7 @@
 			if(setValidando($conexion, $idUsuario)){
 				$email = getEmail($conexion, $idUsuario);
 				$link = getURLPage()."php/activarCuenta.php?id=".$idUsuario;
-				if(!is_null($email){
+				if(!is_null($email)){
 					if(enviarEmailValidacion($email, $link)){
 						$_SESSION['mensaje'][] = [1, "Se ha enviado un correo de confirmación a $email, si no lo rebice espere un poco y/o revise el correo basura, si sigue sin recibirlo logeate para recibir otro correo de confimación."];
 						irALogin();
