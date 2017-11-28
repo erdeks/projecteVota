@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function inicializar(){
-	var elementForm = document.getElementsByTagName['form'][0];
+	var elementForm = document.getElementsByTagName('form')[0];
 	animacionAdd(elementForm);
 }
 function animacionAdd(padre) {
