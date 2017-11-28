@@ -1,5 +1,4 @@
 <?php
-	//URGENTE!!! MODIFICAR EL $link A UNO CORRECTO
 	//URGENTE!!! MODIFICAR EL LINK DE LA FUNCION irAInvitarUsaurios() A UNO CORRECTO
 	//NOTA: en caso de que los usuarios invitados se tengan que registrar eliminar el activo de la tabla accesoEncuestas y añadir una variable boleana para saber si esta registrado o no par amandarlo al apartado de registro o login y agregar un redirect para que cuando se logee lo redirija a la pagina en cuestion
 
@@ -86,7 +85,7 @@
 	}
 
 	function registrarInvitacion(&$conexion, $idEncuesta, $idUsuarioInvitado){
-		$query = $conexion->prepare("INSERT INTO accesoEncuestas (idUsuario, idEncuesta, activo) VALUES ($idUsuarioInvitado, $idEncuesta, 1);");
+		$query = $conexion->prepare("INSERT INTO accesoEncuestas (idUsuario, idEncuesta) VALUES ($idUsuarioInvitado, $idEncuesta);");
 		if($query->execute()) return $conexion->lastInsertId();
 		else return null;
 	}

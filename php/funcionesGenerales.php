@@ -6,7 +6,9 @@
 		return "projecteVota/";
 	}
 	function getURLPage(){
-		return "https://www.".getURLHost().getURLcartepa();
+		if (strpos(getURLHost(), 'www.') !== false) return "https://".getURLHost().getURLcartepa();
+		else return "https://www.".getURLHost().getURLcartepa();
+		
 	}
 	function getURLAbsolute(){
 		return "/".getURLcartepa();

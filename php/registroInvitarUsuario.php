@@ -1,6 +1,6 @@
 <?php
 	require "inicializar.php";
-	if(existeYnoEstaVacio($_GET['email']){
+	if(existeYnoEstaVacio($_GET['email'])){
 		$_SESSION['mensaje'][] = [2, "Para poder votar es necesario registrase."];
 		irARegistro($_GET['email']);
 	}else{

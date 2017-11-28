@@ -7,9 +7,10 @@ function onLoad(){
 
 function animacionAdd(padre) {
 	padre.style.overflow = "hidden";
-	var height = 0;
 	var totalHeight = padre.offsetHeight;
-	var interval_id = setInterval(frame, 20);
+	padre.style.height = "0px";
+	var height = 0;
+	var interval_id = setInterval(frame, 15);
 	function frame() {
 		if (height >= totalHeight) {
 			padre.removeAttribute("style");
