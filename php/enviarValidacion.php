@@ -1,23 +1,27 @@
-<?php
+<?php //Instalar postfix para poder enviar correos
 	require "inicializar.php";
 
 	if(existeYnoEstaVacio($_GET['id'])){
-		$id = $_GET['id'];
+		$idUsuario = $_GET['id'];
 		$conexion = abrirConexion();
-		if(isIdCorrecta($conexion, $id)){
-			setValidando($conexion, $id);
-			$email = getEmail($conexion, $id);
-			$link = "https://".$_SERVER['SERVER_NAME']."/projecteVota/php/activarCuenta.php?id=".$id;
-			if($email != null){
-				if(enviarEmailValidacion($email, $link)){
-					$_SESSION['mensaje'][] = [1, "Se ha enviado un correo de confirmación a $email, si no lo rebice espere un poco y/o revise el correo basura, si sigue sin recibirlo logeate para recibir otro correo de confimación."];
-					irALogin();
+		if(isIdCorrecta($conexion, $idUsuario)){
+			if(setValidando($conexion, $idUsuario)){
+				$email = getEmail($conexion, $idUsuario);
+				$link = getURLPage()."php/activarCuenta.php?id=".$idUsuario;
+				if(!is_null($email){
+					if(enviarEmailValidacion($email, $link)){
+						$_SESSION['mensaje'][] = [1, "Se ha enviado un correo de confirmación a $email, si no lo rebice espere un poco y/o revise el correo basura, si sigue sin recibirlo logeate para recibir otro correo de confimación."];
+						irALogin();
+					}else{
+						$_SESSION['mensaje'][] = [0, "No se ha podido enviar el correo."];
+						irALogin();
+					}
 				}else{
-					$_SESSION['mensaje'][] = [0, "No se ha podido enviar el correo."];
+					$_SESSION['mensaje'][] = [0, "No se ha posido obtener el email del usuario solicitado, intente logearse de nuevo."];
 					irALogin();
 				}
 			}else{
-				$_SESSION['mensaje'][] = [0, "No se ha posido obtener el email del usuario solicitado."];
+				$_SESSION['mensaje'][] = [0, "No se ha podido validar la cuenta."];
 				irALogin();
 			}
 		}else{
@@ -31,18 +35,16 @@
 		irAIndex();
 	}
 
-	function isIdCorrecta(&$conexion, $id){
-		$query = $conexion->prepare("SELECT validado FROM usuarios WHERE idUsuario = $id;");
+	function isIdCorrecta(&$conexion, $idUsuario){
+		$query = $conexion->prepare("SELECT validado FROM usuarios WHERE idUsuario = $idUsuario;");
 		$query->execute();
-		if($row = $query->fetch()){
-			return ($row['validado'] == 0);
-		}else{
-			return false;
-		}
+
+		if($row = $query->fetch()) return ($row['validado'] == 0);
+		else return false;
 	}
-	function setValidando(&$conexion, $id){
-		$query = $conexion->prepare("UPDATE usuarios SET validando = 1 WHERE idUsuario = $id;");
-		$query->execute();
+	function setValidando(&$conexion, $idUsuario){
+		$query = $conexion->prepare("UPDATE usuarios SET validando = 1 WHERE idUsuario = $idUsuario;");
+		return $query->execute();
 	}
 
 	function enviarEmailValidacion($para, $link){
@@ -68,6 +70,5 @@
 	}
 	function irAIndex(){
 		header("Location: ../index.php");
-	}
-	//Instalar postfix
+	}	
 ?>

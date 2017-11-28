@@ -23,7 +23,7 @@
 							actualizarUsuarioInvitado($conexion, $row["idUsuario"], $password);
 						}else{ //Si no es un invitado
 							if($row['validado'] == 0){ //Si la cuenta no esta validada
-								validarCuenta($row["idUsuario"]);
+								enviarValidacion($row["idUsuario"]);
 							}else{ //Si la cuenta esta validada
 								$_SESSION['mensaje'][] = [0, "El usuario ya existe."];
 								irARegistro();
@@ -54,17 +54,16 @@
 		$query = $conexion->prepare("INSERT INTO usuarios (idPermiso, email, password) VALUES (2, '$email', '$password')");
 		$query->execute();
 		$last_id = $conexion->lastInsertId();
-		validarCuenta($last_id);
+		enviarValidacion($last_id);
 	}
 
 	function actualizarUsuarioInvitado(&$conexion, $idUsuario, $password){
-		//Cambiar el idPermisos a 2 (usuario) y validado a 0 (false)
 		$query = $conexion->prepare("UPDATE usuarios SET password = '$password', idPermiso = 2, validado = 0 WHERE idUsuario = $idUsuario");
 		$query->execute();
-		validarCuenta($idUsuario);
+		enviarValidacion($idUsuario);
 	}
 
-	function validarCuenta($id){
+	function enviarValidacion($id){
 		header("Location: ../php/enviarValidacion.php?id=$id");
 	}
 

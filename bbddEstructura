@@ -34,4 +34,3 @@ tabla accesoEncuestas //Contiene los usuarios invitados
 	- idAcceso 		(pk, autoIncremental)
 	- idUsuario 	(fk)
 	- idEncuesta 	(fk)
-	- activo 		(bool, default: true)
