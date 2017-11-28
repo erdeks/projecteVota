@@ -1,4 +1,19 @@
 <?php
+	function getURLHost(){
+		return $_SERVER['SERVER_NAME']."/";
+	}
+	function getURLcartepa(){
+		return "projecteVota/";
+	}
+	function getURLPage(){
+		return "https://www.".getURLHost().getURLcartepa();
+	}
+	function getURLAbsolute(){
+		return "/".getURLcartepa();
+	}
+	function getCurrentPage(){
+		return $_SERVER["REQUEST_URI"];
+	}
 	function existeYnoEstaVacio(&$variable){
 		return (isset($variable) && (is_array($variable) ? !empty($variable) : $variable != ""));
 	}
@@ -20,11 +35,9 @@
 
 	function getMensajes(){
 		foreach ($_SESSION["mensaje"] as $key => $value) {
-			$mensaje = "<p>";
-			foreach ($value as $key => $value) {
-				$mensaje.= " -> ".$value;
-			}
-			$mensaje.="</p>";
+			$mensaje = "<div ";
+			if($value[0] == 1) $mensaje.= 'class="isa_success"><i class="fa fa-check"></i>'.$value[1].'</div>';
+			else $mensaje.= 'class="isa_error"><i class="fa fa-times-circle"></i>'.$value[1].'</div>';
 			echo $mensaje;
 		}
 		$_SESSION["mensaje"] = [];
