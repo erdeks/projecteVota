@@ -25,7 +25,29 @@
                 <h2 class="cardTitle">Mi Encuesta</h2>
                 <div class="cardContent">
                   <p>Proximamente ...</p>
-                </div><?php
+                </div>
+                <h2 class="cardTitle">Invitar Usuarios</h2>
+                <div class="cardContent">
+                  <form action="../php/invitarUsuarios.php" method="post">
+                    <div><label>Introduce el email de los usuarios separados por ;</label></div>
+                    <textarea name="invitados" cols="50" rows="6"></textarea>
+                    <input type="text" name="idEncuesta" value="<?php echo $idEncuesta; ?>" hidden="hidden">
+                    <div><input type="submit" value="Enviar"></div>
+                  </form>
+                </div>
+                <h2 class="cardTitle">Usuarios Invitados</h2>
+                <div class="cardContent">
+                  <ul>
+                  <?php
+                    $query = $conexion->prepare("SELECT email FROM accesoEncuestas a JOIN usuarios u USING (idUsuario) WHERE idEncuesta=$idEncuesta");
+                    $query->execute();
+                    while($usuarios = $query->fetch()){
+                      echo "<li>".$usuarios['email']."</li>";
+                    }
+                  ?>
+                </ul>
+                </div>
+                <?php
               }else{
                 if(encuestaActiva($conexion, $idEncuesta)){
                   $query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
@@ -77,11 +99,11 @@
               </div><?php
             }
             cerrarConexion($conexion);
-          }else{ 
+          }else{
             $_SESSION['mensaje'][] = [0, "No se han obtenido todos los parametros"];
             header("Location: ../index.php");
           }
-        }else{ 
+        }else{
           $_SESSION['mensaje'][] = [0, "Necesitas logearte para poder votar."];
           header("Location: ./login.php");
         } ?>

@@ -3,11 +3,11 @@
 	//NOTA: en caso de que los usuarios invitados se tengan que registrar eliminar el activo de la tabla accesoEncuestas y añadir una variable boleana para saber si esta registrado o no par amandarlo al apartado de registro o login y agregar un redirect para que cuando se logee lo redirija a la pagina en cuestion
 
 	require "inicializar.php";
-	if(existeYnoEstaVacio($_GET['idEncuesta']) && existeYnoEstaVacio($_SESSION['usuario']) && existeYnoEstaVacio($_GET['invitados'])){
-		$idEncuesta = $_GET['idEncuesta'];
+	if(existeYnoEstaVacio($_POST['idEncuesta']) && existeYnoEstaVacio($_SESSION['usuario']) && existeYnoEstaVacio($_POST['invitados'])){
+		$idEncuesta = $_POST['idEncuesta'];
 		$idUsuario = $_SESSION['usuario']['id'];
 		$emailUsuario = $_SESSION['usuario']['email'];
-		$emailsInvitados = multiexplode(array(",","|",";"), $_GET['invitados']);
+		$emailsInvitados = multiexplode(array(",","|",";"), $_POST['invitados']);
 
 		$conexion = abrirConexion();
 		if(usuarioACreadoLaEncuesta($conexion, $idEncuesta, $idUsuario)){
@@ -50,12 +50,12 @@
 					$_SESSION['mensaje'][] = [0, "Formato del email $emailInvitado no es valido."];
 				}
 			}
-			irAInvitarUsaurios();
+			irAInvitarUsaurios($idEncuesta);
 		}else{
 			$_SESSION['mensaje'][] = [0, "No puedes invitar a personas a una encuesta que no has creado."];
 			irAIndex();
 		}
-		
+
 		cerrarConexion($conexion);
 	}else{
 		$_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
@@ -111,7 +111,7 @@
 	function irAIndex(){
 		header("Location: ../index.php");
 	}
-	function irAInvitarUsaurios(){
-		header("Location: ../pagina/login.php");
+	function irAInvitarUsaurios($idEncuesta){
+		header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
 	}
 ?>
