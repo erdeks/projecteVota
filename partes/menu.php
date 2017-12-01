@@ -1,21 +1,30 @@
-<div id="menu">
-	<?php $classActive = "" ?>
-	<ul class="topnav"> 
-		<li><span>Menú:</span></li>
-		<?php paginaActiva("index.php", $classActive); ?>
-		<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>index.php">Inicio</a></li>
+<?php $classActive = "" ?>
+<ul id="menu">
+	<li> <!-- Lado izquierdo -->
+		<ul>
+			<li><span>Menú:</span></li>
+			<?php paginaActiva("index.php", $classActive); ?>
+			<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>index.php">Inicio</a></li>
 
-		<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
-			<?php paginaActiva("pagina/crearEncuesta.php", $classActive); ?>
-			<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/crearEncuesta.php">Crear una encuesta</a></li>
-			<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
-			<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta.php">Ver/Votar encuestas</a></li>
-		<?php } ?>
-
-		<ul class="right">
 			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
-				<li><span><?php echo $_SESSION['usuario']['email'] ?></span></li>
-				<li><a href="<?php echo getURLAbsolute(); ?>php/cerrarSession.php">Cerrar Sessión</a></li>
+				<?php paginaActiva("pagina/crearEncuesta.php", $classActive); ?>
+				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/crearEncuesta.php">Crear una encuesta</a></li>
+				<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
+				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta.php">Ver/Votar encuestas</a></li>
+			<?php } ?>
+		</ul>
+	</li>
+	<li> <!-- Lado derecho -->
+		<ul>
+			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
+				<li class="dropdown">
+					<a href="#"><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></a>
+					<div>
+						<a href="#">Cambiar Contraseña</a>
+						<a href="#">Perfil</a>
+						<a href="<?php echo getURLAbsolute(); ?>php/cerrarSession.php">Cerrar Sessión</a>
+					</div>
+				</li>
 			<?php }else{ ?>
 				<?php paginaActiva("pagina/login.php", $classActive); ?>
 				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/login.php">Login</a></li>
@@ -23,8 +32,10 @@
 				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/registro.php">Registrase</a></li>
 			<?php } ?>
 		</ul>
-	</ul>
-</div>
+	</li>
+</ul>
+
+
 
 <?php 
 	function paginaActiva($url, &$variable){

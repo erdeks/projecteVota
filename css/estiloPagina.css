@@ -36,59 +36,82 @@ a:hover{
 
 /*Menú*/
 #menu{
+	width: 100%;
 	background-color: #2e2e2e;
-	padding: 5px;
+	display: flex;
+	justify-content: space-between;
 	border-bottom: 1px solid #141414;
 	border-top: 1px solid #141414;
 }
-ul.topnav, ul.topnav ul {
+#menu, #menu ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
 }
-ul.topnav li {
-	float: left;
-	margin: 0 3px;
-	padding: 5px 0;
+#menu > li > ul{
+	display: flex;
+	flex-wrap: wrap;
+}
+#menu > li:nth-child(1) > ul{
+	justify-content: flex-start;
+}
+#menu > li:nth-child(2) > ul{
+	justify-content: flex-end;
+}
+#menu > li > ul > li{
+	margin: 5px 3px;
 }
 
-ul.topnav li a, ul.topnav li span{
-	display: block;
+#menu a, #menu span {
+	border-radius: 10px;
+	display: inline-block;
 	color: white;
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
 }
 
-.topnav a:hover:not(.active) {
+#menu li a:hover:not(.active), #menu .dropdown:hover > a:not(.active), #menu .dropdown > a:focus:not(.active) {
 	background-color: #2E5894;
-	border-radius: 10px;
 }
-
-.topnav .active {
+#menu .active{
 	background-color: #0674c5;
-	border-radius: 10px;
 }
-
-.topnav .right {float: right;}
-
-.topnav span{
+#menu span{
 	background-color: #444;
 	border-radius: 15px;
 }
 
-#menu input[type=text]{
-    width: 100%;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 15px;
-    font-size: 16px;
-    background-color: white;
-    background-image: url('img/searchicon.png');
-    background-position: 10px 10px; 
-    background-repeat: no-repeat;
-    padding: 12px 20px 12px 40px;
+#menu .dropdown {
+	display: inline-block;
+	position: relative;
+}
+
+#menu .dropdown > div {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	z-index: 1;
+	border-radius: 10px;
+}
+
+#menu .dropdown > div > a {
+	color: black;
+	padding: 12px 16px;
+	display: block;
+	text-align: left;
+}
+#menu > li:nth-child(2) .dropdown > div{
+	right: 0;
+}
+
+#menu .dropdown > div > a:hover {
+	background-color: #f1f1f1
+}
+
+#menu .dropdown:hover > div, #menu .dropdown a:focus + div {
+	display: block;
 }
 
 /*Cuerpo*/
@@ -156,10 +179,19 @@ ul.topnav li a, ul.topnav li span{
 
 /* formato movil*/
 @media screen and (max-width: 536px){
-	#menu ul li, #menu ul ul {
-		float: none;
+	#menu, #menu li, #menu > li > ul, #menu .dropdown{
+		display: block;
 	}
-	#publicidad{
+	#menu a, #menu .dropdown > div > a, #menu span{
+		width: 100%;
+		padding-left: 0;
+		padding-right: 0;
+		text-align: center;
+	}
+	#menu .dropdown > div{
+		position: relative;
+	}
+	#menu .dropdown > a:hover:not(:focus) + div{
 		display: none;
 	}
 
