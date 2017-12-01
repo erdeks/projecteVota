@@ -22,9 +22,47 @@
 
             if(tieneAccesoALaEncuesta($conexion, $idEncuesta, $idUsuario)){
               if(haCreadoEstaEncuesta($conexion, $idEncuesta, $idUsuario)){ ?>
-                <h2 class="cardTitle">Mi Encuesta</h2>
+                <h2 class="cardTitle">Mis Encuestas</h2>
                 <div class="cardContent">
-                  <p>Proximamente ...</p>
+                  <?php
+                  $suma = 0;
+                  $count = 1;
+                  $media = 0;
+                  $query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
+                  $query->execute();
+                  if($encuestas = $query -> fetch()){
+                    $nombre = $encuestas['nombre'];
+                    $descripcion = $encuestas['descripcion'];
+                    $multirespuesta = $encuestas['multirespuesta'] == 1;
+                    echo "<h1>$nombre</h1>";
+                    if ($multirespuesta["multirespuesta"]==1){
+                      echo "Es multirespuesta";
+                    }else{
+                      $query = $conexion->prepare("SELECT count(idVoto) AS 'maxVotos' FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE idEncuesta = $idEncuesta;");
+                      $query->execute();
+                      if ($row=$query->fetch()){
+                        $maxVotos = $row['maxVotos'];
+                        $query = $conexion->prepare("SELECT idOpcion, count(idVoto) AS 'cantVotos', nombre FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE idEncuesta = $idEncuesta GROUP BY idOpcion;");
+                        $query->execute();
+                        //votos * 100 / maxVotos
+                        echo "<ul>";
+                        while($votos = $query->fetch()){
+                          $media = $votos['cantVotos']*100/$maxVotos;
+                          /*maxvotas  100%
+                          votos     ?*/
+                          echo "<li>".$votos['nombre']." - ".$votos['cantVotos'].($votos['cantVotos']==1 ? " voto - " : " votos - ").$media."%</li>";
+                        }
+                        echo "</ul>";
+                      }else{
+                        $_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
+                        header("Location: ./votarEncuesta.php");
+                      }
+                    }
+                  }else{
+                    $_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
+                    header("Location: ./votarEncuesta.php");
+                  }
+                  ?>
                 </div>
                 <h2 class="cardTitle">Invitar Usuarios</h2>
                 <div class="cardContent">
