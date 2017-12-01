@@ -5,11 +5,12 @@
   existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['diaFin']) &&
   existeYnoEstaVacio($_POST['mesFin']) && existeYnoEstaVacio($_POST['anyFin']) &&
   existeYnoEstaVacio($_POST['res1']) && existeYnoEstaVacio($_POST['res2']) &&
-  existeYnoEstaVacio($_SESSION['usuario'])){
+  existeYnoEstaVacio($_POST['multirespuesta']) &&existeYnoEstaVacio($_SESSION['usuario'])){
     $conexion = abrirConexion();
 
     $idUsuario = $_SESSION['usuario']['id'];
     $pregunta = $_POST['pregunta'];
+    $multirespuesta = strcmp($_POST['multirespuesta'], "si") === 0 ? 1 : 0;
     $diaInicio = $_POST['diaInicio'];
     $mesInicio = $_POST['mesInicio'];
     $anyInicio = $_POST['anyInicio'];
@@ -22,9 +23,8 @@
       $headerDescripcion = ", descripcion";
       $bodyDescripcion = ", '".$_POST['descripcion']."'";
     }
-    echo "INSERT INTO encuestas (idUsuario, nombre, inicio, fin$headerDescripcion) VALUES ($idUsuario, '$pregunta', '$anyInicio-$mesInicio-$diaInicio', '$anyFin-$mesFin-$diaFin'$bodyDescripcion);";
 
-    $query = $conexion->prepare ("INSERT INTO encuestas (idUsuario, nombre, inicio, fin$headerDescripcion) VALUES ($idUsuario, '$pregunta', '$anyInicio-$mesInicio-$diaInicio', '$anyFin-$mesFin-$diaFin'$bodyDescripcion);");
+    $query = $conexion->prepare ("INSERT INTO encuestas (idUsuario, nombre, multirespuesta, inicio, fin$headerDescripcion) VALUES ($idUsuario, '$pregunta', $multirespuesta, '$anyInicio-$mesInicio-$diaInicio', '$anyFin-$mesFin-$diaFin'$bodyDescripcion);");
 
     $error = false;
     if($query->execute()){

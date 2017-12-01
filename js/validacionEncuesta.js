@@ -16,7 +16,8 @@ function generarForumario(){
 	var elementoFechaInicio = getElementoFechaInicio();
 	var elementoFechaFin = getElementoFechaFin();
 	var elementoPregunta = getElementoPregunta();
-	var ElementoDescripcion = getElementoDescripcion();
+	var elementoDescripcion = getElementoDescripcion();
+	var elementoMultirespuesta = getElementoMultirespuesta();
 	var elementoBotones = getElementoBotones();
 	var elementoRespuestas = getElementoRespuestas();
 
@@ -27,7 +28,8 @@ function generarForumario(){
 	agregarHijo(elementoForm, elementoFechaInicio);
 	agregarHijo(elementoForm, elementoFechaFin);
 	agregarHijo(elementoForm, elementoPregunta);
-	agregarHijo(elementoForm, ElementoDescripcion);
+	agregarHijo(elementoForm, elementoDescripcion);
+	agregarHijo(elementoForm, elementoMultirespuesta);
 	agregarHijo(elementoForm, elementoBotones);
 	agregarHijo(elementoForm, elementoRespuestas);
 	agregarHijo(this.parentNode, elementoForm);
@@ -185,7 +187,7 @@ function getElementoDescripcion(){
 	var elementoDiv = document.createElement("div");
 
 	var elementoLavel = document.createElement("lavel");
-		contenidoLavel = document.createTextNode("Descripción (opcional):");
+	var contenidoLavel = document.createTextNode("Descripción (opcional):");
 
 	var elementoBr = document.createElement("br");
 
@@ -197,6 +199,45 @@ function getElementoDescripcion(){
 	agregarHijo(elementoLavel, contenidoLavel);
 	agregarHijo(elementoDiv, elementoBr);
 	agregarHijo(elementoDiv, elementoInput);
+
+	return elementoDiv;
+}
+//Obtener el elemento multirespuesta
+function getElementoMultirespuesta(){
+	var elementoDiv = document.createElement("div");
+
+	var elementoDiv2 = document.createElement("div");
+	var contenidoDiv2 = document.createTextNode("Pregunta:");
+
+	var elementoLabelSi = document.createElement("label");
+		elementoLabelSi.setAttribute("for", "multiSi");
+	var contenidoLabelSi = document.createTextNode("Si ");
+
+	var elementoLabelNo = document.createElement("label");
+		elementoLabelNo.setAttribute("for", "multiNo");
+	var contenidoLabelNo = document.createTextNode("No ");
+
+	var elementoInputSi = document.createElement("input");
+		elementoInputSi.setAttribute("id", "multiSi");
+		elementoInputSi.setAttribute("type", "radio");
+		elementoInputSi.setAttribute("name", "multirespuesta");
+		elementoInputSi.setAttribute("value", "si");
+
+	var elementoInputNo = document.createElement("input");
+		elementoInputNo.setAttribute("id", "multiNo");
+		elementoInputNo.setAttribute("type", "radio");
+		elementoInputNo.setAttribute("name", "multirespuesta");
+		elementoInputNo.setAttribute("value", "no");
+		elementoInputNo.checked = true;
+
+	agregarHijo(elementoDiv2, contenidoDiv2);
+	agregarHijo(elementoLabelSi, contenidoLabelSi);
+	agregarHijo(elementoLabelNo, contenidoLabelNo);
+	agregarHijo(elementoDiv, elementoDiv2);
+	agregarHijo(elementoDiv, elementoLabelSi);
+	agregarHijo(elementoDiv, elementoInputSi);
+	agregarHijo(elementoDiv, elementoLabelNo);
+	agregarHijo(elementoDiv, elementoInputNo);
 
 	return elementoDiv;
 }
