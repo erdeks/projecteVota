@@ -207,7 +207,7 @@ function getElementoMultirespuesta(){
 	var elementoDiv = document.createElement("div");
 
 	var elementoDiv2 = document.createElement("div");
-	var contenidoDiv2 = document.createTextNode("Pregunta:");
+	var contenidoDiv2 = document.createTextNode("Multirespuesta?");
 
 	var elementoLabelSi = document.createElement("label");
 		elementoLabelSi.setAttribute("for", "multiSi");

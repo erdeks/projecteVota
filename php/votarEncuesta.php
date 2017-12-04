@@ -1,23 +1,20 @@
 <?php
 require "inicializar.php";
-if(existeYnoEstaVacio($_POST['respuestas']) && existeYnoEstaVacio($_SESSION['usuario'])){
-  //comprobar si a votado si lo ha hecho actulizarlo y sino INSERT tener en cuenta multioption
-  $conexion = abrirConexion();
-  $id = $_SESSION['usuario']['id'];
-  $idOpcion = $_POST['respuestas'];
-  $idPrimeraOpcion;
 
-  if(is_array($idOpcion)) $idPrimeraOpcion=$idOpcion[0];
-  else $idPrimeraOpcion=$idOpcion;
+if(existeYnoEstaVacio($_SESSION['usuario'])){
+  if(existeYnoEstaVacio($_POST['respuestas']) && is_array($_POST['respuestas'])){
+    //comprobar si a votado si lo ha hecho actulizarlo y sino INSERT tener en cuenta multioption
+    $conexion = abrirConexion();
+    $id = $_SESSION['usuario']['id'];
+    $idOpcion = $_POST['respuestas'];
 
-  $idEncuesta = getIdEncuestaPorIdOpcion($conexion, $idPrimeraOpcion);
-  if(!is_null($idEncuesta)){
-    $estadoEliminarVotos = true;
-    if(usuarioAVotado($conexion, $idEncuesta, $id)){
-      $estadoEliminarVotos = eliminarVotos($conexion,$idEncuesta,$id);
-    }
-    if($estadoEliminarVotos){
-      if(is_array($idOpcion)){
+    $idEncuesta = getIdEncuestaPorIdOpcion($conexion, $idOpcion[0]);
+    if(!is_null($idEncuesta)){
+      $estadoEliminarVotos = true;
+      if(usuarioAVotado($conexion, $idEncuesta, $id)){
+        $estadoEliminarVotos = eliminarVotos($conexion,$idEncuesta,$id);
+      }
+      if($estadoEliminarVotos){
         $error = false;
         foreach ($idOpcion as $key => $value) {
           if(is_null(insertarVoto($conexion, $value, $id) && !$error)){
@@ -31,21 +28,17 @@ if(existeYnoEstaVacio($_POST['respuestas']) && existeYnoEstaVacio($_SESSION['usu
           $_SESSION['mensaje'][] = [1, "Voto realizado."];
         }
       }else{
-        if(is_null(insertarVoto($conexion, $idOpcion, $id))){
-          $_SESSION['mensaje'][] = [0, "No se ha podido guardar el voto."];
-        }else{
-          $_SESSION['mensaje'][] = [1, "Voto realizado."];
-        }
+        $_SESSION['mensaje'][] = [0, "No se ha podido eliminar el voto existente."];
       }
-
     }else{
-      $_SESSION['mensaje'][] = [0, "No se ha podido eliminar el voto existente."];
+      $_SESSION['mensaje'][] = [0, "No se ha podido obtener el id de la encuesta."];
     }
+    cerrarConexion($conexion);
+    irVotarEncuesta($idEncuesta);
   }else{
-    $_SESSION['mensaje'][] = [0, "No se ha podido obtener el id de la encuesta."];
+    $_SESSION['mensaje'][] = [0, "Tienes que seleccionar como minimo una opcion."];
+    irVotarEncuesta(getIdEncuestaDeurlAnteior());
   }
-  irVotarEncuesta($idEncuesta);
-  cerrarConexion($conexion);
 }else{
   $_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
   irAIndex();
@@ -58,7 +51,7 @@ function insertarVoto(&$conexion, $idOpcion, $idUsuario){
 }
 
 function eliminarVotos(&$conexion, $idEncuesta, $idUsuario){
-  $query = $conexion->prepare("DELETE v.* FROM votosEncuestas v JOIN opcionesEncuestas o WHERE o.idEncuesta = $idEncuesta AND v.idUsuario=$idUsuario;");
+  $query = $conexion->prepare("DELETE v.* FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE o.idEncuesta = $idEncuesta AND v.idUsuario=$idUsuario;");
   if($query->execute()) return true;
   else return false;
 }
@@ -82,5 +75,16 @@ function irAIndex(){
 }
 function irVotarEncuesta($idEncuesta){
   header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
+}
+function getIdEncuestaDeurlAnteior(){
+  $buscar = "idEncuesta=";
+  $finGet = "&";
+
+  $gets = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
+  $inicio = strpos($gets, $buscar) + strlen($buscar);
+  $fin = strpos($gets, $finGet);
+
+  if($fin !== false) return substr($gets, $inicio, $fin - $inicio);
+  else return substr($gets, $inicio);
 }
 ?>

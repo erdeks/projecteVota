@@ -18,7 +18,8 @@
 		<ul>
 			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
 				<li class="dropdown">
-					<a href="#"><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></a>
+					<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
+					<a <?php echo $classActive ?> href="#"><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></a>
 					<div>
 						<a href="<?php echo getURLAbsolute(); ?>pagina/cambiarPassword.php">Cambiar Contraseña</a>
 						<a href="#">Perfil</a>
