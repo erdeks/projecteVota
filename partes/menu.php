@@ -20,7 +20,7 @@
 				<li class="dropdown">
 					<a href="#"><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></a>
 					<div>
-						<a href="#">Cambiar Contraseña</a>
+						<a href="<?php echo getURLAbsolute(); ?>pagina/cambiarPassword.php">Cambiar Contraseña</a>
 						<a href="#">Perfil</a>
 						<a href="<?php echo getURLAbsolute(); ?>php/cerrarSession.php">Cerrar Sessión</a>
 					</div>
@@ -37,7 +37,7 @@
 
 
 
-<?php 
+<?php
 	function paginaActiva($url, &$variable){
 		if(is_array($url)){
 			$variable = '';
@@ -45,7 +45,7 @@
 				if(strpos(getCurrentPage(), "/".getURLcartepa().$value) !== false ){
 					$variable = 'class="active"';
 					break;
-				} 
+				}
 			}
 		}else{
 			if(strpos(getCurrentPage(), "/".getURLcartepa().$url) !== false) $variable = 'class="active"';

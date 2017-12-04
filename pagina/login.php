@@ -14,7 +14,7 @@
 				<?php getMensajes(); ?>
 				<h2 class="cardTitle">Login</h2>
 				<div class="cardContent">
-					<?php if(!isset($_SESSION['usuario'])){ ?>
+					<?php if(!existeYnoEstaVacio($_SESSION['usuario'])){ ?>
 					<form action="../php/login.php" method="POST">
 						<input type="text" name="email" placeholder="Email" required><br>
 						<input type="password" name="password" placeholder="Contraseña" required><br>
