@@ -62,7 +62,7 @@ a:hover{
 	margin: 5px 3px;
 }
 
-#menu a, #menu span {
+#menu a, #menu span, #menu label {
 	border-radius: 10px;
 	display: inline-block;
 	color: white;
@@ -70,16 +70,15 @@ a:hover{
 	padding: 14px 16px;
 	text-decoration: none;
 }
+#menu input[type="radio"]{
+	transform: scale(0);
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 
-#menu li a:hover:not(.active), #menu .dropdown:hover > a:not(.active), #menu .dropdown > a:focus:not(.active) {
+#menu li a:hover:not(.active), #menu .dropdown:hover > label:not(.active), #menu .dropdown > input:focus + label:not(.active) {
 	background-color: #2E5894;
-}
-#menu .active{
-	background-color: #0674c5;
-}
-#menu span{
-	background-color: #444;
-	border-radius: 15px;
 }
 
 #menu .dropdown {
@@ -90,30 +89,39 @@ a:hover{
 #menu .dropdown > div {
 	display: none;
 	position: absolute;
-	background-color: #f9f9f9;
-	min-width: 160px;
+	background-color: #d6d6d6;;
+	min-width: 200px;
+	width: 100%;
 	z-index: 1;
 	border-radius: 10px;
+	border: 1px solid #817d7d;
 }
 
 #menu .dropdown > div > a {
 	color: black;
 	padding: 12px 16px;
 	display: block;
-	text-align: left;
 }
 #menu > li:nth-child(2) .dropdown > div{
 	right: 0;
 }
 
-#menu .dropdown > div > a:hover {
-	background-color: #f1f1f1
+#menu .dropdown > div > a:hover:not(.active) {
+	background-color: #f8f8f8;
 }
 
-#menu .dropdown:hover > div, #menu .dropdown a:focus + div {
+#menu .dropdown:hover > div, #menu .dropdown > input:focus + label + div {
 	display: block;
 }
+#menu .active{
+	background-color: #0674c5 !important;
+	color: white !important;
+}
 
+#menu span{
+	background-color: #444 !important;
+	border-radius: 15px !important;
+}
 /*Cuerpo*/
 #divCentral{
 	background-color: #333;
@@ -163,8 +171,6 @@ a:hover{
 	border-top-width: 0;
 }
 
-
-
 /*pie de paguina*/
 #pieDePaguina {
 	width: 100%;
@@ -182,7 +188,7 @@ a:hover{
 	#menu, #menu li, #menu > li > ul, #menu .dropdown{
 		display: block;
 	}
-	#menu a, #menu .dropdown > div > a, #menu span{
+	#menu a, #menu span, #menu .dropdown > label, #menu .dropdown > div > a {
 		width: 100%;
 		padding-left: 0;
 		padding-right: 0;
@@ -190,9 +196,6 @@ a:hover{
 	}
 	#menu .dropdown > div{
 		position: relative;
-	}
-	#menu .dropdown > a:hover:not(:focus) + div{
-		display: none;
 	}
 
 	#divCentral > div{

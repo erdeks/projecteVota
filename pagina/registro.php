@@ -14,7 +14,7 @@
 				<?php getMensajes(); ?>
 				<h2 class="cardTitle">Registro</h2>
 				<div class="cardContent">
-					<?php if(!isset($_SESSION['usuario'])){ 
+					<?php if(!existeYNoEstaVacio($_SESSION['usuario'])){ 
 						$email = "";
 						if(existeYNoEstaVacio($_GET['email'])) $email = $_GET['email']; ?>
 					<form action="../php/registro.php" method="POST">

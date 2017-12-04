@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Projecte Vota - Crear Encuestas</title>
+  <title>Projecte Vota - Votar Encuestas</title>
   <?php require "../partes/headGeneral.php"; ?>
   <script type="text/javascript" src="../js/animacionPreguntas.js"></script>
 </head>
@@ -83,7 +83,7 @@
 				$query->execute(); ?>
 				<table>
 					<tr>
-						<th colspan='3'>Numero total de votos: $maxVotos</th>";
+						<th colspan='3'>Numero total de votos: <?php echo $maxVotos ?></th>";
 					</tr>
 					<tr>
 						<th>Respuesta</th>
@@ -145,7 +145,7 @@
 
 				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = $idUsuario AND v.idOpcion =  o.idOpcion) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = $idEncuesta;");
 				$query->execute(); ?> 
-				<form action="../php/votarEncuesta.php" method="post"> <?php
+				<form class="animacionDesplegar" action="../php/votarEncuesta.php" method="post"> <?php
 					while($respuestas = $query -> fetch()){
 						$aVotado = "";
 						if($respuestas['aVotado'] == 1) $aVotado = "checked"; ?>

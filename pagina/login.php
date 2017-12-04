@@ -13,16 +13,18 @@
 			<div id="contenido">
 				<?php getMensajes(); ?>
 				<h2 class="cardTitle">Login</h2>
-				<div class="cardContent">
-					<?php if(!existeYnoEstaVacio($_SESSION['usuario'])){ ?>
-					<form action="../php/login.php" method="POST">
-						<input type="text" name="email" placeholder="Email" required><br>
-						<input type="password" name="password" placeholder="Contraseña" required><br>
-						<input type="submit" name="login" value="Entrar" required>
-					</form>
-				<?php }else{ ?>
-					<p>Ya te encuentras logeado</p>
-				<?php } ?>
+				<div class="cardContent"><?php
+					if(!existeYnoEstaVacio($_SESSION['usuario'])){
+						$email = "";
+						if(existeYNoEstaVacio($_GET['email'])) $email = $_GET['email']; ?>
+						<form action="../php/login.php" method="POST">
+							<input type="text" name="email" placeholder="Email" value="<?php echo $email ?>" required><br>
+							<input type="password" name="password" placeholder="Contraseña" required><br>
+							<input type="submit" name="login" value="Entrar" required>
+						</form>
+					<?php }else{ 
+						header("Location: ../index.php");
+					} ?>
 				</div>
 			</div>
 		</div>

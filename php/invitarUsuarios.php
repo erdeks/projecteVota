@@ -32,7 +32,7 @@
 							}else{
 								$idAccesoEncuesta = registrarInvitacion($conexion, $idEncuesta, $idUsuarioInvitado);
 								if(!is_null($idAccesoEncuesta)){
-									$link = getURLPage()."php/registroInvitarUsuario.php?email=$emailInvitado";
+									$link = getURLPage()."php/registroInvitarUsuario.php?email=$emailInvitado&idEncuesta=$idEncuesta";
 									if(enviarEmailInvitacion($emailInvitado, $emailUsuario, $link)){
 										$_SESSION['mensaje'][] = [1, "El usuario $emailInvitado a sido invitado."];
 									}else{

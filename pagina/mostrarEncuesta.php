@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Projecte Vota - Crear Encuestas</title>
+  <title>Projecte Vota - Ver Encuestas</title>
   <?php require "../partes/headGeneral.php"; ?>
 </head>
 <body>

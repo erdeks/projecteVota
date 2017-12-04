@@ -18,11 +18,14 @@
 		<ul>
 			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
 				<li class="dropdown">
-					<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
-					<a <?php echo $classActive ?> href="#"><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></a>
+					<?php paginaActiva(["pagina/cambiarPassword.php", "pagina/perfil.php"], $classActive); ?>
+					<input type="radio" id="submenu1">
+					<label for="submenu1" <?php echo $classActive ?>><?php echo $_SESSION['usuario']['email'] ?> <i class="fa fa-caret-down"></i></label>
 					<div>
-						<a href="<?php echo getURLAbsolute(); ?>pagina/cambiarPassword.php">Cambiar Contraseña</a>
-						<a href="#">Perfil</a>
+						<?php paginaActiva("pagina/perfil.php", $classActive); ?>
+						<a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/perfil.php">Perfil</a>
+						<?php paginaActiva("pagina/cambiarPassword.php", $classActive); ?>
+						<a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/cambiarPassword.php">Cambiar Contraseña</a>
 						<a href="<?php echo getURLAbsolute(); ?>php/cerrarSession.php">Cerrar Sessión</a>
 					</div>
 				</li>
@@ -53,8 +56,4 @@
 			else $variable = '';
 		}
 	}
-/*
-        <?php if(getCurrentPage() == getURLcartepa()."index.php"){ ?>
-        <?php }else{ ?>
-        <?php } ?>
- */ ?>
+?>

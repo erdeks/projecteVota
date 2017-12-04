@@ -69,6 +69,14 @@
 		else if($rows == 1) return true;
 		else return null;
 	}
+	function existeUsuarioRegistrado(&$conexion, $email){
+		$query = $conexion->prepare("SELECT idUsuario FROM usuarios WHERE email = '$email' AND password IS NOT NULL AND idPermiso <> 1;");
+		$query->execute();
+		$rows=$query->rowCount();
+		if($rows == 0) return false;
+		else if($rows == 1) return true;
+		else return null;
+	}
 	function multiexplode ($delimiters,$string) {
 		$ready = str_replace($delimiters, $delimiters[0], $string);
 		$launch = explode($delimiters[0], $ready);

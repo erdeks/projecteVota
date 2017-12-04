@@ -1,7 +1,7 @@
 window.addEventListener('load', onLoad, true);
 
 function onLoad(){
-    var elementForm = document.getElementsByTagName('form')[0];
+    var elementForm = document.getElementsByClassName('animacionDesplegar')[0];
 	animacionAdd(elementForm);
 }
 

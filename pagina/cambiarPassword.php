@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Projecte Vota - Login</title>
+	<title>Projecte Vota - Cambiar Contraseña</title>
 	<?php require "../partes/headGeneral.php"; ?>
 </head>
 <body>
