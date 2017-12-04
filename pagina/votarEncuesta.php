@@ -25,39 +25,42 @@
                 <h2 class="cardTitle">Mis Encuestas</h2>
                 <div class="cardContent">
                   <?php
-                  $suma = 0;
-                  $count = 1;
-                  $media = 0;
-                  $query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
+                  $query = $conexion->prepare("SELECT nombre, descripcion FROM encuestas WHERE idEncuesta=$idEncuesta;");
                   $query->execute();
                   if($encuestas = $query -> fetch()){
                     $nombre = $encuestas['nombre'];
                     $descripcion = $encuestas['descripcion'];
-                    $multirespuesta = $encuestas['multirespuesta'] == 1;
                     echo "<h1>$nombre</h1>";
-                    if ($multirespuesta["multirespuesta"]==1){
-                      echo "Es multirespuesta";
-                    }else{
-                      $query = $conexion->prepare("SELECT count(idVoto) AS 'maxVotos' FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE idEncuesta = $idEncuesta;");
+                    $query = $conexion->prepare("SELECT count(idVoto) AS 'maxVotos' FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE idEncuesta = $idEncuesta;");
+                    $query->execute();
+                    if ($row=$query->fetch()){
+                      $maxVotos = $row['maxVotos'];
+                      $query = $conexion->prepare("SELECT idOpcion, count(idVoto) AS 'cantVotos', nombre FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE idEncuesta = $idEncuesta GROUP BY idOpcion;");
                       $query->execute();
-                      if ($row=$query->fetch()){
-                        $maxVotos = $row['maxVotos'];
-                        $query = $conexion->prepare("SELECT idOpcion, count(idVoto) AS 'cantVotos', nombre FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE idEncuesta = $idEncuesta GROUP BY idOpcion;");
-                        $query->execute();
-                        //votos * 100 / maxVotos
-                        echo "<ul>";
-                        while($votos = $query->fetch()){
-                          $media = $votos['cantVotos']*100/$maxVotos;
-                          /*maxvotas  100%
-                          votos     ?*/
-                          echo "<li>".$votos['nombre']." - ".$votos['cantVotos'].($votos['cantVotos']==1 ? " voto - " : " votos - ").$media."%</li>";
-                        }
-                        echo "</ul>";
-                      }else{
-                        $_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
-                        header("Location: ./votarEncuesta.php");
+                      echo "<table style='margin: 0 auto;'>";
+                      echo "<tr>";
+                      echo "<th colspan='3'>Numero total de votos: $maxVotos</th>";
+                      echo "</tr>";
+                      echo "<tr>";
+                      echo "<th>Respuesta</th>";
+                      echo "<th>Cantidad de votos</th>";
+                      echo "<th>Porcentage de votos</th>";
+                      echo "</tr>";
+                      while($votos = $query->fetch()){
+                        echo "<tr>";
+                        $media = 0;
+                        if($maxVotos > 0) $media = $votos['cantVotos']*100/$maxVotos;
+                        echo "<td>".$votos['nombre']."</td>";
+                        echo "<td>".$votos['cantVotos'].($votos['cantVotos']==1 ? " voto " : " votos ")."</td>";
+                        echo "<td>".$media."%</td>";
+                        echo "</tr>";
                       }
+                      echo "</table>";
+                    }else{
+                      $_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
+                      header("Location: ./votarEncuesta.php");
                     }
+
                   }else{
                     $_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
                     header("Location: ./votarEncuesta.php");
