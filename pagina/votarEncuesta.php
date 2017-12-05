@@ -83,7 +83,7 @@
 				$query->execute(); ?>
 				<table>
 					<tr>
-						<th colspan='3'>Numero total de votos: <?php echo $maxVotos ?></th>";
+						<th colspan='3'>Numero total de votos: <?php echo $maxVotos ?></th>
 					</tr>
 					<tr>
 						<th>Respuesta</th>
@@ -144,7 +144,7 @@
 				if (existeYnoEstaVacio($descripcion)) echo "<h3>$descripcion</h3>";
 
 				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = $idUsuario AND v.idOpcion =  o.idOpcion) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = $idEncuesta;");
-				$query->execute(); ?> 
+				$query->execute(); ?>
 				<form class="animacionDesplegar" action="../php/votarEncuesta.php" method="post"> <?php
 					while($respuestas = $query -> fetch()){
 						$aVotado = "";
