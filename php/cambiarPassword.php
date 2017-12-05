@@ -32,7 +32,8 @@
   function cambiarPassword(&$conexion, $idUsuario, $password){
 		$query = $conexion->prepare("UPDATE usuarios SET password = '$password' WHERE idUsuario = $idUsuario");
 		$query->execute();
-		enviarValidacion($idUsuario);
+		irACambiarPassword();
+
 	}
   function irACambiarPassword(){
     header("Location: ../pagina/cambiarPassword.php");

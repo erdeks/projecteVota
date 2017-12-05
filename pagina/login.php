@@ -20,9 +20,10 @@
 						<form action="../php/login.php" method="POST">
 							<input type="text" name="email" placeholder="Email" value="<?php echo $email ?>" required><br>
 							<input type="password" name="password" placeholder="Contraseña" required><br>
+							<a href="recuperarPassword.php">Has olvidado tu contraseña?</a><br>
 							<input type="submit" name="login" value="Entrar" required>
 						</form>
-					<?php }else{ 
+					<?php }else{
 						header("Location: ../index.php");
 					} ?>
 				</div>
