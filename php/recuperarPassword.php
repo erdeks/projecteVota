@@ -3,11 +3,17 @@
   if(existeYnoEstaVacio($_POST['email'])){
     $email=$_POST['email'];
     $recuperarPassword=0;
+    $emailUsuario = $_SESSION['usuario']['email'];
     $idUsuario = $_SESSION["usuario"]['id'];
     if(correoValido($email)){
       $recuperarPassword=1;
       solicitarCambioPassword($conexion, $idUsuario, $recuperarPassword);
-
+      if(getRecuperarPassword($conexion, $idUsuario)==1){
+        $link = getURLPage()."../pagina/introducirNuevaPassword.php?email=$email";
+        enviarEmailRecuperacion($email, $emailUsuario, $link)
+      }else{
+        $_SESSION['mensaje'][] = [0, "Error al intentar recuperar la contraseña."];
+      }
     }else{
       $_SESSION['mensaje'][] = [0, "Formato del email $email no es valido."];
     }
@@ -15,7 +21,7 @@
     $_SESSION['mensaje'][] = [0, "El campo no pueden estar vacios."];
     irAIndex();
   }
-  function enviarEmailInvitacion($para, $emailUsuario, $link){
+  function enviarEmailRecuperacion($para, $emailUsuario, $link){
 		// título
 		$titulo = 'Projecte Vota - Invitacion a encuesta';
 
