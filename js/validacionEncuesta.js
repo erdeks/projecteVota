@@ -576,17 +576,75 @@ function addRespuesta(){
 	elementoInput.addEventListener("blur", checkInputsRespuestasFocoPerdido);
 	agregarHijo(elementoDivError, elementoInput);
 
+	agregarHijo(elementoDivError, getButtonUp());
+	agregarHijo(elementoDivError, getButtonDown());
+	agregarHijo(elementoDivError, getButtonRemove());
+
 	agregarHijo(padre, elementoDiv);
 	animacionAdd(padre);
 
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
 }
+//Obtener el boton hacia arriba
+function getButtonUp(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-arrow-up");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", moverRespuestaArriba);
+
+	return elementoButton;
+}
+//Obtener el boton hacia abajo
+function getButtonDown(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-arrow-down");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", moverRespuestaAbajo);
+	
+	return elementoButton;
+}
+//Obtener el boton eliminar
+function getButtonRemove(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-trash-o");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", eliminarRespuesta);
+	
+	return elementoButton;
+}
 //Elimina todas las respuestas
 function eliminarTodasRespuestas(){
 	var padre = document.getElementById('respuestas');
 
 	animacionDel(padre);
+}
+//Funcion para mover la respuesta hacia arriba
+function moverRespuestaArriba(){
+	var esteElemento = this.parentNode.parentNode;
+	insertarAntes(esteElemento.parentNode, getAnteriorElemento(esteElemento), esteElemento);
+}
+//Funcion para mover la respuesta hacia abajo
+function moverRespuestaAbajo(){
+	var esteElemento = this.parentNode.parentNode;
+	insertarDespues(esteElemento.parentNode, getSiguienteElemento(esteElemento), esteElemento);
+	//function insertarDespues(padre, hijo, elemento){
+}
+//Funcion para eliminar la respuesta
+function eliminarRespuesta(){
+	
 }
 //Devuelve el alto total dentro del padre que se la ha pasado
 function getHeightContenedor(padre){
@@ -596,7 +654,6 @@ function getHeightContenedor(padre){
 	}
 	return totalHeight;
 }
-
 //Generar una animacion para mostrar las respuestas
 function animacionAdd(padre) {
 	var height = padre.offsetHeight;
@@ -847,7 +904,10 @@ function insertarDespues(padre, hijo, elemento){
 function getSiguienteElemento(hijo){
 	return hijo.nextSibling;
 }
-
+//Obtener el elemento anterior
+function getAnteriorElemento(hijo){
+	return hijo.previousSibling;
+}
 //Fin JS DOM
 //Funciones inputs
 //Desactiva el input pasado
