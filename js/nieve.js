@@ -71,16 +71,14 @@ function nevar(copos, alturaMax, anchuraMax){
 
         	x = parseInt(copos[i].style.left);
 
-        	//Si no se sale de la pantalla
-	        if(x >= 0 && x <= anchuraMax){
-	            x += parseInt((Math.random()*3))-1; //-1, 0, 1
+	        if(x > anchuraMax){ //Si se sale por la derecha
+	        	copos[i].style.left = "0px";
+	        }else if(x <= -20){ //Si se sale por la izquierda
+	        	copos[i].style.left = anchuraMax+"px";
+	        }else{ //Si no se sale de la pantalla
+	        	x += parseInt((Math.random()*3))-1; //-1, 0, 1
 	            x += fuerzaViento;
 	            copos[i].style.left = x+"px";
-
-	        }else if(fuerzaViento > 0 && x > anchuraMax){ //Si se sale por la derecha
-	        	copos[i].style.left = "0px";
-	        }else if(fuerzaViento < 0 && x < 0){ //Si se sale por la izquierda
-	        	copos[i].style.left = anchuraMax+"px";
 	        }
         }
     }
