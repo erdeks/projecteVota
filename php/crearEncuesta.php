@@ -2,8 +2,9 @@
   require "inicializar.php";
   if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['pregunta']) &&
   existeYnoEstaVacio($_POST['diaInicio']) && existeYnoEstaVacio($_POST['mesInicio']) &&
-  existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['diaFin']) &&
-  existeYnoEstaVacio($_POST['mesFin']) && existeYnoEstaVacio($_POST['anyFin']) &&
+  existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['horaInicio']) && 
+  existeYnoEstaVacio($_POST['diaFin']) && existeYnoEstaVacio($_POST['mesFin']) && 
+  existeYnoEstaVacio($_POST['anyFin']) && existeYnoEstaVacio($_POST['horaFin']) && 
   existeYnoEstaVacio($_POST['res1']) && existeYnoEstaVacio($_POST['res2']) &&
   existeYnoEstaVacio($_POST['multirespuesta']) &&existeYnoEstaVacio($_SESSION['usuario'])){
     $conexion = abrirConexion();
@@ -14,9 +15,11 @@
     $diaInicio = $_POST['diaInicio'];
     $mesInicio = $_POST['mesInicio'];
     $anyInicio = $_POST['anyInicio'];
+    $horaInicio = $_POST['horaInicio'];
     $diaFin = $_POST['diaFin'];
     $mesFin = $_POST['mesFin'];
     $anyFin = $_POST['anyFin'];
+    $horaFin = $_POST['horaFin'];
     $headerDescripcion = "";
     $bodyDescripcion = "";
     if(existeYnoEstaVacio($_POST['descripcion'])){
@@ -24,7 +27,7 @@
       $bodyDescripcion = ", '".$_POST['descripcion']."'";
     }
 
-    $query = $conexion->prepare ("INSERT INTO encuestas (idUsuario, nombre, multirespuesta, inicio, fin$headerDescripcion) VALUES ($idUsuario, '$pregunta', $multirespuesta, '$anyInicio-$mesInicio-$diaInicio', '$anyFin-$mesFin-$diaFin'$bodyDescripcion);");
+    $query = $conexion->prepare ("INSERT INTO encuestas (idUsuario, nombre, multirespuesta, inicio, fin$headerDescripcion) VALUES ($idUsuario, '$pregunta', $multirespuesta, '$anyInicio-$mesInicio-$diaInicio $horaInicio:00:00', '$anyFin-$mesFin-$diaFin $horaFin:00:00'$bodyDescripcion);");
 
     $error = false;
     if($query->execute()){
