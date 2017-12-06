@@ -2,7 +2,7 @@ window.addEventListener('load', onLoad, true);
 
 function onLoad(){
     var elementForm = document.getElementsByClassName('animacionDesplegar')[0];
-	animacionAdd(elementForm);
+    if(elementForm != null) animacionAdd(elementForm);
 }
 
 function animacionAdd(padre) {

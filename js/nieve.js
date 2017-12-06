@@ -43,14 +43,13 @@ function dibujaCopo(x, y, padre){
 
 //Cambia la fuerza del viento
 function cambiarFuerzaViento(){
-	if(fuerzaViento >= 2){
+	if(fuerzaViento >= 4){
 		fuerzaViento += -1;
-	}else if(fuerzaViento <= -2){
+	}else if(fuerzaViento <= -4){
 		fuerzaViento += 1;
 	}else{
 		fuerzaViento += parseInt((Math.random()*3))-1
 	}
-
 	setTimeout(cambiarFuerzaViento, parseInt((Math.random()*5000))+10000)
 }
 

@@ -1,5 +1,7 @@
 var error = null;
 var interval_id_validacionEncuesta = -1;
+var minHorasEntrefechas = 4
+
 
 window.addEventListener('load', onLoad, true);
 
@@ -56,6 +58,9 @@ function getElementoFechaInicio(){
 	var elementoDivErrorAny = document.createElement("div");
 		elementoDivErrorAny.setAttribute("class", "tooltip");
 
+	var elementoDivErrorHora = document.createElement("div");
+		elementoDivErrorHora.setAttribute("class", "tooltip");
+
 	var elementoInputDia = document.createElement("input");
 		elementoInputDia.setAttribute("type", "number");
 		elementoInputDia.setAttribute("name", "diaInicio");
@@ -74,15 +79,23 @@ function getElementoFechaInicio(){
 		elementoInputAny.setAttribute("placeholder", "YYYY");
 		elementoInputAny.required = true;
 
+	var elementoInputHora = document.createElement("input");
+		elementoInputHora.setAttribute("type", "number");
+		elementoInputHora.setAttribute("name", "horaInicio");
+		elementoInputHora.setAttribute("placeholder", "HH");
+		elementoInputHora.required = true;
+
 	agregarHijo(elementoDiv, elementoLavel);
 	agregarHijo(elementoLavel, contenidoLavel);
 	agregarHijo(elementoDiv, elementoBr);
 	agregarHijo(elementoDiv, elementoDivErrorDia);
 	agregarHijo(elementoDiv, elementoDivErrorMes);
 	agregarHijo(elementoDiv, elementoDivErrorAny);
+	agregarHijo(elementoDiv, elementoDivErrorHora);
 	agregarHijo(elementoDivErrorDia, elementoInputDia);
 	agregarHijo(elementoDivErrorMes, elementoInputMes);
 	agregarHijo(elementoDivErrorAny, elementoInputAny);
+	agregarHijo(elementoDivErrorHora, elementoInputHora);
 
 	//Eventos
 	elementoInputDia.addEventListener("input", checkFechaInicio);
@@ -91,6 +104,8 @@ function getElementoFechaInicio(){
 	elementoInputMes.addEventListener("blur", checkFechaInicio);
 	elementoInputAny.addEventListener("input", checkFechaInicio);
 	elementoInputAny.addEventListener("blur", checkFechaInicio);
+	elementoInputHora.addEventListener("input", checkFechaInicio);
+	elementoInputHora.addEventListener("blur", checkFechaInicio);
 
 	return elementoDiv;
 }
@@ -113,6 +128,9 @@ function getElementoFechaFin(){
 	var elementoDivErrorAny = document.createElement("div");
 		elementoDivErrorAny.setAttribute("class", "tooltip");
 
+	var elementoDivErrorHora = document.createElement("div");
+		elementoDivErrorHora.setAttribute("class", "tooltip");
+
 	var elementoInputDia = document.createElement("input");
 		elementoInputDia.setAttribute("type", "number");
 		elementoInputDia.setAttribute("name", "diaFin");
@@ -129,8 +147,13 @@ function getElementoFechaFin(){
 		elementoInputAny.setAttribute("type", "number");
 		elementoInputAny.setAttribute("name", "anyFin");
 		elementoInputAny.setAttribute("placeholder", "YYYY");
-		elementoInputAny.setAttribute("placeholder", "YYYY");
 		elementoInputAny.required = true;
+
+	var elementoInputHora = document.createElement("input");
+		elementoInputHora.setAttribute("type", "number");
+		elementoInputHora.setAttribute("name", "horaFin");
+		elementoInputHora.setAttribute("placeholder", "HH");
+		elementoInputHora.required = true;
 
 	agregarHijo(elementoDiv, elementoLavel);
 	agregarHijo(elementoLavel, contenidoLavel);
@@ -138,9 +161,11 @@ function getElementoFechaFin(){
 	agregarHijo(elementoDiv, elementoDivErrorDia);
 	agregarHijo(elementoDiv, elementoDivErrorMes);
 	agregarHijo(elementoDiv, elementoDivErrorAny);
+	agregarHijo(elementoDiv, elementoDivErrorHora);
 	agregarHijo(elementoDivErrorDia, elementoInputDia);
 	agregarHijo(elementoDivErrorMes, elementoInputMes);
 	agregarHijo(elementoDivErrorAny, elementoInputAny);
+	agregarHijo(elementoDivErrorHora, elementoInputHora);
 
 	//Eventos
 	elementoInputDia.addEventListener("input", checkFechaFin);
@@ -149,6 +174,8 @@ function getElementoFechaFin(){
 	elementoInputMes.addEventListener("blur", checkFechaFin);
 	elementoInputAny.addEventListener("input", checkFechaFin);
 	elementoInputAny.addEventListener("blur", checkFechaFin);
+	elementoInputHora.addEventListener("input", checkFechaFin);
+	elementoInputHora.addEventListener("blur", checkFechaFin);
 
 	return elementoDiv;
 }
@@ -377,21 +404,25 @@ function desactivarErroresFechaInicio(inputActual = null){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
-	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+	var hora = inputHora.value;
+	var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
 
 	var fechaActual = getFechaReseteada();
 	var fechaInicio = null;
 
-	if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia);
+	if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia, hora);
 	
 	if(isFechaCompleta && fechaInicio >= fechaActual){
 		if(dia > 0 && dia <= daysInMonth(any, mes))
 			eliminarError(inputDia);
 		if(mes > 0 && mes < 13)
 			eliminarError(inputMes);
+		if(hora >= 0 && hora < 24)
+			eliminarError(inputHora);
 		eliminarError(inputAny);
 	}else if(inputActual != null && !isVacio(inputActual)){
 		eliminarError(inputActual);
@@ -403,12 +434,22 @@ function activarErroresFechaInicio(inputActual = null){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
+	var hora = inputHora.value;
 	var error = false;
 	if(inputActual != null){
 		switch(getPosition(inputActual.parentNode)){
+			case getPosition(getInputHora(padre).parentNode): //Hora
+				if(hora == ""){
+					crearError(inputHora, "La hora no puede estar vacio.");
+				}else if(hora < 0 || hora > 23){
+					crearError(inputHora, "El rango de horas estra entre el 0 y el 23.");
+					error = true;
+				}
+				break;
 			case getPosition(getInputDia(padre).parentNode): //Dia
 				if(dia == ""){
 					crearError(inputDia, "EL dia no puede estar vacio.");
@@ -433,19 +474,19 @@ function activarErroresFechaInicio(inputActual = null){
 		}
 	}
 	if(!error){
-		var isFechaCompleta = (dia != "" && mes != "" && any != "");
-		
-		var fechaActual = getFechaReseteada();
-		var fechaInicio = null;
+		var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
+		if(isFechaCompleta){
+			var fechaActual = getFechaReseteada();
+			var fechaInicio = fechaInicio = getFechaReseteada(any, mes, dia, hora);
 
-		if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia);
-
-		if(isFechaCompleta && dia > daysInMonth(mes, any)){
-			crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
-		}else if(isFechaCompleta && fechaInicio < fechaActual){
-			crearError(inputDia, "");
-			crearError(inputAny, "");
-			crearError(inputMes, "La fecha de inicio no puede ser menor a la fecha actual");
+			if(dia > daysInMonth(mes, any)){
+				crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
+			}else if(fechaInicio < fechaActual){
+				crearError(inputDia, "");
+				crearError(inputAny, "");
+				crearError(inputHora, "");
+				crearError(inputMes, "La fecha de inicio no puede ser menor a la fecha actual");
+			}
 		}
 	}
 }
@@ -455,24 +496,28 @@ function desactivarErroresFechaFin(inputActual = null){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
+	var hora = inputHora.value;
 
-	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+	var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
 
 	var fechaInicio = getFechaInicio();
 	var fechaFin = null;
 
-	if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia);
+	if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia, hora);
 
-	if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+	if(fechaInicio != false) fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 	
 	if(isFechaCompleta && fechaInicio != false && fechaFin >= fechaInicio){
 		if(dia > 0 && dia <= daysInMonth(any, mes))
 			eliminarError(inputDia);
 		if(mes > 0 && mes < 13)
 			eliminarError(inputMes);
+		if(hora >= 0 && hora < 24)
+			eliminarError(inputHora);
 		eliminarError(inputAny);
 	}else if(inputActual != null && !isVacio(inputActual)){
 		eliminarError(inputActual);
@@ -484,13 +529,23 @@ function activarErroresFechaFin(inputActual = null){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
+	var hora = inputHora.value;
 	var error = false;
 
 	if(inputActual != null){
 		switch(getPosition(inputActual.parentNode)){
+			case getPosition(getInputHora(padre).parentNode): //Hora
+				if(hora == ""){
+					crearError(inputHora, "La hora no puede estar vacio.");
+				}else if(hora < 0 || hora > 23){
+					crearError(inputHora, "El rango de horas estra entre el 0 y el 23.");
+					error = true;
+				}
+				break;
 			case getPosition(getInputDia(padre).parentNode): //Dia
 				if(dia == ""){
 					crearError(inputDia, "EL dia no puede estar vacio.");
@@ -515,22 +570,23 @@ function activarErroresFechaFin(inputActual = null){
 		}
 	}
 	if(!error){
-		var isFechaCompleta = (dia != "" && mes != "" && any != "");
+		var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
 
-		var fechaInicio = getFechaInicio();
-		var fechaFin = null;
-		if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia);
+		if(isFechaCompleta){
+			var fechaInicio = getFechaInicio();
+			var fechaFin = getFechaReseteada(any, mes, dia, hora);
 
-		if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+			if(fechaInicio != false)
+				fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 
-		
-		
-		if(isFechaCompleta && dia > daysInMonth(mes, any)){
-			crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
-		}else if(isFechaCompleta && fechaInicio != false && fechaFin < fechaInicio){
-			crearError(inputDia, "");
-			crearError(inputAny, "");
-			crearError(inputMes, "La fecha de cierre tiene que tener 1 dia de diferencia.");
+			if(dia > daysInMonth(mes, any)){
+				crearError(inputDia, "El mes seleccionado solo tiene "+daysInMonth(mes, any)+" dias.");
+			}else if(fechaInicio != false && fechaFin < fechaInicio){
+				crearError(inputDia, "");
+				crearError(inputAny, "");
+				crearError(inputHora, "");
+				crearError(inputMes, "La fecha de cierre tiene que tener "+ minHorasEntrefechas +" " +(minHorasEntrefechas == 1 ? "hora" : " horas") + " de diferencia.");
+			}
 		}
 	}
 }
@@ -555,8 +611,6 @@ function isRespuestaVacia(){
 //Añadir una nueva respuesta
 function addRespuesta(){
 	var padre = document.getElementById('respuestas');
-	if(padre.children.length == 0)
-		padre.style.height = "0px";
 
 	var elementoDiv = document.createElement("div");
 	var elementoSpan = document.createElement("span");
@@ -576,17 +630,129 @@ function addRespuesta(){
 	elementoInput.addEventListener("blur", checkInputsRespuestasFocoPerdido);
 	agregarHijo(elementoDivError, elementoInput);
 
+	agregarHijo(elementoDiv, getButtonUp());
+	agregarHijo(elementoDiv, getButtonDown());
+	agregarHijo(elementoDiv, getButtonRemove());
+
 	agregarHijo(padre, elementoDiv);
-	animacionAdd(padre);
+	animacionAdd(padre, elementoDiv);
 
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
+	checkBotonesRespuesta(padre);
+}
+//Obtener el boton hacia arriba
+function getButtonUp(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-arrow-up");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", moverRespuestaArriba);
+
+	return elementoButton;
+}
+//Obtener el boton hacia abajo
+function getButtonDown(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-arrow-down");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", moverRespuestaAbajo);
+	
+	return elementoButton;
+}
+//Obtener el boton eliminar
+function getButtonRemove(){
+	var elementoButton = document.createElement("button");
+		elementoButton.setAttribute("type", "button")
+	var elementoI = document.createElement("i");
+		elementoI.setAttribute("class", "fa fa-trash-o");
+
+	agregarHijo(elementoButton, elementoI);
+
+	elementoButton.addEventListener("click", eliminarRespuesta);
+	
+	return elementoButton;
 }
 //Elimina todas las respuestas
 function eliminarTodasRespuestas(){
 	var padre = document.getElementById('respuestas');
 
-	animacionDel(padre);
+	animacionDelAll(padre);
+}
+//Funcion para cambiar el value del input del evento por el value del input superior
+function moverRespuestaArriba(){
+	var esteElemento = this.parentNode;
+	var hermanoAnterior = getAnteriorElemento(esteElemento);
+	if(hermanoAnterior != null){
+		insertarAntes(esteElemento.parentNode, hermanoAnterior, esteElemento);
+		cambiarIdRespuestas(esteElemento, -1);
+		cambiarIdRespuestas(hermanoAnterior, 1);
+	}
+
+	checkBotonesRespuesta(esteElemento.parentNode);
+}
+//Funcion para cambiar el value del input del evento por el value del input inferior
+function moverRespuestaAbajo(){
+	var esteElemento = this.parentNode;
+	var hermanoSiguiente = getSiguienteElemento(esteElemento);
+	if(hermanoSiguiente != null){
+		insertarDespues(esteElemento.parentNode, hermanoSiguiente, esteElemento);
+		cambiarIdRespuestas(esteElemento, 1);
+		cambiarIdRespuestas(hermanoSiguiente, -1);
+	}
+
+	checkBotonesRespuesta(esteElemento.parentNode);
+}
+//Funcion para eliminar la respuesta
+function eliminarRespuesta(){
+	var esteElemento = this.parentNode;
+	var padre = esteElemento.parentNode;
+	var siguienteElemento = getSiguienteElemento(esteElemento);
+
+	var height = esteElemento.style.height == "" ? esteElemento.offsetHeight : parseInt(esteElemento.style.height);
+	var totalHeight = 0;
+	var idInterval = setInterval(frame, 1);
+	esteElemento.style.overflow = "hidden";
+	bloquearTodosBotonesRespuesta(padre);
+	function frame() {
+		if (height <= totalHeight) {
+			clearInterval(idInterval);
+			eliminarHijo(padre, esteElemento);
+			while(siguienteElemento != null){
+				cambiarIdRespuestas(siguienteElemento, -1);
+				siguienteElemento = getSiguienteElemento(siguienteElemento);
+			}
+			desbloquearEliminarRespuesta(padre);
+			checkBtnCrearFormulario();
+			checkBtnAgregarRespuestas();
+			checkBotonesRespuesta(padre);
+		} else {
+			height--;
+			esteElemento.style.height = height + 'px';
+		}
+	}
+}
+//cambiar la id de las respuestas
+function cambiarIdRespuestas(elemento, dif){
+	var elementoSpan = elemento.getElementsByTagName("span")[0];
+	var elementoInput = elemento.getElementsByTagName("div")[0].getElementsByTagName("input")[0];
+	var splitSpan = elementoSpan.textContent.split(" ");
+	var num = parseInt(splitSpan[splitSpan.length - 1]) + dif;
+
+	var textoSpan = "";
+	for(var i = 0; i < splitSpan.length - 1; i ++){
+		textoSpan += splitSpan[i] + " ";
+	}
+	textoSpan+=num;
+	elementoSpan.textContent = textoSpan;
+	elementoInput.setAttribute("name", "res"+num);
 }
 //Devuelve el alto total dentro del padre que se la ha pasado
 function getHeightContenedor(padre){
@@ -596,18 +762,50 @@ function getHeightContenedor(padre){
 	}
 	return totalHeight;
 }
+function checkBotonesRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+		//Boton subir
+		if(botones[0].hasAttribute("disabled") && i > 0) botones[0].removeAttribute("disabled");
+		else if(!botones[0].hasAttribute("disabled") && i == 0) botones[0].setAttribute("disabled", "true");
 
+		//Boton bajar
+		if(botones[1].hasAttribute("disabled") && i < cantHijos-1) botones[1].removeAttribute("disabled");
+		else if(!botones[1].hasAttribute("disabled") && i == cantHijos-1) botones[1].setAttribute("disabled", "true");
+	}
+}
+function bloquearTodosBotonesRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+
+		if(!botones[0].hasAttribute("disabled")) botones[0].setAttribute("disabled", "true");
+		if(!botones[1].hasAttribute("disabled")) botones[1].setAttribute("disabled", "true");
+		if(!botones[2].hasAttribute("disabled")) botones[2].setAttribute("disabled", "true");
+	}
+}
+function desbloquearEliminarRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+		//Boton eliminar
+		if(botones[2].hasAttribute("disabled")) botones[2].removeAttribute("disabled");
+	}
+}
 //Generar una animacion para mostrar las respuestas
-function animacionAdd(padre) {
-	var height = padre.offsetHeight;
+function animacionAdd(padre, hijo) {
+	var heightHijo = hijo.offsetHeight;
+	var height = padre.style.height == "" ? padre.offsetHeight - heightHijo : parseInt(padre.style.height);
 	var totalHeight = getHeightContenedor(padre);
 	clearInterval(interval_id_validacionEncuesta);
 	interval_id_validacionEncuesta = setInterval(frame, 1);
 	padre.style.overflow = "hidden";
+	padre.style.height = height + 'px';
 	function frame() {
 		if (height >= totalHeight) {
 			clearInterval(interval_id_validacionEncuesta);
-			padre.style.overflow = "";
+			padre.removeAttribute("style");
 		} else {
 			height++;
 			padre.style.height = height + 'px';
@@ -615,8 +813,8 @@ function animacionAdd(padre) {
 	}
 }
 //Generar una animacion para ocultar y borrar las respuestas
-function animacionDel(padre) {
-	var height = padre.offsetHeight;
+function animacionDelAll(padre) {
+	var height = padre.style.height == "" ? padre.offsetHeight : parseInt(padre.style.height);
 	var totalHeight = 0;
 	clearInterval(interval_id_validacionEncuesta);
 	interval_id_validacionEncuesta = setInterval(frame, 1);
@@ -624,7 +822,7 @@ function animacionDel(padre) {
 	function frame() {
 		if (height <= totalHeight) {
 			clearInterval(interval_id_validacionEncuesta);
-			padre.style.overflow = "";
+			padre.removeAttribute("style");
 			eliminarTodosLosHijos(padre);
 			checkBtnAgregarRespuestas();
 			checkBtnCrearFormulario();
@@ -655,37 +853,30 @@ function getInputMes(padre){
 function getInputAny(padre){
 	return padre.children[4].children[0];
 }
+//Devuelve el input que contiene la hora que sea hijo del padre pasado
+function getInputHora(padre){
+	return padre.children[5].children[0];
+}
 //Devuelve cuantos dias tiene el mes de x año
 function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
 }
-//Añade dias a una fecha
-function addDias(fecha, cant){
-	if(fecha.getDate() + cant > daysInMonth(fecha.getDate(), fecha.getMonth(), fecha.getFullYear())){
-		fecha.setDate(1);
-		if(fecha.getMonth() == 11){ //0-11
-			fecha.setFullYear(fecha.getFullYear() + 1);
-			fecha.setMonth(1);
-		}else{
-			fecha.setMonth(fecha.getMonth() + 1);
-		}
-	}else{
-		fecha.setDate(fecha.getDate() + cant);
-	}
+//Añade horas a una fecha
+function addHoras(fecha, cant){
+	fecha.setHours(fecha.getHours() + cant);
 	return fecha;
 }
-//Devuelve una fecha con los milisegundos, segundos, minutos y horas a 0
-function getFechaReseteada(dia = -1, mes = -1, any = -1){
+//Devuelve una fecha con los milisegundos, segundos, minutos a 0
+function getFechaReseteada(any = -1, mes = -1, dia = -1, hora = -1){
 	var data;
-	if(any == -1){
+	if(hora == -1){
 		data = new Date();
 	}else{
-		data = new Date(dia, mes - 1, any);
+		data = new Date(any, mes - 1, dia, hora);
 	}
 	data.setMilliseconds(0);
 	data.setSeconds(0);
 	data.setMinutes(0);
-	data.setHours(0);
 	return data;
 }
 //Devuelve la fecha de inicio reseteada del formulario o 
@@ -695,23 +886,25 @@ function getFechaInicio(){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
-	var isFechaCompleta = (dia != "" && mes != "" && any != "");
+	var hora = inputHora.value;
+	var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
 
 	if(!isFechaCompleta) return false;
-	else return getFechaReseteada(any, mes, dia);
+	else return getFechaReseteada(any, mes, dia, hora);
 }
 //True si la fecha de inicio esta incompleta, true si esta completa
 function isDataInicioVacia(){
 	var datasInicio = document.getElementById("dataInicio");
-	return isVacio(getInputDia(datasInicio)) || isVacio(getInputMes(datasInicio)) || isVacio(getInputAny(datasInicio));
+	return isVacio(getInputDia(datasInicio)) || isVacio(getInputMes(datasInicio)) || isVacio(getInputAny(datasInicio)) || isVacio(getInputHora(datasInicio));
 }
 //True si la fecha de fin esta incompleta, true si esta completa
 function isDataFinVacia(){
 	var datasFin = document.getElementById("dataFin");
-	return isVacio(getInputDia(datasFin)) || isVacio(getInputMes(datasFin)) || isVacio(getInputAny(datasFin));
+	return isVacio(getInputDia(datasFin)) || isVacio(getInputMes(datasFin)) || isVacio(getInputAny(datasFin)) || isVacio(getInputHora(datasFin));
 }
 //Comprueba si la fecha de inicio es correcta o no
 function isValidoFechaInicio(){
@@ -721,14 +914,16 @@ function isValidoFechaInicio(){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
+	var hora = inputHora.value;
 
 	var fechaActual = getFechaReseteada();
-	var fechaInicio = getFechaReseteada(any, mes, dia);
+	var fechaInicio = getFechaReseteada(any, mes, dia, hora);
 	
-	return (isValidaFecha(dia, mes, any) && fechaInicio >= fechaActual);
+	return (isValidaFecha(dia, mes, any, hora) && fechaInicio >= fechaActual);
 }
 //Comprueba si la fecha de fin es correcta o no
 function isValidoFechaFin(){
@@ -738,20 +933,22 @@ function isValidoFechaFin(){
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
 	var inputAny = getInputAny(padre);
+	var inputHora = getInputHora(padre);
 	var dia = inputDia.value;
 	var mes = inputMes.value;
 	var any = inputAny.value;
+	var hora = inputHora.value;
 
 	var fechaInicio = getFechaInicio();
-	var fechaFin = getFechaReseteada(any, mes, dia);
+	var fechaFin = getFechaReseteada(any, mes, dia, hora);
 
-	if(fechaInicio != false) fechaInicio = addDias(fechaInicio, 1);
+	if(fechaInicio != false) fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 
-	return (isValidaFecha(dia, mes, any) && fechaFin >= fechaInicio);
+	return (isValidaFecha(dia, mes, any, hora) && fechaFin >= fechaInicio);
 }
 //Comprueba que los dias y mes de una fecha esten bien y que existan
-function isValidaFecha(dia, mes, any){
-	return (dia > 0 && dia <= daysInMonth(mes, any) && mes > 0 && mes < 13);
+function isValidaFecha(dia, mes, any, horas){
+	return (dia > 0 && dia <= daysInMonth(mes, any) && mes > 0 && mes < 13 && horas >= 0 && horas < 24);
 }
 //Fin manejar datas
 //Errores
@@ -847,7 +1044,10 @@ function insertarDespues(padre, hijo, elemento){
 function getSiguienteElemento(hijo){
 	return hijo.nextSibling;
 }
-
+//Obtener el elemento anterior
+function getAnteriorElemento(hijo){
+	return hijo.previousSibling;
+}
 //Fin JS DOM
 //Funciones inputs
 //Desactiva el input pasado
