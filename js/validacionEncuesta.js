@@ -555,8 +555,6 @@ function isRespuestaVacia(){
 //Añadir una nueva respuesta
 function addRespuesta(){
 	var padre = document.getElementById('respuestas');
-	if(padre.children.length == 0)
-		padre.style.height = "0px";
 
 	var elementoDiv = document.createElement("div");
 	var elementoSpan = document.createElement("span");
@@ -576,15 +574,16 @@ function addRespuesta(){
 	elementoInput.addEventListener("blur", checkInputsRespuestasFocoPerdido);
 	agregarHijo(elementoDivError, elementoInput);
 
-	agregarHijo(elementoDivError, getButtonUp());
-	agregarHijo(elementoDivError, getButtonDown());
-	agregarHijo(elementoDivError, getButtonRemove());
+	agregarHijo(elementoDiv, getButtonUp());
+	agregarHijo(elementoDiv, getButtonDown());
+	agregarHijo(elementoDiv, getButtonRemove());
 
 	agregarHijo(padre, elementoDiv);
-	animacionAdd(padre);
+	animacionAdd(padre, elementoDiv);
 
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
+	checkBotonesRespuesta(padre);
 }
 //Obtener el boton hacia arriba
 function getButtonUp(){
@@ -629,22 +628,75 @@ function getButtonRemove(){
 function eliminarTodasRespuestas(){
 	var padre = document.getElementById('respuestas');
 
-	animacionDel(padre);
+	animacionDelAll(padre);
 }
-//Funcion para mover la respuesta hacia arriba
+//Funcion para cambiar el value del input del evento por el value del input superior
 function moverRespuestaArriba(){
-	var esteElemento = this.parentNode.parentNode;
-	insertarAntes(esteElemento.parentNode, getAnteriorElemento(esteElemento), esteElemento);
+	var esteElemento = this.parentNode;
+	var hermanoAnterior = getAnteriorElemento(esteElemento);
+	if(hermanoAnterior != null){
+		insertarAntes(esteElemento.parentNode, hermanoAnterior, esteElemento);
+		cambiarIdRespuestas(esteElemento, -1);
+		cambiarIdRespuestas(hermanoAnterior, 1);
+	}
+
+	checkBotonesRespuesta(esteElemento.parentNode);
 }
-//Funcion para mover la respuesta hacia abajo
+//Funcion para cambiar el value del input del evento por el value del input inferior
 function moverRespuestaAbajo(){
-	var esteElemento = this.parentNode.parentNode;
-	insertarDespues(esteElemento.parentNode, getSiguienteElemento(esteElemento), esteElemento);
-	//function insertarDespues(padre, hijo, elemento){
+	var esteElemento = this.parentNode;
+	var hermanoSiguiente = getSiguienteElemento(esteElemento);
+	if(hermanoSiguiente != null){
+		insertarDespues(esteElemento.parentNode, hermanoSiguiente, esteElemento);
+		cambiarIdRespuestas(esteElemento, 1);
+		cambiarIdRespuestas(hermanoSiguiente, -1);
+	}
+
+	checkBotonesRespuesta(esteElemento.parentNode);
 }
 //Funcion para eliminar la respuesta
 function eliminarRespuesta(){
-	
+	var esteElemento = this.parentNode;
+	var padre = esteElemento.parentNode;
+	var siguienteElemento = getSiguienteElemento(esteElemento);
+
+	var height = esteElemento.style.height == "" ? esteElemento.offsetHeight : parseInt(esteElemento.style.height);
+	var totalHeight = 0;
+	var idInterval = setInterval(frame, 1);
+	esteElemento.style.overflow = "hidden";
+	bloquearTodosBotonesRespuesta(padre);
+	function frame() {
+		if (height <= totalHeight) {
+			clearInterval(idInterval);
+			eliminarHijo(padre, esteElemento);
+			while(siguienteElemento != null){
+				cambiarIdRespuestas(siguienteElemento, -1);
+				siguienteElemento = getSiguienteElemento(siguienteElemento);
+			}
+			desbloquearEliminarRespuesta(padre);
+			checkBtnCrearFormulario();
+			checkBtnAgregarRespuestas();
+			checkBotonesRespuesta(padre);
+		} else {
+			height--;
+			esteElemento.style.height = height + 'px';
+		}
+	}
+}
+//cambiar la id de las respuestas
+function cambiarIdRespuestas(elemento, dif){
+	var elementoSpan = elemento.getElementsByTagName("span")[0];
+	var elementoInput = elemento.getElementsByTagName("div")[0].getElementsByTagName("input")[0];
+	var splitSpan = elementoSpan.textContent.split(" ");
+	var num = parseInt(splitSpan[splitSpan.length - 1]) + dif;
+
+	var textoSpan = "";
+	for(var i = 0; i < splitSpan.length - 1; i ++){
+		textoSpan += splitSpan[i] + " ";
+	}
+	textoSpan+=num;
+	elementoSpan.textContent = textoSpan;
+	elementoInput.setAttribute("name", "res"+num);
 }
 //Devuelve el alto total dentro del padre que se la ha pasado
 function getHeightContenedor(padre){
@@ -654,17 +706,50 @@ function getHeightContenedor(padre){
 	}
 	return totalHeight;
 }
+function checkBotonesRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+		//Boton subir
+		if(botones[0].hasAttribute("disabled") && i > 0) botones[0].removeAttribute("disabled");
+		else if(!botones[0].hasAttribute("disabled") && i == 0) botones[0].setAttribute("disabled", "true");
+
+		//Boton bajar
+		if(botones[1].hasAttribute("disabled") && i < cantHijos-1) botones[1].removeAttribute("disabled");
+		else if(!botones[1].hasAttribute("disabled") && i == cantHijos-1) botones[1].setAttribute("disabled", "true");
+	}
+}
+function bloquearTodosBotonesRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+
+		if(!botones[0].hasAttribute("disabled")) botones[0].setAttribute("disabled", "true");
+		if(!botones[1].hasAttribute("disabled")) botones[1].setAttribute("disabled", "true");
+		if(!botones[2].hasAttribute("disabled")) botones[2].setAttribute("disabled", "true");
+	}
+}
+function desbloquearEliminarRespuesta(padre){
+	var cantHijos = padre.children.length;
+	for(var i = 0; i < cantHijos; i++){
+		var botones = padre.children[i].getElementsByTagName("button");
+		//Boton eliminar
+		if(botones[2].hasAttribute("disabled")) botones[2].removeAttribute("disabled");
+	}
+}
 //Generar una animacion para mostrar las respuestas
-function animacionAdd(padre) {
-	var height = padre.offsetHeight;
+function animacionAdd(padre, hijo) {
+	var heightHijo = hijo.offsetHeight;
+	var height = padre.style.height == "" ? padre.offsetHeight - heightHijo : parseInt(padre.style.height);
 	var totalHeight = getHeightContenedor(padre);
 	clearInterval(interval_id_validacionEncuesta);
 	interval_id_validacionEncuesta = setInterval(frame, 1);
 	padre.style.overflow = "hidden";
+	padre.style.height = height + 'px';
 	function frame() {
 		if (height >= totalHeight) {
 			clearInterval(interval_id_validacionEncuesta);
-			padre.style.overflow = "";
+			padre.removeAttribute("style");
 		} else {
 			height++;
 			padre.style.height = height + 'px';
@@ -672,8 +757,8 @@ function animacionAdd(padre) {
 	}
 }
 //Generar una animacion para ocultar y borrar las respuestas
-function animacionDel(padre) {
-	var height = padre.offsetHeight;
+function animacionDelAll(padre) {
+	var height = padre.style.height == "" ? padre.offsetHeight : parseInt(padre.style.height);
 	var totalHeight = 0;
 	clearInterval(interval_id_validacionEncuesta);
 	interval_id_validacionEncuesta = setInterval(frame, 1);
@@ -681,7 +766,7 @@ function animacionDel(padre) {
 	function frame() {
 		if (height <= totalHeight) {
 			clearInterval(interval_id_validacionEncuesta);
-			padre.style.overflow = "";
+			padre.removeAttribute("style");
 			eliminarTodosLosHijos(padre);
 			checkBtnAgregarRespuestas();
 			checkBtnCrearFormulario();
