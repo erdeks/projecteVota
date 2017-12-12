@@ -88,7 +88,7 @@
 					<tr>
 						<th>Respuesta</th>
 						<th>Cantidad de votos</th>
-						<th>Porcentage de votos</th>
+						<th>Porcentaje de votos</th>
 					</tr>
 					<?php while($votos = $query->fetch()){ ?>
 						<tr><?php

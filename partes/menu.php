@@ -10,7 +10,7 @@
 				<?php paginaActiva("pagina/crearEncuesta.php", $classActive); ?>
 				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/crearEncuesta.php">Crear una encuesta</a></li>
 				<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
-				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta.php">Ver/Votar encuestas</a></li>
+				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta2.php">Votar encuestas</a></li>
 			<?php } ?>
 		</ul>
 	</li>

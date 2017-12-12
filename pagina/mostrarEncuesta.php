@@ -13,7 +13,7 @@
       <div id="contenido">
         <?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
           <?php getMensajes(); ?>
-          <h2 class="cardTitle">Mis encuestas</h2>
+          <h2 class="cardTitle">Encuestas no votadas</h2>
           <div class="cardContent">
             <?php
               $conexion = abrirConexion();
@@ -29,7 +29,7 @@
               echo "</ul>";
             ?>
           </div>
-          <h2 class="cardTitle">Encuestas en la que estoy invitado.</h2>
+          <h2 class="cardTitle">Encuestas votadas</h2>
           <div class="cardContent">
             <?php
               $query = $conexion->prepare("SELECT idEncuesta, e.nombre FROM accesoEncuestas a JOIN encuestas e USING(idEncuesta) WHERE a.idUsuario=$idUsuario;");
@@ -47,7 +47,7 @@
           $_SESSION['mensaje'][] = [0, "Necesitas logearte para ver las encuestas."];
           header("Location: ./login.php");
          } ?>
-          
+
         </div>
       </div>
     </div>
