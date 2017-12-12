@@ -7,7 +7,7 @@
 		if(correoValido($email)){
 			$password = sha1(md5($_POST['password']));
 
-			$query = $conexion->prepare("SELECT idUsuario, validado FROM usuarios WHERE email = :email AND password = :password;");
+			$query = $conexion->prepare("SELECT idUsuario, validado, idPermiso FROM usuarios WHERE email = :email AND password = :password;");
 			$query->bindParam(":email", $email);
 			$query->bindParam(":password", $password);
 			$query->execute();
@@ -16,7 +16,8 @@
 				if($row['validado'] == 1){
 					$_SESSION['usuario'] = [
 						"id" => $row['idUsuario'],
-						"email" => $email];
+						"email" => $email,
+						"idPermiso" => $row['idPermiso']];
 					irAIndex();
 				}else{
 					destruirUsuario();
