@@ -5,11 +5,11 @@
 		$conexion = abrirConexion();
 		$email = $_POST['email'];
 		if(correoValido($email)){
-			$password = sha1(md5($_POST['password']));
+			$password = hash('sha256', $_POST['password']);
 
 			$query = $conexion->prepare("SELECT idUsuario, validado, idPermiso FROM usuarios WHERE email = :email AND password = :password;");
 			$query->bindParam(":email", $email);
-			$query->bindParam(":password", $password);
+			$query->bindParam(":password", hash('sha256', $password));
 			$query->execute();
 			cerrarConexion($conexion);
 			if($row = $query->fetch()){
@@ -17,7 +17,8 @@
 					$_SESSION['usuario'] = [
 						"id" => $row['idUsuario'],
 						"email" => $email,
-						"idPermiso" => $row['idPermiso']];
+						"idPermiso" => $row['idPermiso'],
+						"password" => $password];
 					irAIndex();
 				}else{
 					destruirUsuario();

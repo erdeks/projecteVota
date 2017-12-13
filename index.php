@@ -11,7 +11,7 @@
 	<div id="divCentral">
 		<div>
 			<div id="contenido">
-				<?php getMensajes(); ?>
+				<?php getMensajes(); echo hash("sha256", "1234");?>
 				<h2 class="cardTitle">Projecte Vota</h2>
 				<div class="cardContent">
 					<p>Proximamente ...</p>

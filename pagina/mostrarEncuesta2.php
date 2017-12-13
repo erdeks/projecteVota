@@ -20,14 +20,21 @@
             $query = $conexion->prepare("SELECT idEncuesta, e.nombre FROM accesoEncuestas a JOIN encuestas e USING(idEncuesta) WHERE a.idUsuario=$idUsuario;");
             $query->execute();
             while($encuestas = $query -> fetch()){
-              if(haVotado($conexion, $idUsuario, $encuestas['idEncuesta'])){
-                $siVotado[] = [
-      						"idEncuesta" => $encuestas['idEncuesta'],
-      						"nombre" => $encuestas['nombre']];
+              $estadoVotacion = haVotado($conexion, $idUsuario, $encuestas['idEncuesta']);
+              if(!is_null($estadoVotacion)){
+                if($estadoVotacion){
+                  $siVotado[] = [
+                    "idEncuesta" => $encuestas['idEncuesta'],
+                    "nombre" => $encuestas['nombre']];
+                }else{
+                  $noVotado[] = [
+                    "idEncuesta" => $encuestas['idEncuesta'],
+                    "nombre" => $encuestas['nombre']];
+                }
               }else{
-                $noVotado[] = [
-      						"idEncuesta" => $encuestas['idEncuesta'],
-      						"nombre" => $encuestas['nombre']];
+                $_SESSION['mensaje'][] = [0, "No se ha podido obtener los votos"];
+                irAindex();
+                break;
               }
             }
           ?>
@@ -76,11 +83,15 @@
 </html>
 <?php
   function haVotado(&$conexion, $idUsuario, $idEncuesta){
-    $query = $conexion->prepare("SELECT COUNT(v.idVoto) AS 'cantVotos' FROM votosEncuestas v JOIN opcionesEncuestas o USING (idOpcion) WHERE idUsuario = $idUsuario AND o.idEncuesta =  $idEncuesta");
+    $query = $conexion->prepare("SELECT COUNT(idVoto) AS 'cantVotos' FROM votosEncuestas WHERE idUsuario = $idUsuario AND idEncuesta =  $idEncuesta");
     $query->execute();
     if($row = $query->fetch()){
       if($row['cantVotos'] > 0) return true;
-      else false;
-    }else return false;
+      else return false;
+    }else return null;
+  }
+  
+  function irAindex(){
+   header("Location: ../index.php");
   }
 ?>

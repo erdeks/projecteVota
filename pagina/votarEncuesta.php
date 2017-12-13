@@ -142,7 +142,7 @@
 				$tipoInput = $encuestas['multirespuesta'] == 1 ? "checkbox" : "radio";
 				echo "<h1>$nombre</h1>";
 				if (existeYnoEstaVacio($descripcion)) echo "<h3>$descripcion</h3>";
-
+				//SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = 19 AND AES_DECRYPT(v.hashEncriptado, "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4") = (SELECT ve.hash FROM votosEncuestasEncriptado ve where ve.idOpcion = o.idOpcion)) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = 19
 				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = $idUsuario AND v.idOpcion =  o.idOpcion) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = $idEncuesta;");
 				$query->execute(); ?>
 				<form class="animacionDesplegar" action="../php/votarEncuesta.php" method="post"> <?php
