@@ -19,7 +19,7 @@
               <input type="password" name="oldPassword" placeholder="Contraseña Antigua" required><br>
               <input type="password" name="newPassword" placeholder="Nueva Contraseña" required><br>
               <input type="password" name="newPasswordConfirm" placeholder="Confirma Nueva Contraseña" required><br>
-              <input type="submit" value="Entrar" required>
+              <input type="submit" value="Enviar" required>
             </form>
 				<?php }else{
           $_SESSION['mensaje'][] = [0, "Tienes que iniciar sesion."];

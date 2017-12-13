@@ -5,8 +5,8 @@
 		
 		$email = $_POST['email'];
 		if(correoValido($email)){
-			$password = sha1(md5($_POST['password']));
-			$passwordConfirm = sha1(md5($_POST['passwordConfirm']));
+			$password = hash('sha256', hash('sha256', $_POST['password']));
+			$passwordConfirm = hash('sha256', hash('sha256', $_POST['passwordConfirm']));
 
 			if($password === $passwordConfirm){
 				$estado = "";

@@ -1,8 +1,8 @@
 tabla usuarios //Contiene los usuarios
 	- idUsuario		(pk, autoIncremental)
-	- idPermiso		(fk)
+	- idPermiso		(fk => permisos)
 	- email 		(String de 100, unique)
-	- password 		(String de 40, null)
+	- password 		(String de 64, null)
 	- validado 		(bool, default: false)
 	- validando		(bool, default: false)
 
@@ -13,7 +13,7 @@ tabla permisos //Contiene los permisos que puede tener un usuario
 
 tabla encuestas //Contiene las encuentras
 	- idEncuesta		(pk, autoIncremental)
-	- idUsuario			(fk)
+	- idUsuario			(fk => usuarios)
 	- nombre			(String de 100)
 	- multirespuesta	(bool, default: false)
 	- descripcion		(String de 200, null)
@@ -22,15 +22,20 @@ tabla encuestas //Contiene las encuentras
 
 tabla opcionesEncuestas //Contiene las opciones de las encuestas
 	- idOpcion		(pk, autoIncremental)
-	- idEncuesta	(fk)
+	- idEncuesta	(fk => encuestas)
 	- nombre		(String de 100)
 
-tabla votosEncuestas //Contiene los votos de los usuarios
+tabla votosEncuestasEncriptado //Contiene los votos de los usuarios encriptado
 	- idVoto		(pk, autoIncremental)
-	- idOpcion		(fk)
-	- idUsuario		(fk)
+	- idUsuario		(fk => accesoEncuestas)
+	- idEncuesta	(fk => encuestas)
+	- hashEncriptado(text)
+
+tabla votosEncuestas //Contiene el enlace de los votos de los usuarios encriptado
+	- hash		(pk, String de 50)
+	- idOpcion	(fk => opcionesEncuestas)
 
 tabla accesoEncuestas //Contiene los usuarios invitados
 	- idAcceso 		(pk, autoIncremental)
-	- idUsuario 	(fk)
-	- idEncuesta 	(fk)
+	- idUsuario 	(fk => usuarios)
+	- idEncuesta 	(fk => encuestas)

@@ -1,5 +1,13 @@
+//@Nombre: ValidacionEncuesta.js
+//@Fecha de creación: 1-12-2017
+//@Creador: Marc Colominas Rojas
+//@Descipción: Genera, valida que los campos esten correctamente y genera la animación de las respuestas del formulario de crear encuesta
+
+//Contiene el elemento DOM del error que se muestra en el formulario
 var error = null;
+//Contiene el id interval de la animacion de las encuestas
 var interval_id_validacionEncuesta = -1;
+//Las horas que tiene que tener como minimo de diferencia entre la fecha de inicio y la fecha de fin
 var minHorasEntrefechas = 4
 
 
@@ -10,7 +18,10 @@ function onLoad(){
 }
 
 //Inicio crear Formulario
-//Generar Formulario
+
+//@Descripción: Generar Formulario, añadirlo a la pagina y agregar todos sus eventos
+//@Params: Ninguno
+//@Return: Ninguno
 function generarForumario(){
 	this.disabled = true;
 	this.removeEventListener("click", generarForumario);
@@ -23,7 +34,7 @@ function generarForumario(){
 	var elementoBotones = getElementoBotones();
 	var elementoRespuestas = getElementoRespuestas();
 
-	elementoForm = document.createElement("form");
+	var elementoForm = document.createElement("form");
 	elementoForm.setAttribute("method", "post");
 	elementoForm.setAttribute("action", "../php/crearEncuesta.php");
 
@@ -39,7 +50,10 @@ function generarForumario(){
 	checkBtnAgregarRespuestas();
 	checkBtnCrearFormulario();
 }
-//Obtener fecha inicio
+
+//@Descripción: Generar el elemento dom de la fecha inicio con sus eventos
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoFechaInicio(){
 	var elementoDiv = document.createElement("div");
 		elementoDiv.setAttribute("id", "dataInicio");
@@ -109,7 +123,10 @@ function getElementoFechaInicio(){
 
 	return elementoDiv;
 }
-//Obtener fecha fin
+
+//@Descripción: Generar el elemento dom de la fecha fin con sus eventos
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoFechaFin(){
 	var elementoDiv = document.createElement("div");
 		elementoDiv.setAttribute("id", "dataFin");
@@ -179,7 +196,10 @@ function getElementoFechaFin(){
 
 	return elementoDiv;
 }
-//Obtener el elemento pregunta
+
+//@Descripción: Generar el elemento dom de la pregunta con sus eventos
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoPregunta(){
 	var elementoDiv = document.createElement("div");
 
@@ -209,7 +229,10 @@ function getElementoPregunta(){
 
 	return elementoDiv;
 }
-//Obtener el elemento descripcion
+
+//@Descripción: Generar el elemento dom de la descripcion
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoDescripcion(){
 	var elementoDiv = document.createElement("div");
 
@@ -229,7 +252,10 @@ function getElementoDescripcion(){
 
 	return elementoDiv;
 }
-//Obtener el elemento multirespuesta
+
+//@Descripción: Generar el elemento dom multirespuesta
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoMultirespuesta(){
 	var elementoDiv = document.createElement("div");
 
@@ -269,6 +295,9 @@ function getElementoMultirespuesta(){
 	return elementoDiv;
 }
 //Obtener el elemento botones
+//@Descripción: Generar el elemento dom de los botones (añadir respuesta, eliminar todas respuestas, enviar) con sus eventos
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoBotones(){
 	var elementoDiv = document.createElement("div");
 
@@ -302,7 +331,9 @@ function getElementoBotones(){
 	return elementoDiv;
 }
 
-//Obtener el elemento respuestas (donde se almacenaran las respuestas)
+//@Descripción: Generar el elemento dom de las respuestas (Donde se generarán las respuestas)
+//@Params: Ninguno
+//@Return: DOM Element
 function getElementoRespuestas(){
 	var elementoDiv = document.createElement("div");
 		elementoDiv.setAttribute("id", "respuestas");
@@ -310,8 +341,12 @@ function getElementoRespuestas(){
 	return elementoDiv;
 }
 //Fin crear Formulario
+
 //Chequear
-//Activa o desactivar el boton para enviar el formulario
+
+//@Descripción: Revisa que los parametros necesarios se cumplan para activar o desactivar el botón para enviar el formulario
+//@Params: Ninguno
+//@Return: Ninguno
 function checkBtnCrearFormulario(){
 	var btnCrearFormulario = document.getElementById('crearForumario');
 	var inputPregunta = document.getElementById('pregunta');
@@ -322,7 +357,10 @@ function checkBtnCrearFormulario(){
 		activarInput(btnCrearFormulario);
 	}
 }
-//Activa o desactivar el boton para añadir mas respuestas
+
+//@Descripción: Revisa que los parametros necesarios se cumplan para activar o desactivar el botón para añadir mas respuestas
+//@Params: Ninguno
+//@Return: Ninguno
 function checkBtnAgregarRespuestas(){
 	var btnAddRespuesta = document.getElementById('addRespuesta');
 	var cantRespuestas = getCantRespuestas();
@@ -334,7 +372,10 @@ function checkBtnAgregarRespuestas(){
 		activarInput(btnAddRespuesta);
 	}
 }
-//Checkear el estado del input pregunta cuando el texto se esta cambiando
+
+//@Descripción: Cuando el texto se modifica en el input pregunta, gestiona los errores y valida el estado del botón de crear formularios
+//@Params: Ninguno
+//@Return: Ninguno
 function checkInputPreguntaTextoCambia(){
 	if(error != null){
 		desactivarMensajeError(error);
@@ -344,13 +385,19 @@ function checkInputPreguntaTextoCambia(){
 	}
 	checkBtnCrearFormulario();
 }
-//Checkear el estado del input pregunta cuando se pierde el foco
+
+//@Descripción: Cuando se pierde el foco en el input pregunta, genera el error en caso que este vacio
+//@Params: Ninguno
+//@Return: Ninguno
 function checkInputPreguntaFocoPerdido(){
 	if(isVacio(this)){
 		crearError(this, "La pregunta no puede estar vacia.");
 	}
 }
-//Checkear el estado del input respuestas cuando el texto se esta cambiando
+
+//@Descripción: Cuando el texto se modifica en el input respuesta, gestiona los errores y valida el estado de'los botónes de crear formularios y agregar respuesta
+//@Params: Ninguno
+//@Return: Ninguno
 function checkInputsRespuestasTextoCambia(){
 	if(error != null){
 		desactivarMensajeError(error);
@@ -362,14 +409,19 @@ function checkInputsRespuestasTextoCambia(){
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
 }
-//Checkear el estado del input respuestas cuando se pierde el foco
+
+//@Descripción: Cuando se pierde el foco en el input respuesta, genera el error en caso que este vacio
+//@Params: Ninguno
+//@Return: Ninguno
 function checkInputsRespuestasFocoPerdido(){
 	if(isVacio(this)){
 		crearError(this, "La respuesta no puede estar vacia.");
 	}
 }
-//Checkear el dia, mes y año de la fecha de inicio
-//Se accede cuando el texto cambia o se pierde el foco
+
+//@Descripción: Desactiva los errores activos, valida el dia, mes, año y hora de la fecha de inicio que esten correctos, genera sus errores, se accede cuando el texto cambia o se pierde el foco en sus inputs 
+//@Params: Ninguno
+//@Return: Ninguno
 function checkFechaInicio(){
 	if(error != null){
 		desactivarMensajeError(error);
@@ -378,13 +430,15 @@ function checkFechaInicio(){
 	desactivarErroresFechaFin();
 	activarErroresFechaFin();
 
-	desactivarErroresFechaInicio(this);
+	desactivarErroresFechaInicio();
 	activarErroresFechaInicio(this);
 
 	checkBtnCrearFormulario();
 }
-//Checkear el dia, mes y año de la fecha de fin
-//Se accede cuando el texto cambia o se pierde el foco
+
+//@Descripción: Desactiva los errores activos, valida el dia, mes, año y hora de la fecha de fin que esten correctos, genera sus errores, se accede cuando el texto cambia o se pierde el foco en sus inputs 
+//@Params: Ninguno
+//@Return: Ninguno
 function checkFechaFin(){
 	if(error != null){
 		desactivarMensajeError(error);
@@ -398,8 +452,10 @@ function checkFechaFin(){
 	
 	checkBtnCrearFormulario();
 }
-//Funcion que comprueba si desactiva los errores de la fecha de inicio
-function desactivarErroresFechaInicio(inputActual = null){
+//@Descripción: Comprueba si desactiva los errores de la fecha de inicio, es opcionar pasarle el input actual, si se le pasa, eliminara el error del elemento pasado cuando sea necesario
+//@Params: [inputActual] (Dom Element)
+//@Return: Ninguno
+function desactivarErroresFechaInicio(){
 	var padre = document.getElementById("dataInicio");
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
@@ -411,21 +467,28 @@ function desactivarErroresFechaInicio(inputActual = null){
 	var hora = inputHora.value;
 	var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
 
-	var fechaActual = getFechaReseteada();
-	var fechaInicio = null;
+	if(isFechaCompleta){
+		var fechaActual = getFechaReseteada();
+		var fechaInicio = getFechaReseteada(any, mes, dia, hora);
 
-	if(isFechaCompleta) fechaInicio = getFechaReseteada(any, mes, dia, hora);
-	
-	if(isFechaCompleta && fechaInicio >= fechaActual){
-		if(dia > 0 && dia <= daysInMonth(any, mes))
+		if(fechaInicio >= fechaActual){
+			if(dia > 0 && dia <= daysInMonth(any, mes))
+				eliminarError(inputDia);
+			if(mes > 0 && mes < 13)
+				eliminarError(inputMes);
+			if(hora >= 0 && hora < 24)
+				eliminarError(inputHora);
+			eliminarError(inputAny);
+		}
+	}else{
+		if(dia != "" && dia > 0 && dia <= daysInMonth(any, mes))
 			eliminarError(inputDia);
-		if(mes > 0 && mes < 13)
+		if(mes != "" && mes > 0 && mes < 13)
 			eliminarError(inputMes);
-		if(hora >= 0 && hora < 24)
+		if(hora != "" && hora >= 0 && hora < 24)
 			eliminarError(inputHora);
-		eliminarError(inputAny);
-	}else if(inputActual != null && !isVacio(inputActual)){
-		eliminarError(inputActual);
+		if(any != "")
+			eliminarError(inputAny);
 	}
 }
 //Funcion que comprueba si activa los errores de la fecha de inicio
@@ -503,22 +566,24 @@ function desactivarErroresFechaFin(inputActual = null){
 	var hora = inputHora.value;
 
 	var isFechaCompleta = (dia != "" && mes != "" && any != "" && hora != "");
-
-	var fechaInicio = getFechaInicio();
-	var fechaFin = null;
-
-	if(isFechaCompleta) fechaFin = getFechaReseteada(any, mes, dia, hora);
-
-	if(fechaInicio != false) fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 	
-	if(isFechaCompleta && fechaInicio != false && fechaFin >= fechaInicio){
-		if(dia > 0 && dia <= daysInMonth(any, mes))
-			eliminarError(inputDia);
-		if(mes > 0 && mes < 13)
-			eliminarError(inputMes);
-		if(hora >= 0 && hora < 24)
-			eliminarError(inputHora);
-		eliminarError(inputAny);
+	if(isFechaCompleta){
+		var fechaInicio = getFechaInicio();
+
+		if(fechaInicio != false){
+			fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
+			var fechaFin = getFechaReseteada(any, mes, dia, hora);
+
+			if(fechaFin >= fechaInicio){
+				if(dia > 0 && dia <= daysInMonth(any, mes))
+					eliminarError(inputDia);
+				if(mes > 0 && mes < 13)
+					eliminarError(inputMes);
+				if(hora >= 0 && hora < 24)
+					eliminarError(inputHora);
+				eliminarError(inputAny);
+			}
+		}
 	}else if(inputActual != null && !isVacio(inputActual)){
 		eliminarError(inputActual);
 	}
