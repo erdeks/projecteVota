@@ -44,20 +44,31 @@ if(existeYnoEstaVacio($_SESSION['usuario'])){
   irAIndex();
 }
 
-function insertarVoto(&$conexion, $idOpcion, $idUsuario){
-  $query = $conexion->prepare("INSERT INTO votosEncuestas (idOpcion, idUsuario) VALUES ($idOpcion, $idUsuario);");
-  if($query->execute()) return $conexion->lastInsertId();
-  else return null;
+function insertarVoto(&$conexion, $idOpcion, $idUsuario, $idEncuesta){
+  $hash='';
+  $password = $_SESSION['usuario']['password'];
+  do{
+    $hash = generateRandomString();
+  }while(comprobarHash($conexion, $hash));
+  $query = $conexion->prepare("INSERT INTO votosEncuestas (hash, idOpcion, idEncuesta) VALUES ($hash, $idOpcion, $idEncuesta);");
+  if($query->execute()){
+    $query = $conexion->prepare("INSERT INTO votosEncuestasEncriptado (idUsuario, idEncuesta, hashEncriptado) VALUES ($idUsuario, $idEncuesta, AES_ENCRYPT('$hash', '$password'));");
+    if($query->execute()) return $conexion->lastInsertId();
+    else return null;
+  } else return null;
 }
 
 function eliminarVotos(&$conexion, $idEncuesta, $idUsuario){
-  $query = $conexion->prepare("DELETE v.* FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE o.idEncuesta = $idEncuesta AND v.idUsuario=$idUsuario;");
-  if($query->execute()) return true;
-  else return false;
+  $query = $conexion->prepare("DELETE FROM votosEncuestas WHERE idEncuesta = $idEncuesta;");
+  if($query->execute()){
+    $query = $conexion->prepare("DELETE FROM votosEncuestasEncriptado WHERE idEncuesta = $idEncuesta AND idUsuario = $idUsuario");
+    if($query->execute()) return $conexion->lastInsertId();
+    else return null;
+  } else return null;
 }
 
 function usuarioAVotado(&$conexion, $idEncuesta, $idUsuario){
-  $query = $conexion->prepare("SELECT idEncuesta FROM opcionesEncuestas JOIN votosEncuestas USING (idOpcion) WHERE idEncuesta = $idEncuesta AND idUsuario = $idUsuario;");
+  $query = $conexion->prepare("SELECT idEncuesta FROM votosEncuestasEncriptado WHERE idEncuesta = $idEncuesta AND idUsuario = $idUsuario;");
   $query->execute();
   $rows=$query->rowCount();
   if($rows == 0) return false;
@@ -86,5 +97,12 @@ function getIdEncuestaDeurlAnteior(){
 
   if($fin !== false) return substr($gets, $inicio, $fin - $inicio);
   else return substr($gets, $inicio);
+}
+function comprobarHash(&$conexion, $hash){
+  $query = $conexion->prepare("SELECT hash FROM votosEncuestas WHERE hash = $hash;");
+  $query->execute();
+  $rows=$query->rowCount();
+  if($rows == 0) return false;
+  else return true;
 }
 ?>

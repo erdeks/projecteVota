@@ -3,7 +3,7 @@
 		return $_SERVER['SERVER_NAME']."/";
 	}
 	function getURLcartepa(){
-		return "projecteVota/";
+		return "M7/projecteVota/";
 	}
 	function getURLPage(){
 		if (strpos(getURLHost(), 'www.') !== false) return "https://".getURLHost().getURLcartepa();
@@ -82,4 +82,15 @@
 		$launch = explode($delimiters[0], $ready);
 		return $launch;
 	}
+	function generateRandomString($length = 50) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+	}
+	
+
 ?>

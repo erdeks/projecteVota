@@ -34,6 +34,7 @@ tabla votosEncuestasEncriptado //Contiene los votos de los usuarios encriptado
 tabla votosEncuestas //Contiene el enlace de los votos de los usuarios encriptado
 	- hash		(pk, String de 50)
 	- idOpcion	(fk => opcionesEncuestas)
+	- idEncuesta	(fk => encuestas)
 
 tabla accesoEncuestas //Contiene los usuarios invitados
 	- idAcceso 		(pk, autoIncremental)

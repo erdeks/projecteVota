@@ -2,9 +2,9 @@
   require "inicializar.php";
   if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['pregunta']) &&
   existeYnoEstaVacio($_POST['diaInicio']) && existeYnoEstaVacio($_POST['mesInicio']) &&
-  existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['horaInicio']) && 
-  existeYnoEstaVacio($_POST['diaFin']) && existeYnoEstaVacio($_POST['mesFin']) && 
-  existeYnoEstaVacio($_POST['anyFin']) && existeYnoEstaVacio($_POST['horaFin']) && 
+  existeYnoEstaVacio($_POST['anyInicio']) && existeYnoEstaVacio($_POST['horaInicio']) &&
+  existeYnoEstaVacio($_POST['diaFin']) && existeYnoEstaVacio($_POST['mesFin']) &&
+  existeYnoEstaVacio($_POST['anyFin']) && existeYnoEstaVacio($_POST['horaFin']) &&
   existeYnoEstaVacio($_POST['res1']) && existeYnoEstaVacio($_POST['res2']) &&
   existeYnoEstaVacio($_POST['multirespuesta']) &&existeYnoEstaVacio($_SESSION['usuario'])){
     $conexion = abrirConexion();
@@ -64,7 +64,7 @@
       $_SESSION['mensaje'][] = [1, "Se ha creado la encuesta correctamente."];
       header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
     }
-    
+
   }else{
     $_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
     irAIndex();
