@@ -3,7 +3,7 @@
 		return $_SERVER['SERVER_NAME']."/";
 	}
 	function getURLcartepa(){
-		return "M7/projecteVota/";
+		return "projecteVota/";
 	}
 	function getURLPage(){
 		if (strpos(getURLHost(), 'www.') !== false) return "https://".getURLHost().getURLcartepa();

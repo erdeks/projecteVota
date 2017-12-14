@@ -10,9 +10,12 @@ var interval_id_validacionEncuesta = -1;
 //Las horas que tiene que tener como minimo de diferencia entre la fecha de inicio y la fecha de fin
 var minHorasEntrefechas = 4
 
-
+//Llamar a la funcion onLoad cuando se carge la pagina
 window.addEventListener('load', onLoad, true);
 
+//@Descripción: Funcion que se llama al cargar la pagina.
+//@Params: Ninguno
+//@Return: Ninguno
 function onLoad(){
     document.getElementById("generarForm").addEventListener("click", generarForumario);
 }
@@ -586,6 +589,33 @@ function desactivarErroresFechaFin(inputActual = null){
 		}
 	}else if(inputActual != null && !isVacio(inputActual)){
 		eliminarError(inputActual);
+	}
+	
+	if(isFechaCompleta){
+		var fechaInicio = getFechaInicio();
+		if(fechaInicio != false){
+			fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
+			var fechaFin = getFechaReseteada(any, mes, dia, hora);
+
+			if(fechaFin >= fechaInicio){
+				if(dia > 0 && dia <= daysInMonth(any, mes))
+					eliminarError(inputDia);
+				if(mes > 0 && mes < 13)
+					eliminarError(inputMes);
+				if(hora >= 0 && hora < 24)
+					eliminarError(inputHora);
+				eliminarError(inputAny);
+			}
+		}
+	}else{
+		if(dia != "" && mes != "" && any != "" && dia > 0 && dia <= daysInMonth(any, mes))
+			eliminarError(inputDia);
+		if(mes != "" && mes > 0 && mes < 13)
+			eliminarError(inputMes);
+		if(hora != "" && hora >= 0 && hora < 24)
+			eliminarError(inputHora);
+		if(any != "")
+			eliminarError(inputAny);
 	}
 }
 //Funcion que comprueba si activa los errores de la fecha de fin
