@@ -75,11 +75,12 @@
 			$nombre = $encuestas['nombre'];
 			$descripcion = $encuestas['descripcion'];
 			echo "<h1>$nombre</h1>";
-			$query = $conexion->prepare("SELECT count(idVoto) AS 'maxVotos' FROM votosEncuestas v JOIN opcionesEncuestas o USING(idOpcion) WHERE idEncuesta = $idEncuesta;");
+			$query = $conexion->prepare("SELECT count(idVoto) AS 'maxVotos' FROM votosEncuestasEncriptado WHERE idEncuesta = $idEncuesta;");
 			$query->execute();
 			if ($row=$query->fetch()){
 				$maxVotos = $row['maxVotos'];
-				$query = $conexion->prepare("SELECT idOpcion, count(idVoto) AS 'cantVotos', nombre FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE idEncuesta = $idEncuesta GROUP BY idOpcion;");
+				//SELECT o.idOpcion, o.nombre, (SELECT COUNT(v.hash) FROM votosEncuestas v WHERE v.idOpcion = o.idOpcion) AS 'cantVotos' FROM opcionesEncuestas o WHERE o.idEncuesta = $idEncuesta
+				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, COUNT(v.idOpcion) AS 'cantVotos' FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE o.idEncuesta = $idEncuesta GROUP BY idOpcion");
 				$query->execute(); ?>
 				<table>
 					<tr>
@@ -132,6 +133,7 @@
 
   function votarEncuesta(&$conexion, $idEncuesta, $idUsuario){
 	if(encuestaActiva($conexion, $idEncuesta)){
+		$password = $_SESSION['usuario']['password'];
 		$query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
 		$query->execute();
 		if($encuestas = $query -> fetch()){ ?>
@@ -142,8 +144,8 @@
 				$tipoInput = $encuestas['multirespuesta'] == 1 ? "checkbox" : "radio";
 				echo "<h1>$nombre</h1>";
 				if (existeYnoEstaVacio($descripcion)) echo "<h3>$descripcion</h3>";
-				//SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = 19 AND AES_DECRYPT(v.hashEncriptado, "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4") = (SELECT ve.hash FROM votosEncuestasEncriptado ve where ve.idOpcion = o.idOpcion)) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = 19
-				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, if((SELECT COUNT(v.idVoto) FROM votosEncuestas v WHERE idUsuario = $idUsuario AND v.idOpcion =  o.idOpcion) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = $idEncuesta;");
+				
+				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, if((SELECT COUNT(ve.idVoto) FROM votosEncuestasEncriptado ve, votosEncuestas v WHERE ve.idUsuario = $idUsuario AND AES_DECRYPT(ve.hashEncriptado, '$password') = v.hash AND v.idOpcion = o.idOpcion) > 0, 1, 0) AS 'aVotado' FROM opcionesEncuestas o where o.idEncuesta = $idEncuesta;");
 				$query->execute(); ?>
 				<form class="animacionDesplegar" action="../php/votarEncuesta.php" method="post"> <?php
 					while($respuestas = $query -> fetch()){

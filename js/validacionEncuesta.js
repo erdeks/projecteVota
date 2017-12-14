@@ -10,9 +10,12 @@ var interval_id_validacionEncuesta = -1;
 //Las horas que tiene que tener como minimo de diferencia entre la fecha de inicio y la fecha de fin
 var minHorasEntrefechas = 4
 
-
+//Llamar a la funcion onLoad cuando se carge la pagina
 window.addEventListener('load', onLoad, true);
 
+//@Descripción: Funcion que se llama al cargar la pagina.
+//@Params: Ninguno
+//@Return: Ninguno
 function onLoad(){
     document.getElementById("generarForm").addEventListener("click", generarForumario);
 }
@@ -427,6 +430,7 @@ function checkFechaInicio(){
 		desactivarMensajeError(error);
 	}
 
+	//Chechear antes los errores de las fechas de fin, por si se cambio algun valor al formulario de inicio que de error en la fecha de fin, por ejemplo el intervalo minimo entre fechas
 	desactivarErroresFechaFin();
 	activarErroresFechaFin();
 
@@ -444,16 +448,14 @@ function checkFechaFin(){
 		desactivarMensajeError(error);
 	}
 
-	desactivarErroresFechaInicio();
-	activarErroresFechaInicio();
-	
-	desactivarErroresFechaFin(this);
+	desactivarErroresFechaFin();
 	activarErroresFechaFin(this);
 	
 	checkBtnCrearFormulario();
 }
-//@Descripción: Comprueba si desactiva los errores de la fecha de inicio, es opcionar pasarle el input actual, si se le pasa, eliminara el error del elemento pasado cuando sea necesario
-//@Params: [inputActual] (Dom Element)
+
+//@Descripción: Comprueba si desactiva los errores de la fecha de inicio
+//@Params: Ninguno
 //@Return: Ninguno
 function desactivarErroresFechaInicio(){
 	var padre = document.getElementById("dataInicio");
@@ -491,7 +493,9 @@ function desactivarErroresFechaInicio(){
 			eliminarError(inputAny);
 	}
 }
-//Funcion que comprueba si activa los errores de la fecha de inicio
+//@Descripción: Comprueba si activa los errores de la fecha de inicio, se le puede pasar un input DOM opcional, si se le pasa, detecta que input es (hora, mes ...) y hace la validacion para ese input
+//@Params: [inputActual] (Dom Element)
+//@Return: Ninguno
 function activarErroresFechaInicio(inputActual = null){
 	var padre = document.getElementById("dataInicio");
 	var inputDia = getInputDia(padre);
@@ -553,8 +557,11 @@ function activarErroresFechaInicio(inputActual = null){
 		}
 	}
 }
-//Funcion que comprueba si desactiva los errores de la fecha de fin
-function desactivarErroresFechaFin(inputActual = null){
+
+//@Descripción: Comprueba si desactiva los errores de la fecha de Fin
+//@Params: Ninguno
+//@Return: Ninguno
+function desactivarErroresFechaFin(){
 	var padre = document.getElementById("dataFin");
 	var inputDia = getInputDia(padre);
 	var inputMes = getInputMes(padre);
@@ -569,7 +576,6 @@ function desactivarErroresFechaFin(inputActual = null){
 	
 	if(isFechaCompleta){
 		var fechaInicio = getFechaInicio();
-
 		if(fechaInicio != false){
 			fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 			var fechaFin = getFechaReseteada(any, mes, dia, hora);
@@ -584,11 +590,21 @@ function desactivarErroresFechaFin(inputActual = null){
 				eliminarError(inputAny);
 			}
 		}
-	}else if(inputActual != null && !isVacio(inputActual)){
-		eliminarError(inputActual);
+	}else{
+		if(dia != "" && mes != "" && any != "" && dia > 0 && dia <= daysInMonth(any, mes))
+			eliminarError(inputDia);
+		if(mes != "" && mes > 0 && mes < 13)
+			eliminarError(inputMes);
+		if(hora != "" && hora >= 0 && hora < 24)
+			eliminarError(inputHora);
+		if(any != "")
+			eliminarError(inputAny);
 	}
 }
-//Funcion que comprueba si activa los errores de la fecha de fin
+
+//@Descripción: Comprueba si activa los errores de la fecha de fin, se le puede pasar un input DOM opcional, si se le pasa, detecta que input es (hora, mes ...) y hace la validacion para ese input
+//@Params: [inputActual] (Dom Element)
+//@Return: Ninguno
 function activarErroresFechaFin(inputActual = null){
 	var padre = document.getElementById("dataFin");
 	var inputDia = getInputDia(padre);
@@ -655,13 +671,20 @@ function activarErroresFechaFin(inputActual = null){
 		}
 	}
 }
+
 //Fin chequear
 //Manejar respuestas
-//Obtener cuantas respuestas se han creado
+
+//@Descripción: Obtener cuantas respuestas se han creado
+//@Params: Ninguno
+//@Return: Ninguno
 function getCantRespuestas(){
 	return document.getElementById("respuestas").children.length;
 }
-//Debuelve true si hay alguna vacia, false si todas estan llenas
+
+//@Descripción: Debuelve true si hay alguna respuesta vacia, false si todas estan todas llenas
+//@Params: Ninguno
+//@Return: Ninguno
 function isRespuestaVacia(){
 	var respuestas = document.getElementById("respuestas");
 	for (var i = 0; i < getCantRespuestas(); i++) {
@@ -673,7 +696,9 @@ function isRespuestaVacia(){
 	return false;
 }
 
-//Añadir una nueva respuesta
+//@Descripción: Crea una nueva respuesta, con sus eventos
+//@Params: Ninguno
+//@Return: Ninguno
 function addRespuesta(){
 	var padre = document.getElementById('respuestas');
 
@@ -700,13 +725,16 @@ function addRespuesta(){
 	agregarHijo(elementoDiv, getButtonRemove());
 
 	agregarHijo(padre, elementoDiv);
-	animacionAdd(padre, elementoDiv);
+	animacionAdd(elementoDiv);
 
 	checkBtnCrearFormulario();
 	checkBtnAgregarRespuestas();
 	checkBotonesRespuesta(padre);
 }
-//Obtener el boton hacia arriba
+
+//@Descripción: Obtener el boton hacia arriba
+//@Params: Ninguno
+//@Return: Dom Element
 function getButtonUp(){
 	var elementoButton = document.createElement("button");
 		elementoButton.setAttribute("type", "button")
@@ -719,7 +747,10 @@ function getButtonUp(){
 
 	return elementoButton;
 }
-//Obtener el boton hacia abajo
+
+//@Descripción: Obtener el boton hacia abajo
+//@Params: Ninguno
+//@Return: Dom Element
 function getButtonDown(){
 	var elementoButton = document.createElement("button");
 		elementoButton.setAttribute("type", "button")
@@ -732,7 +763,10 @@ function getButtonDown(){
 	
 	return elementoButton;
 }
-//Obtener el boton eliminar
+
+//@Descripción: Obtener el boton eliminar
+//@Params: Ninguno
+//@Return: Dom Element
 function getButtonRemove(){
 	var elementoButton = document.createElement("button");
 		elementoButton.setAttribute("type", "button")
@@ -745,13 +779,19 @@ function getButtonRemove(){
 	
 	return elementoButton;
 }
-//Elimina todas las respuestas
+
+//@Descripción: Elimina todas las respuestas y ejecuta su animacion
+//@Params: Ninguno
+//@Return: Ninguno
 function eliminarTodasRespuestas(){
 	var padre = document.getElementById('respuestas');
 
 	animacionDelAll(padre);
 }
-//Funcion para cambiar el value del input del evento por el value del input superior
+
+//@Descripción: Mueve el input actual una posicion mas arriba y valida si los botones de subir y bajar tienen que estar activados o desactivados
+//@Params: Ninguno
+//@Return: Ninguno
 function moverRespuestaArriba(){
 	var esteElemento = this.parentNode;
 	var hermanoAnterior = getAnteriorElemento(esteElemento);
@@ -763,7 +803,10 @@ function moverRespuestaArriba(){
 
 	checkBotonesRespuesta(esteElemento.parentNode);
 }
-//Funcion para cambiar el value del input del evento por el value del input inferior
+
+//@Descripción: Mueve el input actual una posicion mas abajo y valida si los botones de subir y bajar tienen que estar activados o desactivados
+//@Params: Ninguno
+//@Return: Ninguno
 function moverRespuestaAbajo(){
 	var esteElemento = this.parentNode;
 	var hermanoSiguiente = getSiguienteElemento(esteElemento);
@@ -775,7 +818,10 @@ function moverRespuestaAbajo(){
 
 	checkBotonesRespuesta(esteElemento.parentNode);
 }
-//Funcion para eliminar la respuesta
+
+//@Descripción: Elimina la respuesta donde se genera el evento, ejecutando una animacion y validando todo lo necesario
+//@Params: Ninguno
+//@Return: Ninguno
 function eliminarRespuesta(){
 	var esteElemento = this.parentNode;
 	var padre = esteElemento.parentNode;
@@ -804,7 +850,10 @@ function eliminarRespuesta(){
 		}
 	}
 }
-//cambiar la id de las respuestas
+
+//@Descripción: Cambia el tag name y el contenido de label para que se ajuste al id indicado, el elemento es el objeto DOM padre que contiene todos los componentes de la respuesta y la dif cuanto incrementar o decrementar el id
+//@Params: elemento (objeto dom), dif (Number)
+//@Return: Ninguno
 function cambiarIdRespuestas(elemento, dif){
 	var elementoSpan = elemento.getElementsByTagName("span")[0];
 	var elementoInput = elemento.getElementsByTagName("div")[0].getElementsByTagName("input")[0];
@@ -819,7 +868,10 @@ function cambiarIdRespuestas(elemento, dif){
 	elementoSpan.textContent = textoSpan;
 	elementoInput.setAttribute("name", "res"+num);
 }
-//Devuelve el alto total dentro del padre que se la ha pasado
+
+//@Descripción: Devuelve el alto total de los primeros hijos del padre indicado
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function getHeightContenedor(padre){
 	var totalHeight = 0;
 	for(var i = 0; i < padre.children.length; i++){
@@ -827,6 +879,10 @@ function getHeightContenedor(padre){
 	}
 	return totalHeight;
 }
+
+//@Descripción: Activa o desactiva los botones de subir y bajar de las respuestas, se le pasa el padre que contiene todos los componentes de la respuesta.
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function checkBotonesRespuesta(padre){
 	var cantHijos = padre.children.length;
 	for(var i = 0; i < cantHijos; i++){
@@ -840,6 +896,10 @@ function checkBotonesRespuesta(padre){
 		else if(!botones[1].hasAttribute("disabled") && i == cantHijos-1) botones[1].setAttribute("disabled", "true");
 	}
 }
+
+//@Descripción: Desactiva los botones de subir, bajar, borrar de las respuestas, se le pasa el padre que contiene todos los componentes de la respuesta.
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function bloquearTodosBotonesRespuesta(padre){
 	var cantHijos = padre.children.length;
 	for(var i = 0; i < cantHijos; i++){
@@ -850,6 +910,10 @@ function bloquearTodosBotonesRespuesta(padre){
 		if(!botones[2].hasAttribute("disabled")) botones[2].setAttribute("disabled", "true");
 	}
 }
+
+//@Descripción: Activa los botones de eliminar de las respuestas, se le pasa el padre que contiene todos los componentes de la respuesta.
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function desbloquearEliminarRespuesta(padre){
 	var cantHijos = padre.children.length;
 	for(var i = 0; i < cantHijos; i++){
@@ -858,8 +922,12 @@ function desbloquearEliminarRespuesta(padre){
 		if(botones[2].hasAttribute("disabled")) botones[2].removeAttribute("disabled");
 	}
 }
-//Generar una animacion para mostrar las respuestas
-function animacionAdd(padre, hijo) {
+
+//@Descripción: Generar una animacion para mostrar las respuestas, se le pasa el hijo que se agrega.
+//@Params: hijo (objeto dom)
+//@Return: Ninguno
+function animacionAdd(hijo) {
+	var padre = hijo.parentNode;
 	var heightHijo = hijo.offsetHeight;
 	var height = padre.style.height == "" ? padre.offsetHeight - heightHijo : parseInt(padre.style.height);
 	var totalHeight = getHeightContenedor(padre);
@@ -877,7 +945,10 @@ function animacionAdd(padre, hijo) {
 		}
 	}
 }
-//Generar una animacion para ocultar y borrar las respuestas
+
+//@Descripción: Elimina todos los componentes del objeto dom especificado, haciendo una animacion al eliminarlos
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function animacionDelAll(padre) {
 	var height = padre.style.height == "" ? padre.offsetHeight : parseInt(padre.style.height);
 	var totalHeight = 0;
@@ -897,41 +968,66 @@ function animacionDelAll(padre) {
 		}
 	}
 }
-//Elimina todos los hijos del padre que se la ha pasado
+
+//@Descripción: Elimina todos los hijos del padre que se la ha pasado
+//@Params: padre (objeto dom)
+//@Return: Ninguno
 function eliminarTodosLosHijos(padre){
 	var hijos = padre.children;
 	for(var i = hijos.length - 1; i >= 0; i--){
 		eliminarHijo(padre, hijos[i]);
 	}
 }
+
 //Fin manejar respuestas
 //Manejar datas
-//Devuelve el input que contiene el dia que sea hijo del padre pasado
+
+//@Descripción: Devuelve el input que contiene el dia que sea hijo del padre pasado
+//@Params: padre (objeto dom)
+//@Return: objeto dom
 function getInputDia(padre){
 	return padre.children[2].children[0];
 }
-//Devuelve el input que contiene el mes que sea hijo del padre pasado
+
+//@Descripción: Devuelve el input que contiene el mes que sea hijo del padre pasado
+//@Params: padre (objeto dom)
+//@Return: objeto dom
 function getInputMes(padre){
 	return padre.children[3].children[0];
 }
-//Devuelve el input que contiene el año que sea hijo del padre pasado
+
+//@Descripción: Devuelve el input que contiene el año que sea hijo del padre pasado
+//@Params: padre (objeto dom)
+//@Return: objeto dom
 function getInputAny(padre){
 	return padre.children[4].children[0];
 }
-//Devuelve el input que contiene la hora que sea hijo del padre pasado
+
+//@Descripción: Devuelve el input que contiene la hora que sea hijo del padre pasado
+//@Params: padre (objeto dom)
+//@Return: objeto dom
 function getInputHora(padre){
 	return padre.children[5].children[0];
 }
-//Devuelve cuantos dias tiene el mes de x año
-function daysInMonth(month,year) {
+
+//@Descripción: Devuelve cuantos dias tiene el mes de x año
+//@Params: month (Integer), year (Integer)
+//@Return: objeto Date
+function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
 }
-//Añade horas a una fecha
+
+//@Descripción: Añade horas a una fecha
+//@Params: fecha (objeto date), cant (Integer)
+//@Return: objeto Date
 function addHoras(fecha, cant){
 	fecha.setHours(fecha.getHours() + cant);
 	return fecha;
 }
-//Devuelve una fecha con los milisegundos, segundos, minutos a 0
+
+//@Descripción: Devuelve una fecha con los milisegundos, segundos, minutos a 0, si se la pasa todos los parametros generara una fecha con los parametros pasados, sino creara una la fecha actual
+//@Params: any (Integer), mes (Integer), dia (Integer), hora (Integer)
+//@Return: objeto Date
 function getFechaReseteada(any = -1, mes = -1, dia = -1, hora = -1){
 	var data;
 	if(hora == -1){
@@ -944,8 +1040,10 @@ function getFechaReseteada(any = -1, mes = -1, dia = -1, hora = -1){
 	data.setMinutes(0);
 	return data;
 }
-//Devuelve la fecha de inicio reseteada del formulario o 
-//devuelve false si la fecha esta incompleta
+
+//@Descripción: Devuelve la fecha de inicio reseteada del formulario o devuelve false si la fecha esta incompleta
+//@Params: Ninguno
+//@Return: objeto Date | false
 function getFechaInicio(){
 	var padre = document.getElementById("dataInicio");
 	var inputDia = getInputDia(padre);
@@ -961,17 +1059,26 @@ function getFechaInicio(){
 	if(!isFechaCompleta) return false;
 	else return getFechaReseteada(any, mes, dia, hora);
 }
-//True si la fecha de inicio esta incompleta, true si esta completa
+
+//@Descripción: Debuelve True si la fecha de inicio esta vacia, true si esta llena
+//@Params: Ninguno
+//@Return: Boolean
 function isDataInicioVacia(){
 	var datasInicio = document.getElementById("dataInicio");
 	return isVacio(getInputDia(datasInicio)) || isVacio(getInputMes(datasInicio)) || isVacio(getInputAny(datasInicio)) || isVacio(getInputHora(datasInicio));
 }
-//True si la fecha de fin esta incompleta, true si esta completa
+
+//@Descripción: Debuelve True si la fecha de fin esta vacia, true si esta llena
+//@Params: Ninguno
+//@Return: Boolean
 function isDataFinVacia(){
 	var datasFin = document.getElementById("dataFin");
 	return isVacio(getInputDia(datasFin)) || isVacio(getInputMes(datasFin)) || isVacio(getInputAny(datasFin)) || isVacio(getInputHora(datasFin));
 }
-//Comprueba si la fecha de inicio es correcta o no
+
+//@Descripción: Comprueba si la fecha de inicio es correcta o no
+//@Params: Ninguno
+//@Return: Boolean
 function isValidoFechaInicio(){
 	if(isDataInicioVacia()) return false;
 
@@ -988,9 +1095,12 @@ function isValidoFechaInicio(){
 	var fechaActual = getFechaReseteada();
 	var fechaInicio = getFechaReseteada(any, mes, dia, hora);
 	
-	return (isValidaFecha(dia, mes, any, hora) && fechaInicio >= fechaActual);
+	return (isValidaFecha(any, mes, dia, hora) && fechaInicio >= fechaActual);
 }
-//Comprueba si la fecha de fin es correcta o no
+
+//@Descripción: Comprueba si la fecha de fin es correcta o no
+//@Params: Ninguno
+//@Return: Boolean
 function isValidoFechaFin(){
 	if(isDataFinVacia()) return false;
 
@@ -1009,15 +1119,21 @@ function isValidoFechaFin(){
 
 	if(fechaInicio != false) fechaInicio = addHoras(fechaInicio, minHorasEntrefechas);
 
-	return (isValidaFecha(dia, mes, any, hora) && fechaFin >= fechaInicio);
+	return (isValidaFecha(any, mes, dia, hora) && fechaFin >= fechaInicio);
 }
-//Comprueba que los dias y mes de una fecha esten bien y que existan
-function isValidaFecha(dia, mes, any, horas){
-	return (dia > 0 && dia <= daysInMonth(mes, any) && mes > 0 && mes < 13 && horas >= 0 && horas < 24);
+
+//@Descripción: Comprueba que los dias y mes de una fecha esten bien y que existan
+//@Params: any (Integer), mes (Integer), dia (Integer), hora (Integer)
+//@Return: Boolean
+function isValidaFecha(any, mes, dia, hora){
+	return (dia > 0 && dia <= daysInMonth(mes, any) && mes > 0 && mes < 13 && hora >= 0 && hora < 24);
 }
 //Fin manejar datas
 //Errores
-//Crea un error para mostrarlo
+
+//@Descripción: Crea un error del input indicado y con el mensaje pasado y lo muestra
+//@Params: input (objeto dom), mensaje [String]
+//@Return: Ninguno
 function crearError(input, mensaje = "") {
 	var errorActivo = isErrorActivo(input);
 	if(!errorActivo){
@@ -1048,7 +1164,10 @@ function crearError(input, mensaje = "") {
 		error = input;
 	}
 }
-//Elimina un error
+
+//@Descripción: Elimina un error del input indicado
+//@Params: input (objeto dom)
+//@Return: Ninguno
 function eliminarError(input){
 	if(isErrorActivo(input)){
 		input.style.boxShadow = "";
@@ -1057,7 +1176,10 @@ function eliminarError(input){
 		eliminarHijo(input.parentNode, getSiguienteElemento(input));
 	}
 }
-//oculta un error
+
+//@Descripción: Oculta un error del input indicado
+//@Params: input (objeto dom)
+//@Return: Ninguno
 function desactivarMensajeError(input){
 	error = null;
 	var siguienteElemento = getSiguienteElemento(input);
@@ -1065,39 +1187,61 @@ function desactivarMensajeError(input){
 		siguienteElemento.style.display = "none";
 	}
 }
-//Muesta un error ocultado
+
+//@Descripción: Muesta un error ocultado del input indicado
+//@Params: input (objeto dom)
+//@Return: Ninguno
 function mostrarMensajeError(input){
 	var siguienteElemento = getSiguienteElemento(input);
 	if(siguienteElemento != null){
 		siguienteElemento.style.display = "";
 	}
 }
-//Compruba si hay algun error (visible o oculto)
+
+//@Descripción: Compruba si hay algun error (visible o oculto) del input indicado
+//@Params: padre (objeto dom)
+//@Return: boolean
 function isErrorActivo(input){
 	var siguienteElemento = getSiguienteElemento(input);
 	return siguienteElemento != null && siguienteElemento.getAttribute("class") == "tooltiptext";
 }
+
 //Fin de errores
 //JS DOM
-//Añadir un elemento al final
+
+//@Descripción: Añadir un elemento al final
+//@Params: padre (objeto dom), hijo (objeto dom)
+//@Return: Ninguno
 function agregarHijo(padre, hijo){
 	padre.appendChild(hijo);
 }
-//Añadir un alemento antes de otro
+
+//@Descripción: Añadir un alemento antes de otro
+//@Params: padre (objeto dom), hijo (objeto dom), elemento (objeto dom)
+//@Return: Ninguno
 function insertarAntes(padre, hijo, elemento){
 	padre.insertBefore(elemento, hijo);
 }
-//Mover un elemento a otro lugar
+
+//@Descripción: Mover un elemento a otro lugar
+//@Params: padre (objeto dom), hijo (objeto dom), destino (objeto dom)
+//@Return: Ninguno
 function moverHijo(padre, hijo, destino){
 	var clon = hijo.cloneNode(true);
 	agregarHijo(destino, clon);
 	eliminarHijo(padre, hijo);
 }
-//Eliminar un elemento
+
+//@Descripción: Eliminar un elemento
+//@Params: padre (objeto dom), hijo (objeto dom)
+//@Return: Ninguno
 function eliminarHijo(padre, hijo){
 	padre.removeChild(hijo);
 }
-//Insertar un elemento despues de otro
+
+//@Descripción: Insertar un elemento despues de otro
+//@Params: padre (objeto dom), hijo (objeto dom), elemento (objeto dom)
+//@Return: Ninguno
 function insertarDespues(padre, hijo, elemento){
 	if(getSiguienteElemento(hijo)){ 
 		insertarAntes(padre, getSiguienteElemento(hijo), elemento);
@@ -1105,37 +1249,60 @@ function insertarDespues(padre, hijo, elemento){
 		agregarHijo(padre, elemento);
 	}
 }
-//Obtener el siguiente elemento
+
+//@Descripción: Obtener el siguiente elemento
+//@Params: hijo (objeto dom)
+//@Return: objeto dom | null
 function getSiguienteElemento(hijo){
 	return hijo.nextSibling;
 }
-//Obtener el elemento anterior
+
+//@Descripción: Obtener el elemento anterior
+//@Params: padre (objeto dom)
+//@Return: objeto dom | null
 function getAnteriorElemento(hijo){
 	return hijo.previousSibling;
 }
+
 //Fin JS DOM
 //Funciones inputs
-//Desactiva el input pasado
+
+//@Descripción: Desactiva el input pasado
+//@Params: input (objeto dom)
+//@Return: Ninguno
 function desactivarInput(input){
 	if(!isActivoInput(input))
 		input.disabled = true;
 }
-//Activa el input pasado
+
+//@Descripción: Activa el input pasado
+//@Params: input (objeto dom)
+//@Return: Ninguno
 function activarInput(input){
 	if(isActivoInput(input))
 		input.disabled = false;
 }
-//Comprueba si esta activo un input
+
+//@Descripción: Comprueba si esta activo un input
+//@Params: input (objeto dom)
+//@Return: boolean
 function isActivoInput(input) {
 	return input.disabled == true;
 }
-//Comprueba si un input esta vacio
+
+//@Descripción: Comprueba si un input esta vacio
+//@Params: input (objeto dom)
+//@Return: boolean
 function isVacio(input){
 	return input.value == "";
 }
+
 //Fin funciones inputs
 //General
-//Obtene la posicion del elemento pasado
+
+//@Descripción: Obtene la posicion del elemento pasado
+//@Params: elemento (objeto dom)
+//@Return: integer | false
 function getPosition(elemento){
 	var hermanos = elemento.parentNode.children;
 	for(var i = 0; i < hermanos.length; i++){
@@ -1145,4 +1312,5 @@ function getPosition(elemento){
 	}
 	return false;
 }
+
 //Fin General

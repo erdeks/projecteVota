@@ -83,14 +83,14 @@
 </html>
 <?php
   function haVotado(&$conexion, $idUsuario, $idEncuesta){
-    $query = $conexion->prepare("SELECT COUNT(idVoto) AS 'cantVotos' FROM votosEncuestas WHERE idUsuario = $idUsuario AND idEncuesta =  $idEncuesta");
+    $query = $conexion->prepare("SELECT COUNT(idVoto) AS 'cantVotos' FROM votosEncuestasEncriptado WHERE idUsuario = $idUsuario AND idEncuesta =  $idEncuesta");
     $query->execute();
     if($row = $query->fetch()){
       if($row['cantVotos'] > 0) return true;
       else return false;
     }else return null;
   }
-  
+
   function irAindex(){
    header("Location: ../index.php");
   }
