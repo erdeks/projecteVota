@@ -79,7 +79,8 @@
 			$query->execute();
 			if ($row=$query->fetch()){
 				$maxVotos = $row['maxVotos'];
-				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, (SELECT COUNT(v.hash) FROM votosEncuestas v WHERE v.idOpcion = o.idOpcion) AS 'cantVotos' FROM opcionesEncuestas o WHERE o.idEncuesta = $idEncuesta");
+				//SELECT o.idOpcion, o.nombre, (SELECT COUNT(v.hash) FROM votosEncuestas v WHERE v.idOpcion = o.idOpcion) AS 'cantVotos' FROM opcionesEncuestas o WHERE o.idEncuesta = $idEncuesta
+				$query = $conexion->prepare("SELECT o.idOpcion, o.nombre, COUNT(v.idOpcion) AS 'cantVotos' FROM opcionesEncuestas o LEFT JOIN votosEncuestas v USING(idOpcion) WHERE o.idEncuesta = $idEncuesta GROUP BY idOpcion");
 				$query->execute(); ?>
 				<table>
 					<tr>
