@@ -3,7 +3,7 @@
 		return $_SERVER['SERVER_NAME']."/";
 	}
 	function getURLcartepa(){
-		return "projecteVota/";
+		return "M7/projecteVota/";
 	}
 	function getURLPage(){
 		if (strpos(getURLHost(), 'www.') !== false) return "https://".getURLHost().getURLcartepa();
@@ -91,6 +91,12 @@
     }
     return $randomString;
 	}
-	
+	function tieneAccesoALaEncuesta(&$conexion, $idEncuesta, $idUsuario){ //dos
+    $query = $conexion->prepare("SELECT idEncuesta FROM encuestas e LEFT JOIN accesoEncuestas a USING(idEncuesta) WHERE idEncuesta=$idEncuesta AND (e.idUsuario = $idUsuario OR a.idUsuario = $idUsuario);");
+    $query->execute();
+    $rows=$query->rowCount();
+    if($rows == 0) return false;
+    else return true;
+  }
 
 ?>

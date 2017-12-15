@@ -62,7 +62,7 @@
       header('Location: ../pagina/crearEncuesta.php');
     }else{
       $_SESSION['mensaje'][] = [1, "Se ha creado la encuesta correctamente."];
-      header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
+      header("Location: ../pagina/verInfoEncuesta.php?idEncuesta=$idEncuesta");
     }
 
   }else{

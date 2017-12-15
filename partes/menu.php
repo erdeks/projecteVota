@@ -7,10 +7,15 @@
 			<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>index.php">Inicio</a></li>
 
 			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
-				<?php paginaActiva("pagina/crearEncuesta.php", $classActive); ?>
-				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/crearEncuesta.php">Crear una encuesta</a></li>
-				<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
-				<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta2.php">Votar encuestas</a></li>
+				<?php if($_SESSION['usuario']['idPermiso']==3){ ?>
+					<?php paginaActiva("pagina/crearEncuesta.php", $classActive); ?>
+					<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/crearEncuesta.php">Crear una encuesta</a></li>
+					<?php paginaActiva(["pagina/verMisEncuestas.php", "pagina/verInfoEncuesta.php"], $classActive); ?>
+					<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/verMisEncuestas.php">Ver mis Encuestas</a></li>
+				<?php }else if($_SESSION['usuario']['idPermiso']==2){ ?>
+					<?php paginaActiva(["pagina/mostrarEncuesta.php", "pagina/votarEncuesta.php"], $classActive); ?>
+					<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/mostrarEncuesta.php">Votar encuestas</a></li>
+				<?php } ?>
 			<?php } ?>
 		</ul>
 	</li>
