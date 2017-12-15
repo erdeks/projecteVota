@@ -8,7 +8,6 @@
 	function getURLPage(){
 		if (strpos(getURLHost(), 'www.') !== false) return "https://".getURLHost().getURLcartepa();
 		else return "https://www.".getURLHost().getURLcartepa();
-
 	}
 	function getURLAbsolute(){
 		return "/".getURLcartepa();
@@ -83,23 +82,27 @@
 		return $launch;
 	}
 	function generateRandomString($length = 50) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
 	}
 	function tieneAccesoALaEncuesta(&$conexion, $idEncuesta, $idUsuario){ //dos
-    $query = $conexion->prepare("SELECT idEncuesta FROM encuestas e LEFT JOIN accesoEncuestas a USING(idEncuesta) WHERE idEncuesta=$idEncuesta AND (e.idUsuario = $idUsuario OR a.idUsuario = $idUsuario);");
-    $query->execute();
-    $rows=$query->rowCount();
-    if($rows == 0) return false;
-    else return true;
-  }
+	    $query = $conexion->prepare("SELECT idEncuesta FROM encuestas e LEFT JOIN accesoEncuestas a USING(idEncuesta) WHERE idEncuesta=$idEncuesta AND (e.idUsuario = $idUsuario OR a.idUsuario = $idUsuario);");
+	    $query->execute();
+	    $rows=$query->rowCount();
+	    if($rows == 0) return false;
+	    else return true;
+	}
 	function activarCambiarContra(&$conexion, $idUsuario){
-  	$query = $conexion->prepare("UPDATE usuarios SET cambiarPassword = 1 WHERE idUsuario = $idUsuario");
-  	return $query->execute();
-  }
+	  	$query = $conexion->prepare("UPDATE usuarios SET cambiarPassword = 1 WHERE idUsuario = $idUsuario");
+	  	return $query->execute();
+	}
+	function desactivarCambiarContra(&$conexion, $idUsuario){
+		$query = $conexion->prepare("UPDATE usuarios SET recuperarPassword = 0 WHERE idUsuario = $idUsuario");
+		return $query->execute();
+	}
 ?>

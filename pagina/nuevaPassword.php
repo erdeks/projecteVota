@@ -11,24 +11,22 @@
 	<div id="divCentral">
 		<div>
 			<div id="contenido">
-				<?php getMensajes(); ?>
+				<?php getMensajes();?>
 				<h2 class="cardTitle">Cambiar Contraseña</h2>
 				<div class="cardContent">
-				<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
-		            <form action="../php/auth/password/cambiarPassword.php" method="post">
-		              <input type="password" name="oldPassword" placeholder="Contraseña Antigua" required><br>
+		            <form action="../php/auth/password/validarRecuperarPassword.php" method="post">
 		              <input type="password" name="newPassword" placeholder="Nueva Contraseña" required><br>
 		              <input type="password" name="newPasswordConfirm" placeholder="Confirma Nueva Contraseña" required><br>
-		              <input type="submit" value="Enviar" required>
-		            </form>
-				<?php }else{
-		          $_SESSION['mensaje'][] = [0, "Tienes que iniciar sesion."];
-		          header("Location: login.php");
-				 } ?>
+		              <input type="text" name="email" value="<?php echo $_GET['email']; ?>" style="display: none" required>
+		              <input type="submit" value="Enviar">
+			        </form>
 				</div>
 			</div>
 		</div>
 	</div>
 	<?php require "../partes/pieDePagina.php"; ?>
+	<?php function getGets(){
+
+		} ?>
 </body>
 </html>

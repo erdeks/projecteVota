@@ -14,7 +14,6 @@
           $_SESSION['mensaje'][] = [0, "No se ha podido cambiar la contraseña."];
           irACambiarPassword();
         }
-
       }else{
         $_SESSION['mensaje'][] = [0, "Contraseña incorrecta."];
         irACambiarPassword();
