@@ -5,6 +5,7 @@ tabla usuarios //Contiene los usuarios
 	- password 		(String de 64, null)
 	- validado 		(bool, default: false)
 	- validando		(bool, default: false)
+	- cambiarPassword (bool, default: false)
 
 tabla permisos //Contiene los permisos que puede tener un usuario
 	- idPermiso		(pk, autoIncremental)
