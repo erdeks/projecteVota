@@ -9,8 +9,9 @@
       $recuperarPassword=1;
       solicitarCambioPassword($conexion, $idUsuario, $recuperarPassword);
       if(getRecuperarPassword($conexion, $idUsuario)==1){
-        $link = getURLPage()."../pagina/introducirNuevaPassword.php?email=$email";
-        enviarEmailRecuperacion($email, $emailUsuario, $link)
+        $link = getURLPage()."./validarPassword.php?email=$email&cancelar=false";
+        $link2 = getURLPage()."./validarPassword.php?email=$email&cancelar=true";
+        enviarEmailRecuperacion($email, $emailUsuario, $link);
       }else{
         $_SESSION['mensaje'][] = [0, "Error al intentar recuperar la contraseña."];
       }
@@ -23,16 +24,16 @@
   }
   function enviarEmailRecuperacion($para, $emailUsuario, $link){
 		// título
-		$titulo = 'Projecte Vota - Invitacion a encuesta';
+		$titulo = 'Projecte Vota - Recuperar Password';
 
 		// mensaje
 		$mensaje = '
 		<html>
 		<head>
-		<title>Projecte Vota - Invitacion a encuesta</title>
+		<title>Projecte Vota - Recuperar Password</title>
 		</head>
 		<body>
-		<p>El usuario '.$emailUsuario.' le ha invitado para que votes en la encuesta que ha creado, haga click <a href="'.$link.'">aquí</a> para votar.</p>
+		<p>Ha solicitado poder cambiar la contraseña, haga click <a href="'.$link.'">aquí</a> para cambiarla, de lo contrario haga click <a href="'.$link2.'">aquí</a>.</p>
 		</body>
 		</html>
 		';

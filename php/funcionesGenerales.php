@@ -98,5 +98,8 @@
     if($rows == 0) return false;
     else return true;
   }
-
+	function activarCambiarContra(&$conexion, $idUsuario){
+  	$query = $conexion->prepare("UPDATE usuarios SET cambiarPassword = 1 WHERE idUsuario = $idUsuario");
+  	return $query->execute();
+  }
 ?>

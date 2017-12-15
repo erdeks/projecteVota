@@ -1,5 +1,5 @@
 <?php
-	require "inicializar.php";
+	require "../inicializar.php";
 
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password'])){
 		$conexion = abrirConexion();
@@ -45,12 +45,12 @@
 	}
 
 	function irAIndex(){
-		header("Location: ../index.php");
+		header("Location: ../../index.php");
 	}
 	function irALogin(){
-		header("Location: ../pagina/login.php");
+		header("Location: ../../pagina/login.php");
 	}
 	function enviarValidacion($id){
-		header("Location: ../php/enviarValidacion.php?id=".$id);
+		header("Location: ../../php/enviarValidacion.php?id=".$id);
 	}
 ?>
