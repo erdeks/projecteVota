@@ -22,7 +22,21 @@
               $idUsuario = $_SESSION['usuario']['id'];
 
               if(tieneAccesoALaEncuesta($conexion, $idEncuesta, $idUsuario)){
-                votarEncuesta($conexion, $idEncuesta, $idUsuario);
+                if(fechaInicioActiva($conexion, $idEncuesta)){
+                  if(fechaFinActiva($conexion, $idEncuesta)){
+                    votarEncuesta($conexion, $idEncuesta, $idUsuario);
+                  }else{ ?>
+                    <h2 class="cardTitle">Votar encuesta</h2>
+                    <div class="cardContent">
+                      <p>Lo sentimos, pero el plazo para la votacion ha expirado.</p>
+                    </div><?php
+                  }
+                }else{ ?>
+                  <h2 class="cardTitle">Votar encuesta</h2>
+                  <div class="cardContent">
+                    <p>Lo sentimos, pero el plazo para la votacion aun no ha empezado.</p>
+                  </div><?php
+                }
               }else{ ?>
                 <h2 class="cardTitle">Error</h2>
                 <div class="cardContent">
@@ -50,11 +64,22 @@
 </html>
 
   <?php
-  function encuestaActiva(&$conexion, $idEncuesta){ //Proximamente
-    return true;
+  function fechaInicioActiva(&$conexion, $idEncuesta){ //Proximamente
+    $query = $conexion->prepare("SELECT if((now() >= inicio), 1, 0) AS 'inicio' FROM encuestas WHERE idEncuesta=$idEncuesta;");
+    $query->execute();
+    if($row = $query->fetch()){
+      return $row['inicio'] == 1;
+    }else return false;
+  }
+  function fechaFinActiva(&$conexion, $idEncuesta){ //Proximamente
+    $query = $conexion->prepare("SELECT if((now() <= fin), 1, 0) AS 'fin' FROM encuestas WHERE idEncuesta=$idEncuesta;");
+    $query->execute();
+    if($row = $query->fetch()){
+      return $row['fin'] == 1;
+    }else return false;
   }
   function votarEncuesta(&$conexion, $idEncuesta, $idUsuario){
-	if(encuestaActiva($conexion, $idEncuesta)){
+
 		$password = $_SESSION['usuario']['password'];
 		$query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
 		$query->execute();
@@ -83,12 +108,7 @@
 			$_SESSION['mensaje'][] = [0, "No se ha posido obtener la id de la encuesta."];
 			header("Location: ./votarEncuesta.php");
 		}
-	}else{ ?>
-		<h2 class="cardTitle">Votar encuesta</h2>
-		<div class="cardContent">
-			<p>Lo sentimos, pero el plazo para la votacion ha expirado.</p>
-		</div><?php
-	}
+
   }
 
 ?>
