@@ -1,9 +1,9 @@
-<?php $classActive = "" ?>
+<?php $classActive = ""; ?>
 <ul id="menu">
 	<li> <!-- Lado izquierdo -->
 		<ul>
 			<li><span>Menú:</span></li>
-			<?php paginaActiva("index.php", $classActive); ?>
+			<?php paginaActiva(["index.php", ""], $classActive); ?>
 			<li><a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>index.php">Inicio</a></li>
 
 			<?php if(existeYnoEstaVacio($_SESSION['usuario'])){ ?>
@@ -48,16 +48,20 @@
 
 <?php
 	function paginaActiva($url, &$variable){
+		$urlActual = getCurrentPage();
+		$index = strrpos(getCurrentPage(), "?");
+		if($index !== false) $urlActual = substr($urlActual, 0, $index);
+
 		if(is_array($url)){
 			$variable = '';
 			foreach ($url as $value) {
-				if(strpos(getCurrentPage(), "/".getURLcartepa().$value) !== false ){
+				if($urlActual === "/".getURLcartepa().$value){
 					$variable = 'class="active"';
 					break;
 				}
 			}
 		}else{
-			if(strpos(getCurrentPage(), "/".getURLcartepa().$url) !== false) $variable = 'class="active"';
+			if($urlActual === "/".getURLcartepa().$url) $variable = 'class="active"';
 			else $variable = '';
 		}
 	}

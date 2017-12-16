@@ -1,5 +1,5 @@
 <?php
-	require "inicializar.php";
+	require "../inicializar.php";
 	if(existeYnoEstaVacio($_GET['email']) && existeYnoEstaVacio($_GET['idEncuesta'])){
 		if(existeYnoEstaVacio($_SESSION['usuario'])){
 			irVotarEncuesta($_GET['idEncuesta']);
@@ -20,15 +20,15 @@
 	}
 
 	function irAIndex(){
-		header("Location: ../index.php");
+		header("Location: ../../index.php");
 	}
 	function irARegistro($email, $idEncuesta){
-		header("Location: ../pagina/registro.php?email=$email&idEncuesta=$idEncuesta");
+		header("Location: ../../pagina/registro.php?email=$email&idEncuesta=$idEncuesta");
 	}
 	function irALogin($email, $idEncuesta){
-		header("Location: ../pagina/login.php?email=$email&idEncuesta=$idEncuesta");
+		header("Location: ../../pagina/login.php?email=$email&idEncuesta=$idEncuesta");
 	}
 	function irVotarEncuesta($idEncuesta){
-	  header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
+	  header("Location: ../../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
 	}
 ?>

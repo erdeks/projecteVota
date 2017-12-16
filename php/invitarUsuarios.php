@@ -32,7 +32,7 @@
 							}else{
 								$idAccesoEncuesta = registrarInvitacion($conexion, $idEncuesta, $idUsuarioInvitado);
 								if(!is_null($idAccesoEncuesta)){
-									$link = getURLPage()."php/registroInvitarUsuario.php?email=$emailInvitado&idEncuesta=$idEncuesta";
+									$link = getURLPage()."php/auth/registroInvitarUsuario.php?email=$emailInvitado&idEncuesta=$idEncuesta";
 									if(enviarEmailInvitacion($emailInvitado, $emailUsuario, $link)){
 										$_SESSION['mensaje'][] = [1, "El usuario $emailInvitado a sido invitado."];
 									}else{
@@ -112,6 +112,6 @@
 		header("Location: ../index.php");
 	}
 	function irAInvitarUsaurios($idEncuesta){
-		header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
+		header("Location: ../pagina/verInfoEncuesta.php?idEncuesta=$idEncuesta");
 	}
 ?>

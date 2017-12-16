@@ -1,5 +1,5 @@
 <?php
-	require "inicializar.php";
+	require "../inicializar.php";
 
 	if(existeYnoEstaVacio($_GET['id'])){
 		$id = $_GET['id'];
@@ -32,10 +32,10 @@
 	}
 	
 	function irALogin(){
-		header("Location: ../pagina/login.php");
+		header("Location: ../../pagina/login.php");
 	}
 	function irAIndex(){
-		header("Location: ../index.php");
+		header("Location: ../../index.php");
 	}
 
 ?>

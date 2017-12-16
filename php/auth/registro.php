@@ -64,10 +64,10 @@
 	}
 
 	function enviarValidacion($id){
-		header("Location: ../php/enviarValidacion.php?id=$id");
+		header("Location: enviarValidacion.php?id=$id");
 	}
 
 	function irARegistro(){
-		header("Location: ../pagina/registro.php");
+		header("Location: ../../pagina/registro.php");
 	}
 ?>

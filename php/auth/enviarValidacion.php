@@ -1,5 +1,5 @@
 <?php //Instalar postfix para poder enviar correos
-	require "inicializar.php";
+	require "../inicializar.php";
 
 	if(existeYnoEstaVacio($_GET['id'])){
 		$idUsuario = $_GET['id'];
@@ -7,7 +7,7 @@
 		if(isIdCorrecta($conexion, $idUsuario)){
 			if(setValidando($conexion, $idUsuario)){
 				$email = getEmail($conexion, $idUsuario);
-				$link = getURLPage()."php/activarCuenta.php?id=".$idUsuario;
+				$link = getURLPage()."php/auth/activarCuenta.php?id=".$idUsuario;
 				if(!is_null($email)){
 					if(enviarEmailValidacion($email, $link)){
 						$_SESSION['mensaje'][] = [1, "Se ha enviado un correo de confirmación a $email, si no lo rebice espere un poco y/o revise el correo basura, si sigue sin recibirlo logeate para recibir otro correo de confimación."];
@@ -28,7 +28,6 @@
 			$_SESSION['mensaje'][] = [0, "La ID no es valida."];
 			irAIndex();
 		}
-		
 		cerrarConexion($conexion);
 	}else{
 		$_SESSION['mensaje'][] = [0, "Parametros invalidos."];
@@ -66,9 +65,9 @@
 	}
 
 	function irALogin(){
-		header("Location: ../pagina/login.php");
+		header("Location: ../../pagina/login.php");
 	}
 	function irAIndex(){
-		header("Location: ../index.php");
+		header("Location: ../../index.php");
 	}	
 ?>

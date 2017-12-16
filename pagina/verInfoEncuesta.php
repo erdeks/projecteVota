@@ -59,7 +59,7 @@
     else return true;
   }
   function verMiEncuesta(&$conexion, $idEncuesta){ ?>
-	<h2 class="cardTitle">Mis Encuestas</h2>
+	<h2 class="cardTitle">Información sobre la encuesta</h2>
 	<div class="cardContent"><?php
 		$query = $conexion->prepare("SELECT nombre, descripcion FROM encuestas WHERE idEncuesta=$idEncuesta;");
 		$query->execute();
