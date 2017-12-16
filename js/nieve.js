@@ -1,10 +1,24 @@
+//@Nombre: nieve.js
+//@Fecha de creación: 1-12-2017
+//@Creador: Marc Colominas Rojas
+//@Descipción: Genera nieve que cae en la pagina web
+
+//Contiene la fuerza que tiene el viento
 var fuerzaViento = 0;
+
+//Llamar a la funcion onLoad cuando se carge la pagina
 window.addEventListener('load', onLoad, true);
 
+//@Descripción: Funcion que se llama al cargar la pagina.
+//@Params: Ninguno
+//@Return: Ninguno
 function onLoad(){
     inicializarNieve(100);
 }
 
+//@Descripción: Inicializa la nevada, se le pasa la velocidad en que caera la nieve
+//@Params: velocidad (Integer)
+//@Return: Ninguno
 function inicializarNieve(velocidad){
     var i, x, y;
     var anchuraMax=window.screen.availWidth;
@@ -23,7 +37,10 @@ function inicializarNieve(velocidad){
     cambiarFuerzaViento();
     setInterval(nevar, velocidad, copos, alturaMax, anchuraMax);
 }
-// Función inicial que dibuja los copos en la pantalla
+
+//@Descripción: Función inicial que dibuja los copos en la pantalla, se le pasa la posicion del copo y su padre para meterlos dentro y devuelve el copo creado
+//@Params: x (Integer), y (Integer), padre (Dom Element)
+//@Return: Dom Element 
 function dibujaCopo(x, y, padre){
     var formaCopos = new Array("❆","❅","❄");
     var posFormaCopo = Math.floor(Math.random()*formaCopos.length);
@@ -41,7 +58,9 @@ function dibujaCopo(x, y, padre){
     return elementoDiv;
 }
 
-//Cambia la fuerza del viento
+//@Descripción: Cambia la fuerza del viento
+//@Params: Ninguno
+//@Return: Ninguno 
 function cambiarFuerzaViento(){
 	if(fuerzaViento >= 4){
 		fuerzaViento += -1;
@@ -53,7 +72,9 @@ function cambiarFuerzaViento(){
 	setTimeout(cambiarFuerzaViento, parseInt((Math.random()*5000))+10000)
 }
 
-// Función que controla el movimiento de los copos por la pantalla
+//@Descripción: Controla el movimiento de los copos por la pantalla, se le pasa el array que contiene los copos, y la altura y anchura de la pantalla
+//@Params: copos (dom element[]), alturaMax (Integer), anchuraMax (Integer)
+//@Return: Ninguno 
 function nevar(copos, alturaMax, anchuraMax){
     var i, x, y;
     for (i = 0; i < copos.length; i++){

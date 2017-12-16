@@ -17,7 +17,7 @@
 					<?php if(!existeYNoEstaVacio($_SESSION['usuario'])){ 
 						$email = "";
 						if(existeYNoEstaVacio($_GET['email'])) $email = $_GET['email']; ?>
-					<form action="../php/registro.php" method="POST">
+					<form action="../php/auth/registro.php" method="POST">
 						<input type="text" name="email" placeholder="Email" value="<?php echo $email ?>" required><br>
 						<input type="password" name="password" placeholder="Contraseña" required><br>
 						<input type="password" name="passwordConfirm" placeholder="Confirmar contraseña" required><br>

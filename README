@@ -1,0 +1,12 @@
+Descripción:
+En aquest projecte crearem un portal per a organitzacions que requereixin votacions, típicament (però no només) partits polítics, ajuntaments, etc.
+
+Requerimientos:
+1.- Php
+2.- Mysql
+3.- Algun servicio para enviar correos, por ejemplo: postfix
+
+Instalación:
+1.- Importar el fichero projecteVota.sql a la base de datos.
+2.- En el fichero php/conexionBBDD.php modificar las variables DEFINE para la conexión a la base de datos.
+3.- En el fichero php/funcionesGenerales.php agregar una ruta correcta en el return de la función getURLcartepa(), la ruta es donde se encuentra instalada la pagina desde el host.

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 28-11-2017 a las 21:22:21
+-- Tiempo de generación: 16-12-2017 a las 21:25:23
 -- Versión del servidor: 5.7.20-0ubuntu0.16.04.1
 -- Versión de PHP: 7.0.22-0ubuntu0.16.04.1
 
@@ -33,7 +33,7 @@ CREATE TABLE `accesoEncuestas` (
   `idAcceso` int(11) NOT NULL,
   `idUsuario` int(11) NOT NULL,
   `idEncuesta` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -48,8 +48,8 @@ CREATE TABLE `encuestas` (
   `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `multirespuesta` tinyint(1) NOT NULL DEFAULT '0',
   `descripcion` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `inicio` date NOT NULL,
-  `fin` date NOT NULL
+  `inicio` datetime NOT NULL,
+  `fin` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -78,6 +78,15 @@ CREATE TABLE `permisos` (
   `descripcion` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `permisos`
+--
+
+INSERT INTO `permisos` (`idPermiso`, `nombre`, `descripcion`) VALUES
+(1, 'No registrado', 'Persona invitada sin estar registrada'),
+(2, 'Normal', 'Persona registrada'),
+(3, 'Admin', 'Administrador de la pagina');
+
 -- --------------------------------------------------------
 
 --
@@ -89,9 +98,10 @@ CREATE TABLE `usuarios` (
   `idUsuario` int(11) NOT NULL,
   `idPermiso` int(11) NOT NULL,
   `email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `password` varchar(40) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `password` varchar(64) COLLATE utf8_spanish_ci DEFAULT NULL,
   `validado` tinyint(1) NOT NULL DEFAULT '0',
-  `validando` tinyint(1) NOT NULL DEFAULT '0'
+  `validando` tinyint(1) NOT NULL DEFAULT '0',
+  `cambiarPassword` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -102,9 +112,21 @@ CREATE TABLE `usuarios` (
 
 DROP TABLE IF EXISTS `votosEncuestas`;
 CREATE TABLE `votosEncuestas` (
+  `hash` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `idOpcion` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `votosEncuestasEncriptado`
+--
+
+DROP TABLE IF EXISTS `votosEncuestasEncriptado`;
+CREATE TABLE `votosEncuestasEncriptado` (
   `idVoto` int(11) NOT NULL,
-  `idOpcion` int(11) NOT NULL,
-  `idUsuario` int(11) NOT NULL
+  `idUsuario` int(11) NOT NULL,
+  `hashEncriptado` varbinary(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
@@ -152,8 +174,14 @@ ALTER TABLE `usuarios`
 -- Indices de la tabla `votosEncuestas`
 --
 ALTER TABLE `votosEncuestas`
+  ADD PRIMARY KEY (`hash`),
+  ADD KEY `idOpcion` (`idOpcion`);
+
+--
+-- Indices de la tabla `votosEncuestasEncriptado`
+--
+ALTER TABLE `votosEncuestasEncriptado`
   ADD PRIMARY KEY (`idVoto`),
-  ADD KEY `idOpciones` (`idOpcion`),
   ADD KEY `idUsuario` (`idUsuario`);
 
 --
@@ -179,16 +207,16 @@ ALTER TABLE `opcionesEncuestas`
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT de la tabla `votosEncuestas`
+-- AUTO_INCREMENT de la tabla `votosEncuestasEncriptado`
 --
-ALTER TABLE `votosEncuestas`
+ALTER TABLE `votosEncuestasEncriptado`
   MODIFY `idVoto` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Restricciones para tablas volcadas
@@ -223,8 +251,13 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `votosEncuestas`
 --
 ALTER TABLE `votosEncuestas`
-  ADD CONSTRAINT `votosEncuestas_ibfk_1` FOREIGN KEY (`idOpcion`) REFERENCES `opcionesEncuestas` (`idOpcion`),
-  ADD CONSTRAINT `votosEncuestas_ibfk_2` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`);
+  ADD CONSTRAINT `votosEncuestas_ibfk_1` FOREIGN KEY (`idOpcion`) REFERENCES `opcionesEncuestas` (`idOpcion`);
+
+--
+-- Filtros para la tabla `votosEncuestasEncriptado`
+--
+ALTER TABLE `votosEncuestasEncriptado`
+  ADD CONSTRAINT `votosEncuestasEncriptado_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `accesoEncuestas` (`idUsuario`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

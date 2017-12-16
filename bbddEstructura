@@ -5,6 +5,7 @@ tabla usuarios //Contiene los usuarios
 	- password 		(String de 64, null)
 	- validado 		(bool, default: false)
 	- validando		(bool, default: false)
+	- cambiarPassword (bool, default: false)
 
 tabla permisos //Contiene los permisos que puede tener un usuario
 	- idPermiso		(pk, autoIncremental)
@@ -28,7 +29,6 @@ tabla opcionesEncuestas //Contiene las opciones de las encuestas
 tabla votosEncuestasEncriptado //Contiene los votos de los usuarios encriptado
 	- idVoto		(pk, autoIncremental)
 	- idUsuario		(fk => accesoEncuestas)
-	- idEncuesta	(fk => encuestas)
 	- hashEncriptado(text)
 
 tabla votosEncuestas //Contiene el enlace de los votos de los usuarios encriptado
