@@ -1,5 +1,5 @@
 <?php
-	require "../../inicializar.php";
+	require "../inicializar.php";
 
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password']) && existeYnoEstaVacio($_POST['passwordConfirm'])){
 		
