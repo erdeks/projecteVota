@@ -12,13 +12,13 @@ if(existeYnoEstaVacio($_SESSION['usuario'])){
     $idEncuesta = getIdEncuestaPorIdOpcion($conexion, $respuestas[0]);
     if(!is_null($idEncuesta)){
       $estadoEliminarVotos = true;
-      if(usuarioAVotado($conexion, $idEncuesta, $idUsuario)){
+      if(haVotado($conexion, $idUsuario, $idEncuesta, $_SESSION['usuario']['password'])){
         $estadoEliminarVotos = eliminarVotos($conexion, $idEncuesta, $idUsuario, $password);
       }
       if($estadoEliminarVotos){
         $error = false;
         foreach ($respuestas as $key => $idOpcion) {
-          if(is_null(insertarVoto($conexion, $idEncuesta, $idOpcion, $idUsuario, $password))){
+          if(is_null(insertarVoto($conexion, $idOpcion, $idUsuario, $password))){
           	eliminarVotos($conexion, $idEncuesta, $idUsuario, $password);
             $error = true;
             break;
@@ -39,14 +39,14 @@ if(existeYnoEstaVacio($_SESSION['usuario'])){
     irVotarEncuesta($idEncuesta);
   }else{
     $_SESSION['mensaje'][] = [0, "Tienes que seleccionar como minimo una opcion."];
-    irVotarEncuesta(getIdEncuestaDeurlAnteior());
+    irVotarEncuesta(getIdEncuestaDeUrlAnteior());
   }
 }else{
   $_SESSION['mensaje'][] = [0, "Los campos no pueden estar vacios."];
   irAIndex();
 }
 
-function insertarVoto(&$conexion, $idEncuesta, $idOpcion, $idUsuario, $password){
+function insertarVoto(&$conexion, $idOpcion, $idUsuario, $password){
   $hash='';
   do{
     $hash = generateRandomString();
@@ -54,7 +54,7 @@ function insertarVoto(&$conexion, $idEncuesta, $idOpcion, $idUsuario, $password)
 
   $query = $conexion->prepare("INSERT INTO votosEncuestas (hash, idOpcion) VALUES ('$hash', $idOpcion);");
   if($query->execute()){
-    $query = $conexion->prepare("INSERT INTO votosEncuestasEncriptado (idUsuario, idEncuesta, hashEncriptado) VALUES ($idUsuario, $idEncuesta, AES_ENCRYPT('$hash', '$password'));");
+    $query = $conexion->prepare("INSERT INTO votosEncuestasEncriptado (idUsuario, hashEncriptado) VALUES ($idUsuario, AES_ENCRYPT('$hash', '$password'));");
     if($query->execute()) return $conexion->lastInsertId();
     else return null;
   } else return null;
@@ -64,14 +64,6 @@ function eliminarVotos(&$conexion, $idEncuesta, $idUsuario, $password){
   $query = $conexion->prepare("DELETE v.*, ve.* FROM votosEncuestas v, votosEncuestasEncriptado ve, opcionesEncuestas o WHERE v.hash = AES_DECRYPT(ve.hashEncriptado, '$password') AND v.idOpcion = o.idOpcion AND o.idEncuesta = $idEncuesta AND ve.idUsuario = $idUsuario;");
   if($query->execute()) return true;
   else return false;
-}
-
-function usuarioAVotado(&$conexion, $idEncuesta, $idUsuario){
-  $query = $conexion->prepare("SELECT idEncuesta FROM votosEncuestasEncriptado WHERE idEncuesta = $idEncuesta AND idUsuario = $idUsuario;");
-  $query->execute();
-  $rows=$query->rowCount();
-  if($rows == 0) return false;
-  else return true;
 }
 function getIdEncuestaPorIdOpcion(&$conexion, $idOpcion){
   $query = $conexion->prepare("SELECT idEncuesta FROM opcionesEncuestas WHERE idOpcion = $idOpcion;");
@@ -86,7 +78,7 @@ function irAIndex(){
 function irVotarEncuesta($idEncuesta){
   header("Location: ../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
 }
-function getIdEncuestaDeurlAnteior(){
+function getIdEncuestaDeUrlAnteior(){
   $buscar = "idEncuesta=";
   $finGet = "&";
 

@@ -1,4 +1,11 @@
-<?php require "../php/inicializar.php";?>
+<?php 
+	require "../php/inicializar.php";
+	if(existeYnoEstaVacio($_SESSION['usuario'])){
+		$_SESSION['mensaje'][] = [0, "No puedes acceder a esta pagina."];
+		header("Location: ../index.php");
+		die();
+	}
+?>
 <!DOCTYPE html>
 <html>
 <head>

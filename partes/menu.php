@@ -31,7 +31,7 @@
 						<a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/perfil.php">Perfil</a>
 						<?php paginaActiva("pagina/cambiarPassword.php", $classActive); ?>
 						<a <?php echo $classActive ?> href="<?php echo getURLAbsolute(); ?>pagina/cambiarPassword.php">Cambiar Contraseña</a>
-						<a href="<?php echo getURLAbsolute(); ?>php/cerrarSession.php">Cerrar Sessión</a>
+						<a href="<?php echo getURLAbsolute(); ?>php/auth/cerrarSession.php">Cerrar Sessión</a>
 					</div>
 				</li>
 			<?php }else{ ?>

@@ -79,7 +79,6 @@
     }else return false;
   }
   function votarEncuesta(&$conexion, $idEncuesta, $idUsuario){
-
 		$password = $_SESSION['usuario']['password'];
 		$query = $conexion->prepare("SELECT nombre, descripcion, multirespuesta FROM encuestas WHERE idEncuesta=$idEncuesta;");
 		$query->execute();

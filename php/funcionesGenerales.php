@@ -94,15 +94,24 @@
 	    $query = $conexion->prepare("SELECT idEncuesta FROM encuestas e LEFT JOIN accesoEncuestas a USING(idEncuesta) WHERE idEncuesta=$idEncuesta AND (e.idUsuario = $idUsuario OR a.idUsuario = $idUsuario);");
 	    $query->execute();
 	    $rows=$query->rowCount();
-	    if($rows == 0) return false;
-	    else return true;
+	    return $rows > 0;
 	}
-	function activarCambiarContra(&$conexion, $idUsuario){
-	  	$query = $conexion->prepare("UPDATE usuarios SET cambiarPassword = 1 WHERE idUsuario = $idUsuario");
-	  	return $query->execute();
-	}
-	function desactivarCambiarContra(&$conexion, $idUsuario){
-		$query = $conexion->prepare("UPDATE usuarios SET recuperarPassword = 0 WHERE idUsuario = $idUsuario");
+	function desactivarCambiarContra(&$conexion, $email){
+		$query = $conexion->prepare("UPDATE usuarios SET cambiarPassword = 0 WHERE email = '$email'");
 		return $query->execute();
+	}
+	function estaActivadoCambiarContra(&$conexion, $email){
+		$query = $conexion->prepare("SELECT cambiarPassword FROM usuarios WHERE email = '$email';");
+		$query->execute();
+		if($row = $query->fetch()){
+			return $row['cambiarPassword'] == 1;
+		}
+		return false;
+	}
+	function haVotado(&$conexion, $idUsuario, $idEncuesta, $hashPassword){
+		$query = $conexion->prepare("SELECT COUNT(idVoto) FROM votosEncuestasEncriptado vee, votosEncuestas ve, opcionesEncuestas o WHERE AES_DECRYPT(vee.hashEncriptado, '$hashPassword') = ve.hash AND ve.idOpcion = o.idOpcion AND vee.idUsuario = $idUsuario AND o.idEncuesta = $idEncuesta;");
+		$query->execute();
+		$rows=$query->rowCount();
+		return $rows == 1;
 	}
 ?>
