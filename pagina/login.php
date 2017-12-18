@@ -20,7 +20,10 @@
 						<form action="../php/auth/login.php" method="POST">
 							<input type="text" name="email" placeholder="Email" value="<?php echo $email ?>" required><br>
 							<input type="password" name="password" placeholder="Contraseña" required><br>
-							<a href="recuperarPassword.php">Has olvidado tu contraseña?</a><br>
+							<?php if(existeYNoEstaVacio($_GET['idEncuesta'])){ ?>
+								<input type="text" style="display: none" name="idEncuesta" value="<?php echo $_GET['idEncuesta']; ?>" required><br>
+							<?php } ?>
+							<!--<a href="recuperarPassword.php">Has olvidado tu contraseña?</a><br>-->
 							<input type="submit" name="login" value="Entrar" required>
 						</form>
 					<?php }else{

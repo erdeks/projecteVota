@@ -22,7 +22,7 @@
               $query = $conexion->prepare("SELECT idEncuesta, nombre FROM encuestas WHERE idUsuario=$idUsuario;");
               $query->execute();
 
-              echo "<ul>";
+              echo "<ul class='noIconos'>";
               while($encuestas = $query -> fetch()){
                 $link = getURLAbsolute()."pagina/verInfoEncuesta.php?idEncuesta=".$encuestas["idEncuesta"];
                 echo "<li><a href='$link'>".$encuestas["nombre"]."</a></li>";

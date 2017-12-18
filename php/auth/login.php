@@ -3,9 +3,9 @@
 
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password'])){
 		$conexion = abrirConexion();
-		$email = $_POST['email'];
+		$email = trim($_POST['email']);
 		if(correoValido($email)){
-			$password = hash('sha256', $_POST['password']);
+			$password = hash('sha256', trim($_POST['password']));
 			$passwordEncrypt = hash('sha256', $password);
 			$query = $conexion->prepare("SELECT idUsuario, validado, idPermiso FROM usuarios WHERE email = :email AND password = :password;");
 			$query->bindParam(":email", $email);
@@ -21,7 +21,9 @@
 						"email" => $email,
 						"idPermiso" => $row['idPermiso'],
 						"password" => $password];
-					irAIndex();
+						
+					if(existeYnoEstaVacio($_POST['idEncuesta'])) irAVotarEncuesta($_POST['idEncuesta']);
+					else irAIndex();
 				}else{
 					destruirUsuario();
 					enviarValidacion($row['idUsuario']);
@@ -51,9 +53,15 @@
 		header("Location: ../../index.php");
 	}
 	function irALogin(){
-		header("Location: ../../pagina/login.php");
+		if(existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['idEncuesta'])) header("Location: ../../pagina/login.php?email=".$_POST['email']."&idEncuesta=?".$_POST['idEncuesta']);
+		else if(existeYnoEstaVacio($_POST['idEncuesta'])) header("Location: ../../pagina/login.php?idEncuesta=".$_POST['idEncuesta']);
+		else if(existeYnoEstaVacio($_POST['email'])) header("Location: ../../pagina/login.php?email=".$_POST['email']);
+		else header("Location: ../../pagina/login.php");
 	}
 	function enviarValidacion($id){
-		header("Location: ../../php/auth/enviarValidacion.php?id=".$id);
+		header("Location: enviarValidacion.php?id=".$id);
+	}
+	function irAVotarEncuesta($idEncuesta){
+	  header("Location: ../../pagina/votarEncuesta.php?idEncuesta=$idEncuesta");
 	}
 ?>

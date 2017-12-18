@@ -1,6 +1,10 @@
 <?php
 	require "../inicializar.php";
 	if(existeYnoEstaVacio($_GET['email']) && existeYnoEstaVacio($_GET['idEncuesta'])){
+		if(existeYnoEstaVacio($_SESSION['usuario']) && $_SESSION['usuario']['email'] !== $_GET['email']){
+			unset($_SESSION['usuario']);
+		}
+		
 		if(existeYnoEstaVacio($_SESSION['usuario'])){
 			irVotarEncuesta($_GET['idEncuesta']);
 		}else{

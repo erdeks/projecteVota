@@ -1,5 +1,9 @@
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 /*General*/
+*{
+	overflow-wrap: break-word;
+}
+
 body{
 	margin: 0px;
 	font-family:Georgia, serif, arial;
@@ -69,6 +73,7 @@ a:hover{
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
+	width: auto;
 }
 #menu input[type="radio"]{
 	transform: scale(0);
@@ -89,8 +94,7 @@ a:hover{
 #menu .dropdown > div {
 	display: none;
 	position: absolute;
-	background-color: #d6d6d6;;
-	min-width: 200px;
+	background-color: #d6d6d6;
 	width: 100%;
 	z-index: 1;
 	border-radius: 10px;
@@ -158,7 +162,6 @@ a:hover{
 	margin: 10px 0 0 0;
 	background-color: #0674c5;
 	border: 1px solid #0674c5;
-
 }
 
 .cardContent{
@@ -169,6 +172,10 @@ a:hover{
 	padding: 10px 10px;
 	border: 1px solid rgba(100, 100, 100, 0.40);
 	border-top-width: 0;
+	overflow-x: auto;
+}
+.cardContent *{
+	overflow-x: none;
 }
 
 /*pie de paguina*/
@@ -204,6 +211,18 @@ a:hover{
 	#derecho{
 		width: 80%;
 		margin-top: 0px;
+	}
+}
+
+@media screen and (max-width: 360px){
+	#banner{
+		display: none;	
+	}
+}
+
+@media screen and (max-width: 1000px){
+	#divCentral > div{
+		width: 100%;	
 	}
 }
 
@@ -253,4 +272,7 @@ td, th{
 }
 textarea{
 	max-width: 100%;
+}
+ul.noIconos, ol.noIconos{
+	list-style: none;
 }

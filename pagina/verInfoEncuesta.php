@@ -107,12 +107,12 @@
 			<div><label>Introduce el email de los usuarios separados por ;</label></div>
 			<textarea name="invitados" cols="50" rows="6"></textarea>
 			<input type="text" name="idEncuesta" value="<?php echo $idEncuesta; ?>" hidden="hidden">
-			<div><input type="submit" value="Enviar"></div>
+			<div><input type="submit" value="Invitar"></div>
 		</form>
 	</div>
 	<h2 class="cardTitle">Usuarios Invitados</h2>
 	<div class="cardContent">
-		<ul><?php
+		<ul class="noIconos"><?php
 			$query = $conexion->prepare("SELECT email FROM accesoEncuestas a JOIN usuarios u USING (idUsuario) WHERE idEncuesta=$idEncuesta");
 			$query->execute();
 			while($usuarios = $query->fetch()){

@@ -1,7 +1,4 @@
 <?php
-	//URGENTE!!! MODIFICAR EL LINK DE LA FUNCION irAInvitarUsaurios() A UNO CORRECTO
-	//NOTA: en caso de que los usuarios invitados se tengan que registrar eliminar el activo de la tabla accesoEncuestas y añadir una variable boleana para saber si esta registrado o no par amandarlo al apartado de registro o login y agregar un redirect para que cuando se logee lo redirija a la pagina en cuestion
-
 	require "inicializar.php";
 	if(existeYnoEstaVacio($_POST['idEncuesta']) && existeYnoEstaVacio($_SESSION['usuario']) && existeYnoEstaVacio($_POST['invitados'])){
 		$idEncuesta = $_POST['idEncuesta'];
@@ -12,6 +9,7 @@
 		$conexion = abrirConexion();
 		if(usuarioACreadoLaEncuesta($conexion, $idEncuesta, $idUsuario)){
 			foreach($emailsInvitados as $emailInvitado){
+				$emailInvitado = trim($emailInvitado);
 				if(correoValido($emailInvitado)){
 					if($emailUsuario == $emailInvitado){
 						$_SESSION['mensaje'][] = [0, "No puedes enviarte una invitacion a ti mismo."];

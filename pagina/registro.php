@@ -21,6 +21,9 @@
 						<input type="text" name="email" placeholder="Email" value="<?php echo $email ?>" required><br>
 						<input type="password" name="password" placeholder="Contraseña" required><br>
 						<input type="password" name="passwordConfirm" placeholder="Confirmar contraseña" required><br>
+						<?php if(existeYNoEstaVacio($_GET['idEncuesta'])){ ?>
+							<input type="text" style="display: none" name="idEncuesta" value="<?php echo $_GET['idEncuesta']; ?>" required><br>
+						<?php } ?>
 						<input type="submit" name="registro" value="Registrarse">
 					</form>
 				<?php }else{ ?>

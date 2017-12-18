@@ -3,10 +3,10 @@
 
 	if($_SERVER['REQUEST_METHOD'] == 'POST' && existeYnoEstaVacio($_POST['email']) && existeYnoEstaVacio($_POST['password']) && existeYnoEstaVacio($_POST['passwordConfirm'])){
 		
-		$email = $_POST['email'];
+		$email = trim($_POST['email']);
 		if(correoValido($email)){
-			$password = hash('sha256', hash('sha256', $_POST['password']));
-			$passwordConfirm = hash('sha256', hash('sha256', $_POST['passwordConfirm']));
+			$password = hash('sha256', hash('sha256', trim($_POST['password'])));
+			$passwordConfirm = hash('sha256', hash('sha256', trim($_POST['passwordConfirm'])));
 
 			if($password === $passwordConfirm){
 				$estado = "";
@@ -26,7 +26,7 @@
 								enviarValidacion($row["idUsuario"]);
 							}else{ //Si la cuenta esta validada
 								$_SESSION['mensaje'][] = [0, "El usuario ya existe."];
-								irARegistro();
+								irARegistro($email);
 							}
 						}
 					}else{
@@ -39,11 +39,11 @@
 				cerrarConexion($conexion);
 			}else{
 				$_SESSION['mensaje'][] = [0, "Las contraseñas no coinciden."];
-				irARegistro();
+				irARegistro($email);
 			}
 		}else{
 			$_SESSION['mensaje'][] = [0, "Formato de email es incorrecto."];
-			irARegistro();
+			irARegistro($email);
 		}
 	}else{
 		$_SESSION['mensaje'][] = [0, "Los parametros no pueden estar vacio."];
@@ -64,10 +64,14 @@
 	}
 
 	function enviarValidacion($id){
-		header("Location: enviarValidacion.php?id=$id");
+		if(existeYnoEstaVacio($_POST['idEncuesta'])) header("Location: enviarValidacion.php?id=$id&idEncuesta=".$_POST['idEncuesta']);
+		else header("Location: enviarValidacion.php?id=$id");
 	}
 
-	function irARegistro(){
-		header("Location: ../../pagina/registro.php");
+	function irARegistro($email = ""){
+		if(existeYnoEstaVacio($email) && existeYnoEstaVacio($_POST['idEncuesta'])) header("Location: ../../pagina/registro.php?email=$email&idEncuesta=?".$_POST['idEncuesta']);
+		else if(existeYnoEstaVacio($_POST['idEncuesta'])) header("Location: ../../pagina/registro.php?idEncuesta=".$_POST['idEncuesta']);
+		else if(existeYnoEstaVacio($email)) header("Location: ../../pagina/registro.php?email=$email");
+		else header("Location: ../../pagina/registro.php");
 	}
 ?>

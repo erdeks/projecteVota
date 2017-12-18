@@ -5,24 +5,27 @@
 		$idUsuario = $_GET['id'];
 		$conexion = abrirConexion();
 		if(isIdCorrecta($conexion, $idUsuario)){
+			$email = getEmail($conexion, $idUsuario);
 			if(setValidando($conexion, $idUsuario)){
-				$email = getEmail($conexion, $idUsuario);
-				$link = getURLPage()."php/auth/activarCuenta.php?id=".$idUsuario;
-				if(!is_null($email)){
+				if(existeYnoEstaVacio($email)){
+					$link = "";
+					if(existeYnoEstaVacio($_GET['idEncuesta'])) $link = getURLPage()."php/auth/activarCuenta.php?email=$email&idEncuesta=".$_GET['idEncuesta'];
+					else $link = getURLPage()."php/auth/activarCuenta.php?email=".$email;
+					
 					if(enviarEmailValidacion($email, $link)){
 						$_SESSION['mensaje'][] = [1, "Se ha enviado un correo de confirmación a $email, si no lo rebice espere un poco y/o revise el correo basura, si sigue sin recibirlo logeate para recibir otro correo de confimación."];
-						irALogin();
+						irALogin($email);
 					}else{
 						$_SESSION['mensaje'][] = [0, "No se ha podido enviar el correo."];
-						irALogin();
+						irALogin($email);
 					}
 				}else{
 					$_SESSION['mensaje'][] = [0, "No se ha posido obtener el email del usuario solicitado, intente logearse de nuevo."];
-					irALogin();
+					irALogin($email);
 				}
 			}else{
 				$_SESSION['mensaje'][] = [0, "No se ha podido validar la cuenta."];
-				irALogin();
+				irALogin($email);
 			}
 		}else{
 			$_SESSION['mensaje'][] = [0, "La ID no es valida."];
@@ -64,8 +67,11 @@
 		return enviarEmail($para, $titulo, $mensaje);
 	}
 
-	function irALogin(){
-		header("Location: ../../pagina/login.php");
+	function irALogin($email){
+		if(existeYnoEstaVacio($email) && existeYnoEstaVacio($_GET['idEncuesta'])) header("Location: ../../pagina/login.php?email=$email&idEncuesta=".$_GET['idEncuesta']);
+		else if(existeYnoEstaVacio($_GET['idEncuesta'])) header("Location: ../../pagina/login.php?idEncuesta=".$_GET['idEncuesta']);
+		else if(existeYnoEstaVacio($email)) header("Location: ../../pagina/login.php?email=$email");
+		else header("Location: ../../pagina/login.php");
 	}
 	function irAIndex(){
 		header("Location: ../../index.php");

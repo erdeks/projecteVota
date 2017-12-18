@@ -9,7 +9,8 @@ var error = null;
 var interval_id_validacionEncuesta = -1;
 //Las horas que tiene que tener como minimo de diferencia entre la fecha de inicio y la fecha de fin
 var minHorasEntrefechas = 4
-
+//Desface de minutos desde la zona horaria centras
+var desfaceHorario = 0;
 //Llamar a la funcion onLoad cuando se carge la pagina
 window.addEventListener('load', onLoad, true);
 
@@ -49,6 +50,8 @@ function generarForumario(){
 	agregarHijo(elementoForm, elementoBotones);
 	agregarHijo(elementoForm, elementoRespuestas);
 	agregarHijo(this.parentNode, elementoForm);
+
+	elementoForm.addEventListener("submit", recalcularTiempo);
 
 	checkBtnAgregarRespuestas();
 	checkBtnCrearFormulario();
@@ -343,6 +346,60 @@ function getElementoRespuestas(){
 
 	return elementoDiv;
 }
+
+//@Descripción: Recalcular el desface horario
+//@Params: Ninguno
+//@Return: Ninguno
+function recalcularTiempo(){
+	var desface = new Date().getTimezoneOffset() + desfaceHorario;
+	recalcularTiempoInputs(document.getElementById("dataInicio"), desface);
+	recalcularTiempoInputs(document.getElementById("dataFin"), desface);
+}
+
+//@Descripción: Recalcular el desface horario de los inputs de inicio
+//@Params: padre (objeto dom), desface (Integer)
+//@Return: Ninguno
+function recalcularTiempoInputs(padre, desface){
+	var inputHora = getInputHora(padre);
+	var inputDia = getInputDia(padre);
+	var inputMes = getInputMes(padre);
+	var inputAny = getInputAny(padre);
+	var hora = parseInt(inputHora.value);
+	var dia = parseInt(inputDia.value);
+	var mes = parseInt(inputMes.value);
+	var any = parseInt(inputAny.value);
+
+	hora += (desface / 60);
+	if(hora > 23){
+		hora -= 24;
+		dia ++;
+		if(dia > daysInMonth(any, mes)){
+			dia -= daysInMonth(any, mes);
+			mes ++;
+			if(mes > 12){
+				mes = 1;
+				any ++;
+			}
+		}
+	}else if(hora < 0){
+		hora += 24;
+		dia --;
+		if(dia < 1){
+			mes --;
+			dia = daysInMonth(any, mes) - dia;
+			if(mes < 1){
+				mes -= 12;
+				any --;
+			}
+		}
+	}
+
+	inputHora.value = hora;
+	inputDia.value = dia;
+	inputMes.value = mes;
+	inputAny.value = any;
+}
+
 //Fin crear Formulario
 
 //Chequear

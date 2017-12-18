@@ -109,9 +109,9 @@
 		return false;
 	}
 	function haVotado(&$conexion, $idUsuario, $idEncuesta, $hashPassword){
-		$query = $conexion->prepare("SELECT vee.idVoto FROM votosEncuestasEncriptado vee, votosEncuestas ve, opcionesEncuestas o WHERE AES_DECRYPT(vee.hashEncriptado, '$hashPassword') = ve.hash AND ve.idOpcion = o.idOpcion AND vee.idUsuario = $idUsuario AND o.idEncuesta = $idEncuesta;");
+		$query = $conexion->prepare("SELECT COUNT(idVoto) FROM votosEncuestasEncriptado vee, votosEncuestas ve, opcionesEncuestas o WHERE AES_DECRYPT(vee.hashEncriptado, '$hashPassword') = ve.hash AND ve.idOpcion = o.idOpcion AND vee.idUsuario = $idUsuario AND o.idEncuesta = $idEncuesta;");
 		$query->execute();
 		$rows=$query->rowCount();
-		return $rows > 0;
+		return $rows == 1;
 	}
 ?>

@@ -37,7 +37,7 @@
 	          ?>
 	          <h2 class="cardTitle">Encuestas no votadas</h2>
 	          <div class="cardContent">
-	          <ul>
+	          <ul class="noIconos">
 	            <?php
 	              foreach ($noVotado as $value) {
 	                $link = getURLAbsolute()."pagina/votarEncuesta.php?idEncuesta=".$value["idEncuesta"];
@@ -52,7 +52,7 @@
 	          ?>
 	          <h2 class="cardTitle">Encuestas votadas</h2>
 	          <div class="cardContent">
-	            <ul>
+	            <ul class="noIconos">
 	              <?php
 	                foreach ($siVotado as $value) {
 	                  $link = getURLAbsolute()."pagina/votarEncuesta.php?idEncuesta=".$value["idEncuesta"];
