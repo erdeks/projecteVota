@@ -54,6 +54,6 @@
 		header("Location: ../../pagina/login.php");
 	}
 	function enviarValidacion($id){
-		header("Location: ../../php/enviarValidacion.php?id=".$id);
+		header("Location: ../../php/auth/enviarValidacion.php?id=".$id);
 	}
 ?>
