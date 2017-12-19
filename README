@@ -10,3 +10,12 @@ Instalación:
 1.- Importar el fichero projecteVota.sql a la base de datos.
 2.- En el fichero php/conexionBBDD.php modificar las variables DEFINE para la conexión a la base de datos.
 3.- En el fichero php/funcionesGenerales.php agregar una ruta correcta en el return de la función getURLcartepa(), la ruta es donde se encuentra instalada la pagina desde el host.
+
+Demo:
+web: mcolominas.cf/projecteVota
+user Admin:
+	- correo: admin@projectevota.com
+	- password: 1234
+user alumne:
+	- correo: alumne@projectevota.com
+	- password: 1234
